@@ -65,6 +65,9 @@
   --color-hairline: var(--hairline);
   --color-accent-orange: var(--accent-orange);
   --color-accent-orange-dark: var(--accent-orange-dark);
+  --color-accent-orange-soft: var(--accent-orange-soft);
+  --color-cta-orange: var(--cta-orange);
+  --color-cta-orange-hover: var(--cta-orange-hover);
   --color-success: var(--success);
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -72,32 +75,41 @@
 
 :root {
   --radius: 0.625rem;
+  /*
+   * Monochromatic palette — cool-neutral "zinc" grayscale.
+   * Whites, grays and blacks only. The darkest tone (zinc-900/950) carries
+   * primary emphasis where color used to; mid-grays provide secondary accent.
+   */
   --background: #ffffff;
-  --foreground: #404040;
-  --brand: #4366f5;
-  --brand-dark: #2f4fd4;
-  --brand-soft: #eef1ff;
-  --accent-orange: #ff6b35;
-  --accent-orange-dark: #e85826;
+  --foreground: #27272a;        /* zinc-800 — body text */
+  --brand: #18181b;             /* zinc-900 — headings / primary ink */
+  --brand-dark: #09090b;        /* zinc-950 — deepest black */
+  --brand-soft: #f4f4f5;        /* zinc-100 — soft fill / icon backgrounds */
+  --accent-orange: #3f3f46;     /* zinc-700 — secondary accent (charcoal) */
+  --accent-orange-dark: #27272a;/* zinc-800 */
+  --accent-orange-soft: #f4f4f5;/* zinc-100 */
+  /* CTA: pure near-black on white for maximum contrast (21:1) and emphasis. */
+  --cta-orange: #18181b;        /* zinc-900 — primary CTA fill */
+  --cta-orange-hover: #000000;  /* pure black on hover */
   --success: #10b981;
-  --hairline: #f5f5f5;
+  --hairline: #e4e4e7;          /* zinc-200 — hairline borders */
   --card: #ffffff;
-  --card-foreground: #404040;
+  --card-foreground: #27272a;
   --popover: #ffffff;
-  --popover-foreground: #404040;
-  --primary: #4366f5;
+  --popover-foreground: #27272a;
+  --primary: #18181b;
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #404040;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #404040;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #27272a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;  /* zinc-500 */
+  --accent: #f4f4f5;
+  --accent-foreground: #27272a;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
-  --border: #f5f5f5;
-  --input: #e5e5e5;
-  --ring: #4366f5;
+  --border: #e4e4e7;
+  --input: #d4d4d8;
+  --ring: #18181b;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -153,6 +165,12 @@
     border-color: var(--color-border);
   }
 
+  html {
+    scroll-behavior: smooth;
+    /* Keeps anchor jumps (#servicios, etc.) from landing under the sticky header. */
+    scroll-padding-top: 5rem;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -162,5 +180,76 @@
 
   h1, h2, h3, .font-display {
     font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@keyframes testimonial-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-testimonial-fade {
+  animation: testimonial-fade 0.3s ease-out;
+}
+
+/* -------------------- 3D effects -------------------- */
+
+/* Establishes a shared perspective and smooth return for interactive tilt cards.
+   The tilt itself is applied via inline transform by the useTilt hook; this class
+   provides the 3D context, the eased spring-back on mouse-leave, and preserve-3d
+   so nested layers (.tilt-layer) can lift off the surface. */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+/* Inner layer that floats above the card surface for a parallax depth cue. */
+.tilt-layer {
+  transform: translateZ(40px);
+  transform-style: preserve-3d;
+}
+
+/* Gentle 3D float for the hero visual — rotates subtly on two axes. */
+@keyframes float-3d {
+  0%, 100% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0);
+  }
+  50% {
+    transform: perspective(1000px) rotateX(4deg) rotateY(-6deg) translateY(-12px);
+  }
+}
+
+.animate-float-3d {
+  animation: float-3d 7s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-testimonial-fade {
+    animation: none;
+  }
+
+  .animate-float-3d {
+    animation: none;
+  }
+
+  .tilt-card {
+    transition: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

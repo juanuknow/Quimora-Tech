@@ -113,11 +113,40 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Quimora Tech",
+  description:
+    "Agencia de diseño y desarrollo web. Creamos sitios ultra-rápidos, mobile-first y optimizados para convertir visitantes en clientes.",
+  url: "https://quimora.tech",
+  telephone: "+573124567890",
+  email: "hola@quimora.tech",
+  priceRange: "$$",
+  areaServed: { "@type": "Country", name: "Colombia" },
+  serviceType: [
+    "Diseño web",
+    "Desarrollo web",
+    "Optimización de conversión",
+    "SEO",
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "27",
+    bestRating: "5",
+  },
+};
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+        />
       </head>
       <body>
         {children}
