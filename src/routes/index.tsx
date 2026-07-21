@@ -352,7 +352,7 @@ function Hero() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
               href="#contacto"
-              className={`inline-flex h-14 items-center justify-center rounded-md bg-cta px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
+              className={`inline-flex h-14 items-center justify-center rounded-md bg-cta px-8 font-display text-[15px] font-semibold text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-200 hover:bg-cta-hover hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${FOCUS_RING}`}
             >
               Quiero Mi Web que Convierte
             </a>
