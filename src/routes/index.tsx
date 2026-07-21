@@ -39,6 +39,10 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [{ property: "og:url", content: "https://quimoratech.com/" }],
+    links: [{ rel: "canonical", href: "https://quimoratech.com/" }],
+  }),
   component: LandingPage,
 });
 

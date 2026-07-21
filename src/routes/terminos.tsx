@@ -12,7 +12,9 @@ export const Route = createFileRoute("/terminos")({
           "Términos y condiciones de uso del sitio web y de los servicios de diseño y desarrollo web de Quimora Tech.",
       },
       { name: "robots", content: "index, follow" },
+      { property: "og:url", content: "https://quimoratech.com/terminos" },
     ],
+    links: [{ rel: "canonical", href: "https://quimoratech.com/terminos" }],
   }),
   component: TermsPage,
 });

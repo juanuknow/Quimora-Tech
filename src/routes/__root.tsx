@@ -92,8 +92,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Sitios web ultra-rápidos, mobile-first y diseñados para convertir visitantes en clientes reales.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://quimora.tech/" },
-      { property: "og:image", content: "https://quimora.tech/og-image.png" },
+      { property: "og:locale", content: "es_CO" },
+      { property: "og:site_name", content: "Quimora Tech" },
+      { property: "og:image", content: "https://quimoratech.com/og-image.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       {
@@ -101,14 +102,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Quimora Tech — Páginas web que convierten visitantes en clientes reales",
       },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://quimora.tech/og-image.png" },
+      { name: "twitter:image", content: "https://quimoratech.com/og-image.png" },
+      { name: "robots", content: "index, follow" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "canonical", href: "https://quimora.tech/" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       // Self-hosted fonts (see @font-face in styles.css); preloaded to avoid FOUT.
       {
@@ -139,11 +140,22 @@ const STRUCTURED_DATA = {
   name: "Quimora Tech",
   description:
     "Agencia de diseño y desarrollo web. Creamos sitios ultra-rápidos, mobile-first y optimizados para convertir visitantes en clientes.",
-  url: "https://quimora.tech",
+  url: "https://quimoratech.com",
+  image: "https://quimoratech.com/og-image.png",
   telephone: "+573244577198",
   email: "devopsconsultoring@gmail.com",
   priceRange: "$$",
-  areaServed: { "@type": "Country", name: "Colombia" },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Cali",
+    addressRegion: "Valle del Cauca",
+    addressCountry: "CO",
+  },
+  areaServed: [
+    { "@type": "City", name: "Cali" },
+    { "@type": "State", name: "Valle del Cauca" },
+    { "@type": "Country", name: "Colombia" },
+  ],
   serviceType: ["Diseño web", "Desarrollo web", "Optimización de conversión", "SEO"],
 };
 

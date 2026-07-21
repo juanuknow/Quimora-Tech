@@ -8,7 +8,7 @@ export const WHATSAPP_NUMBER = "573244577198";
 export const CONTACT_EMAIL = "devopsconsultoring@gmail.com";
 export const CONTACT_PHONE = "+573244577198";
 export const CONTACT_PHONE_DISPLAY = "+57 324 457 7198";
-export const SITE_URL = "https://quimora.tech";
+export const SITE_URL = "https://quimoratech.com";
 
 /** Formspree endpoint that receives contact-form submissions (no backend). */
 export const FORMSPREE_ENDPOINT = "https://formspree.io/f/mzdnenqv";

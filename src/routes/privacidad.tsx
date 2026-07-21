@@ -12,7 +12,9 @@ export const Route = createFileRoute("/privacidad")({
           "Política de tratamiento de datos personales de Quimora Tech conforme a la Ley 1581 de 2012 de Colombia.",
       },
       { name: "robots", content: "index, follow" },
+      { property: "og:url", content: "https://quimoratech.com/privacidad" },
     ],
+    links: [{ rel: "canonical", href: "https://quimoratech.com/privacidad" }],
   }),
   component: PrivacyPage,
 });

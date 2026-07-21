@@ -117,7 +117,7 @@ Actúas como **Staff Engineer + Arquitecto de Software + UX Engineer + Code Revi
 ### Deployment
 
 - **Cloudflare** (Nitro build target, vía Wrangler)
-- **Dominio:** quimora.tech (ya registrado)
+- **Dominio:** quimoratech.com (ya registrado)
 - Proyecto generado y gestionado con **Lovable** (`.lovable/`)
 
 ### Herramientas
@@ -202,7 +202,7 @@ Solo 3 secciones + navbar + footer:
 - **Formspree** (`https://formspree.io/f/mzdnenqv`), sin backend propio. Endpoint en `src/lib/site.ts` como `FORMSPREE_ENDPOINT`.
 - Envío vía `fetch` POST (JSON) con estados de carga / éxito / error en el componente `Contact`.
 - Validación en cliente (campos requeridos + regex de email).
-- Los correos llegan a `devopsconsultoring@gmail.com` (correo operativo actual; migrar a `hola@quimora.tech` cuando esté el buzón).
+- Los correos llegan a `devopsconsultoring@gmail.com` (correo operativo actual; migrar a `hola@quimoratech.com` cuando esté el buzón).
 
 **Alternativa siempre visible:** botón flotante y enlaces directos de WhatsApp (`wa.me/573244577198`) — helper `whatsappHref()` en `src/lib/site.ts`.
 
@@ -454,7 +454,7 @@ conversion-craft-96/
 **Responsable:** Juan Pablo Toquica López  
 **Email:** toquicalopez10@gmail.com  
 **Teléfono:** +57 324 457 7198  
-**Sitio (futuro):** quimora.tech  
+**Sitio (futuro):** quimoratech.com  
 **Ubicación:** Cali, Colombia  
 
 **Recursos:**
