@@ -248,8 +248,12 @@ function Nav() {
     >
       <div className="mx-auto flex h-20 max-w-[1200px] items-center justify-between px-6 md:px-10">
         <a href="#top" className={`flex items-center gap-2.5 rounded-md ${FOCUS_RING}`}>
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-brand font-display text-lg font-bold text-primary-foreground">
-            Q
+          <span className="grid h-9 w-9 place-items-center rounded-md bg-white p-1 shadow-sm">
+            <img
+              src="/images/logo-mark.png"
+              alt=""
+              className="h-full w-full object-contain"
+            />
           </span>
           <span className="font-display text-[17px] font-semibold tracking-tight">
             Quimora Tech
@@ -1316,8 +1320,12 @@ function Footer() {
           {/* Brand column */}
           <div>
             <a href="#top" className={`inline-flex items-center gap-2.5 rounded-md ${LIGHT_RING}`}>
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-white font-display text-lg font-bold text-[#09090b]">
-                Q
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-white p-1">
+                <img
+                  src="/images/logo-mark.png"
+                  alt=""
+                  className="h-full w-full object-contain"
+                />
               </span>
               <span className="font-display text-[17px] font-semibold tracking-tight">
                 Quimora Tech
