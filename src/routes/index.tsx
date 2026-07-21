@@ -1,5 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
+import { Showcase3D } from "../components/Showcase3D";
+import { useInView } from "../lib/hooks";
+import {
+  FOCUS_RING,
+  LIGHT_RING,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_DISPLAY,
+  FORMSPREE_ENDPOINT,
+  whatsappHref,
+  trackEvent,
+} from "../lib/site";
 import {
   Smartphone,
   Zap,
@@ -8,11 +21,8 @@ import {
   Code2,
   Rocket,
   TrendingUp,
-  ChevronLeft,
-  ChevronRight,
   Plus,
   Minus,
-  Star,
   Menu,
   X,
   Mail,
@@ -22,8 +32,10 @@ import {
   Clock,
   UserX,
   SearchX,
+  Search,
   Check,
   AlertCircle,
+  Award,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -39,16 +51,17 @@ function LandingPage() {
       >
         Saltar al contenido principal
       </a>
+      <TopBar />
       <Nav />
       <main id="main">
         <Hero />
+        <DigitalDiagnosis />
         <Problem />
         <Benefits />
+        <Showcase3D />
         <Stats />
         <Timeline />
         <Pricing />
-        <Testimonials />
-        <Portfolio />
         <FAQ />
         <Contact />
         <FinalCTA />
@@ -57,33 +70,6 @@ function LandingPage() {
       <FloatingWhatsApp />
     </div>
   );
-}
-
-const FOCUS_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background";
-
-/** Fires once when the element scrolls into view; used to trigger reveal animations. */
-function useInView<T extends HTMLElement>(threshold = 0.2) {
-  const ref = useRef<T | null>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-
-  return { ref, inView };
 }
 
 /**
@@ -156,14 +142,29 @@ function FloatingWhatsApp() {
     <div className="fixed bottom-5 right-5 z-50 md:bottom-8 md:right-8">
       <span className="absolute inset-0 animate-ping rounded-full bg-brand/40" />
       <a
-        href="https://wa.me/573124567890?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios"
+        href={whatsappHref("Hola, quiero más información sobre sus servicios")}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escríbenos por WhatsApp"
+        onClick={() => trackEvent("contact", { method: "whatsapp", location: "floating" })}
         className={`relative grid h-14 w-14 place-items-center rounded-full bg-brand text-white shadow-lg transition-transform duration-200 hover:scale-110 ${FOCUS_RING}`}
       >
         <WhatsAppIcon size={28} />
       </a>
+    </div>
+  );
+}
+
+/* -------------------- Top Bar -------------------- */
+function TopBar() {
+  return (
+    <div className="w-full border-b border-hairline bg-brand-soft">
+      <p className="mx-auto max-w-[1200px] px-6 py-2 text-center text-xs font-medium tracking-wide text-brand md:text-[13px]">
+        <span>
+          Precios accesibles y negociables · Entrega rápida · Soluciones tecnológicas · Tratamiento
+          de datos privados
+        </span>
+      </p>
     </div>
   );
 }
@@ -174,7 +175,7 @@ const NAV_LINKS = [
   { href: "#servicios", label: "Servicios" },
   { href: "#nosotros", label: "Nosotros" },
   { href: "#precios", label: "Precios" },
-  { href: "#portafolio", label: "Casos de Éxito" },
+  { href: "#showcase", label: "Casos de Éxito" },
   { href: "#contacto", label: "Contacto" },
 ] as const;
 const NAV_SECTION_IDS = NAV_LINKS.map((l) => l.href.slice(1));
@@ -279,7 +280,7 @@ function Nav() {
         <div className="hidden items-center md:flex">
           <a
             href="#contacto"
-            className={`inline-flex h-11 items-center justify-center rounded-md bg-cta-orange px-6 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-orange-hover ${FOCUS_RING}`}
+            className={`inline-flex h-11 items-center justify-center rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
           >
             Contactar
           </a>
@@ -320,7 +321,7 @@ function Nav() {
           <a
             href="#contacto"
             onClick={() => setOpen(false)}
-            className={`mt-2 inline-flex h-12 items-center justify-center rounded-md bg-cta-orange px-6 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-orange-hover ${FOCUS_RING}`}
+            className={`mt-2 inline-flex h-12 items-center justify-center rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
           >
             Contactar
           </a>
@@ -347,7 +348,7 @@ function Hero() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
               href="#contacto"
-              className={`inline-flex h-14 items-center justify-center rounded-md bg-cta-orange px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-orange-hover ${FOCUS_RING}`}
+              className={`inline-flex h-14 items-center justify-center rounded-md bg-cta px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
             >
               Quiero Mi Web que Convierte
             </a>
@@ -482,14 +483,21 @@ const BENEFITS = [
   },
   {
     icon: Zap,
-    iconColor: "orange",
+    iconColor: "accent",
     title: "Velocidad de Carga Ultra-Rápida",
     body: "Los usuarios abandonan páginas que tardan más de 3 segundos. Entregamos sitios optimizados que retienen clientes y mejoran tu posicionamiento en Google.",
     metric: "-3s en carga",
   },
   {
-    icon: BarChart3,
+    icon: Search,
     iconColor: "brand",
+    title: "SEO que te Posiciona en Google",
+    body: "Optimizamos estructura, velocidad y contenido desde el día uno para que tus clientes te encuentren primero, sin depender solo de publicidad paga.",
+    metric: "+visibilidad orgánica",
+  },
+  {
+    icon: BarChart3,
+    iconColor: "accent",
     title: "Gestión Sencilla y Analítica Integrada",
     body: "Olvídate de la complejidad técnica. Conectamos tu web con Google Analytics para que veas resultados reales y te enfoques en tu negocio.",
     metric: "100% Medible",
@@ -500,15 +508,20 @@ function Benefits() {
   return (
     <section id="servicios" className="border-t border-hairline bg-background">
       <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
-        <div className="max-w-2xl">
-          <h2 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
-            ¿Por Qué Elegir Quimora Tech?
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            <Award size={14} />
+            Por qué Quimora Tech
+          </span>
+          <h2 className="mt-6 font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
+            Cada decisión está hecha para hacerte crecer
           </h2>
-          <p className="mt-4 text-base text-foreground md:text-[17px]">
-            Cada decisión está hecha para hacerte crecer.
+          <p className="mt-4 text-base text-foreground/80 md:text-[17px]">
+            No vendemos plantillas genéricas. Diseñamos y desarrollamos cada sitio pensando en un
+            solo objetivo: convertir visitantes en clientes reales.
           </p>
         </div>
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {BENEFITS.map((benefit) => (
             <BenefitCard key={benefit.title} benefit={benefit} />
           ))}
@@ -529,8 +542,8 @@ function BenefitCard({ benefit }: { benefit: (typeof BENEFITS)[number] }) {
     >
       <div
         className={`tilt-layer grid h-12 w-12 place-items-center rounded-lg ${
-          iconColor === "orange"
-            ? "bg-accent-orange-soft text-accent-orange"
+          iconColor === "accent"
+            ? "bg-accent-strong-soft text-accent-strong"
             : "bg-brand-soft text-brand"
         }`}
       >
@@ -546,11 +559,13 @@ function BenefitCard({ benefit }: { benefit: (typeof BENEFITS)[number] }) {
 }
 
 /* -------------------- Stats -------------------- */
+// Compromisos y estándares del servicio (verificables), no métricas de
+// trayectoria. Se muestran como la vara con la que trabajamos cada proyecto.
 const STATS = [
-  { value: 50, prefix: "+", suffix: "", label: "Proyectos entregados" },
-  { value: 98, prefix: "", suffix: "%", label: "Clientes satisfechos" },
-  { value: 4, prefix: "", suffix: " sem", label: "Tiempo promedio de entrega" },
-  { value: 250, prefix: "+", suffix: "%", label: "Aumento en conversiones" },
+  { value: 3, prefix: "< ", suffix: "s", label: "Velocidad de carga que buscamos" },
+  { value: 100, prefix: "", suffix: "%", label: "Diseño responsive, mobile-first" },
+  { value: 24, prefix: "", suffix: "h", label: "Respuesta a tu mensaje" },
+  { value: 95, prefix: "", suffix: "+", label: "Meta en Google Lighthouse" },
 ] as const;
 
 /** Counts from 0 to `end` over `duration` ms once `active` becomes true. */
@@ -613,30 +628,30 @@ function StatItem({ stat, active }: { stat: (typeof STATS)[number]; active: bool
 /* -------------------- Timeline (signature) -------------------- */
 const STEPS = [
   {
-    week: "SEMANA 1–2",
+    week: "SEMANA 1",
     icon: MessageCircle,
-    orange: false,
+    accent: false,
     title: "Diagnóstico",
     body: "Escuchamos tus metas, analizamos tu competencia y definimos la estrategia.",
   },
   {
-    week: "SEMANA 3–6",
+    week: "SEMANA 2–3",
     icon: Code2,
-    orange: false,
+    accent: false,
     title: "Desarrollo",
     body: "Diseñamos y desarrollamos tu web con las últimas tecnologías, optimizada desde el inicio.",
   },
   {
-    week: "SEMANA 7",
+    week: "SEMANA 4",
     icon: Rocket,
-    orange: true,
+    accent: true,
     title: "Lanzamiento",
     body: "Tu web sale a producción. Tus clientes ya la ven, comienzan a contactarte.",
   },
   {
-    week: "SEMANA 8+",
+    week: "DESPUÉS",
     icon: TrendingUp,
-    orange: false,
+    accent: false,
     title: "Crecimiento Continuo",
     body: "Medimos, optimizamos y escalamos. Cada semana, mejor.",
   },
@@ -647,7 +662,7 @@ function Timeline() {
     <section id="nosotros" className="border-t border-hairline bg-hairline/60">
       <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
         <div className="text-center">
-          <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-accent-orange">
+          <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-accent-strong">
             Tu web lista en 4 semanas. No 4 meses.
           </p>
           <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
@@ -661,12 +676,12 @@ function Timeline() {
           <div className="absolute left-[8%] right-[8%] top-8 h-[2px] bg-white" />
           <div className="absolute left-[8%] right-[8%] top-8 h-[2px] bg-brand" />
           <div className="relative grid grid-cols-4 gap-6">
-            {STEPS.map(({ week, icon: Icon, orange, title, body }) => (
+            {STEPS.map(({ week, icon: Icon, accent, title, body }) => (
               <div key={title} className="flex flex-col items-center text-center">
                 <div
                   className={`relative z-10 grid h-16 w-16 place-items-center rounded-full border-2 ${
-                    orange
-                      ? "border-accent-orange bg-white text-accent-orange"
+                    accent
+                      ? "border-accent-strong bg-white text-accent-strong"
                       : "border-brand bg-white text-brand"
                   }`}
                 >
@@ -687,11 +702,11 @@ function Timeline() {
         {/* Mobile timeline */}
         <ol className="relative mt-14 space-y-8 md:hidden">
           <div className="absolute left-[27px] top-2 bottom-2 w-[2px] bg-brand/30" />
-          {STEPS.map(({ week, icon: Icon, orange, title, body }) => (
+          {STEPS.map(({ week, icon: Icon, accent, title, body }) => (
             <li key={title} className="relative flex gap-5">
               <div
                 className={`relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 bg-white ${
-                  orange ? "border-accent-orange text-accent-orange" : "border-brand text-brand"
+                  accent ? "border-accent-strong text-accent-strong" : "border-brand text-brand"
                 }`}
               >
                 <Icon size={22} strokeWidth={1.9} />
@@ -715,8 +730,8 @@ function Timeline() {
 const PLANS = [
   {
     name: "Presencia",
-    price: "Desde $550.000",
-    period: "proyecto único",
+    price: "Desde $650.000",
+    period: "pago único · sin mensualidades",
     description:
       "Ideal para negocios que necesitan estar en línea con una web profesional de una sola página.",
     features: [
@@ -730,14 +745,14 @@ const PLANS = [
   {
     name: "Crecimiento",
     price: "Desde $950.000",
-    period: "proyecto único",
+    period: "pago único · sin mensualidades",
     description:
       "Para negocios que quieren convertir visitantes en clientes con analítica y varias secciones.",
     features: [
       "Sitio multi-sección",
       "Google Analytics + Search Console",
       "Panel de edición simple",
-      "Entrega en 4-6 semanas",
+      "Entrega en 2-4 semanas",
     ],
     featured: true,
   },
@@ -757,17 +772,27 @@ const PLANS = [
   },
 ] as const;
 
+// Compromisos reales presentes en cualquier proyecto (sin métricas inventadas).
+const PLAN_INCLUDES = [
+  "Diseño mobile-first, responsive",
+  "Optimización de velocidad de carga",
+  "Buenas prácticas de SEO desde el inicio",
+  "Conexión con WhatsApp",
+  "Entrega de accesos y archivos del proyecto",
+  "Acompañamiento durante el lanzamiento",
+] as const;
+
 function Pricing() {
   return (
     <section id="precios" className="border-t border-hairline bg-background">
       <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
-        <div className="text-center">
+        <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
-            Inversión Transparente
+            Una inversión que se paga sola
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-foreground/80 md:text-[17px]">
-            Rangos orientativos para que sepas qué esperar antes de escribirnos. El alcance final se
-            ajusta a tu negocio.
+            No es un gasto: una web bien hecha recupera su valor con los primeros clientes que te
+            trae. Sin costos ocultos y con precios claros desde el inicio.
           </p>
         </div>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
@@ -775,9 +800,44 @@ function Pricing() {
             <PricingCard key={plan.name} plan={plan} index={i} />
           ))}
         </div>
+
+        {/* Included in every plan */}
+        <div className="mt-8 rounded-2xl border border-hairline bg-brand-soft/40 p-6 md:p-8">
+          <p className="text-center font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Incluido en todos los planes
+          </p>
+          <ul className="mx-auto mt-5 grid max-w-3xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {PLAN_INCLUDES.map((item) => (
+              <li key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                <Check size={16} className="shrink-0 text-brand" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Recurring maintenance cross-sell */}
+        <div className="mx-auto mt-10 flex max-w-3xl flex-col items-center justify-between gap-5 rounded-2xl border border-hairline bg-hairline/40 p-6 text-center sm:flex-row sm:text-left md:p-8">
+          <div>
+            <h3 className="font-display text-lg font-semibold text-brand">
+              ¿Ya tienes tu web funcionando?
+            </h3>
+            <p className="mt-1.5 text-sm leading-[1.6] text-foreground/75">
+              Con nuestros planes de mantenimiento mensual la mantenemos rápida, segura y creciendo:
+              actualizaciones, respaldos y mejoras continuas.
+            </p>
+          </div>
+          <a
+            href="#contacto"
+            className={`inline-flex h-12 shrink-0 items-center justify-center rounded-md border-2 border-brand px-6 font-display text-sm font-semibold text-brand transition-colors duration-200 hover:bg-brand-soft ${FOCUS_RING}`}
+          >
+            Ver mantenimiento
+          </a>
+        </div>
+
         <p className="mt-8 text-center text-xs text-foreground/70">
-          Precios de referencia en pesos colombianos (COP). El valor final depende del alcance de
-          cada proyecto.
+          Precios de referencia en pesos colombianos (COP), como pago único. El valor final depende
+          del alcance de cada proyecto y se confirma en la cotización.
         </p>
       </div>
     </section>
@@ -825,7 +885,7 @@ function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: num
           href="#contacto"
           className={`mt-8 inline-flex h-12 items-center justify-center rounded-md font-display text-sm font-semibold transition-colors duration-200 ${FOCUS_RING} ${
             plan.featured
-              ? "bg-cta-orange text-white hover:bg-cta-orange-hover"
+              ? "bg-cta text-white hover:bg-cta-hover"
               : "border-2 border-brand text-brand hover:bg-brand-soft"
           }`}
         >
@@ -836,268 +896,11 @@ function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: num
   );
 }
 
-/* -------------------- Testimonials -------------------- */
-const TESTIMONIALS = [
-  {
-    initial: "M",
-    role: "Dueña de E-commerce de Moda",
-    location: "Cali, Colombia",
-    quote:
-      "Desde que lanzamos con Quimora Tech, nuestras ventas online crecieron 250%. No fue un gasto, fue una inversión.",
-  },
-  {
-    initial: "J",
-    role: "Gerente de Clínica Odontológica",
-    location: "Medellín, Colombia",
-    quote:
-      "La página nueva nos trae citas todas las semanas. El proceso fue clarísimo y en menos de un mes ya estábamos en línea.",
-  },
-  {
-    initial: "A",
-    role: "Fundador de Estudio de Arquitectura",
-    location: "Bogotá, Colombia",
-    quote:
-      "Duplicamos las reuniones agendadas en el primer mes. La analítica integrada nos ayudó a tomar mejores decisiones.",
-  },
-];
-
-function Testimonials() {
-  const [idx, setIdx] = useState(0);
-  const prev = () => setIdx((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  const next = () => setIdx((i) => (i + 1) % TESTIMONIALS.length);
-  const t = TESTIMONIALS[idx];
-
-  return (
-    <section id="testimonios" className="border-t border-hairline bg-background">
-      <div className="mx-auto max-w-[1000px] px-6 py-24 md:px-10 md:py-28">
-        <h2 className="text-center font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
-          Lo Que Dicen Nuestros Clientes
-        </h2>
-
-        <div className="mt-12 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 md:gap-6">
-          <button
-            onClick={prev}
-            aria-label="Anterior testimonio"
-            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline text-brand transition-colors hover:border-brand hover:bg-brand-soft ${FOCUS_RING}`}
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <article
-            key={idx}
-            aria-live="polite"
-            className="animate-testimonial-fade min-w-0 rounded-xl border border-hairline bg-background p-8 md:p-10"
-          >
-            <p className="text-lg italic leading-[1.6] text-foreground md:text-xl">“{t.quote}”</p>
-            <div className="mt-8 flex items-center gap-4">
-              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand-soft font-display text-xl font-semibold text-brand">
-                {t.initial}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate font-display text-[15px] font-semibold text-foreground">
-                  {t.role}
-                </p>
-                <p className="truncate text-sm text-foreground/70">{t.location}</p>
-                <div className="mt-1 flex gap-0.5 text-accent-orange">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={13} fill="currentColor" strokeWidth={0} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <button
-            onClick={next}
-            aria-label="Siguiente testimonio"
-            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline text-brand transition-colors hover:border-brand hover:bg-brand-soft ${FOCUS_RING}`}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-
-        <div className="mt-8 flex justify-center gap-2">
-          {TESTIMONIALS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIdx(i)}
-              aria-label={`Ir al testimonio ${i + 1}`}
-              className={`h-2 rounded-full transition-all duration-200 ${FOCUS_RING} ${
-                i === idx ? "w-8 bg-brand" : "w-2 bg-hairline hover:bg-brand/40"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------- Portfolio -------------------- */
-// `url: null` = proyecto aún sin sitio publicado; la tarjeta muestra "Próximamente"
-// en lugar de un enlace. Al tener la URL real, se reemplaza el null.
-const PORTFOLIO_CASES = [
-  {
-    id: 1,
-    client: "Diosas Cosmeticos",
-    category: "E-commerce",
-    description:
-      "Plataforma de e-commerce para tienda de belleza con catálogo de 200+ productos y administración optimizada.",
-    image: "../../img/Diosas cosmeticos.jpg",
-    url: null,
-    metric: "+250%",
-    metricLabel: "Ventas Online",
-    features: ["Catálogo dinámico", "Checkout integrado", "Gestión de inventario"],
-  },
-  {
-    id: 2,
-    client: "ClínicaDental Sonrisa",
-    category: "Servicios",
-    description:
-      "Sitio web para clínica dental con sistema de agendamiento de citas automático y galería de casos.",
-    image: "https://images.unsplash.com/photo-1576091160399-de2d08394d18?w=800&h=500&fit=crop",
-    url: null,
-    metric: "+320%",
-    metricLabel: "Citas Agendadas",
-    features: ["Agendamiento online", "Galería de casos", "WhatsApp integrado"],
-  },
-  {
-    id: 3,
-    client: "TechStart SaaS",
-    category: "SaaS",
-    description:
-      "Landing page conversión para plataforma SaaS con demostración interactiva del producto.",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=500&fit=crop",
-    url: null,
-    metric: "+180%",
-    metricLabel: "Sign-ups",
-    features: ["Demo interactiva", "Free trial CTA", "Testimonios automatizados"],
-  },
-  {
-    id: 4,
-    client: "Constructora Moderna",
-    category: "Bienes Raíces",
-    description:
-      "Sitio corporativo con portafolio de proyectos, tours 360° y formulario de consultas.",
-    image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=500&fit=crop",
-    url: "https://www.intel.la/content/www/xl/es/support/intel-driver-support-assistant.html",
-    metric: "+410%",
-    metricLabel: "Consultas",
-    features: ["Tours 3D", "Galería de proyectos", "Formularios avanzados"],
-  },
-] as const;
-
-function Portfolio() {
-  return (
-    <section id="portafolio" className="border-t border-hairline bg-hairline/60">
-      <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
-        <div className="text-center">
-          <h2 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-[40px]">
-            Casos de Éxito
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-foreground/80 md:text-[17px]">
-            Proyectos que transformaron negocios. Estos son algunos de nuestros casos más
-            destacados.
-          </p>
-        </div>
-
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:gap-8">
-          {PORTFOLIO_CASES.map((project, idx) => (
-            <PortfolioCard key={project.id} project={project} index={idx} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PortfolioCard({
-  project,
-  index,
-}: {
-  project: (typeof PORTFOLIO_CASES)[number];
-  index: number;
-}) {
-  const { ref, inView } = useInView<HTMLDivElement>();
-  const tiltRef = useTilt<HTMLDivElement>(5);
-
-  return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: inView ? `${index * 100}ms` : "0ms" }}
-      className={`transition-all duration-700 ease-out ${
-        inView ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-      }`}
-    >
-      <article
-        ref={tiltRef}
-        className="tilt-card flex h-full flex-col overflow-hidden rounded-xl border border-hairline hover:shadow-xl"
-      >
-        {/* Image Container */}
-        <div className="relative h-48 overflow-hidden bg-hairline md:h-56">
-          <img
-            src={project.image}
-            alt={project.client}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-          <span className="absolute top-4 right-4 rounded-full bg-brand px-3 py-1 font-display text-xs font-semibold text-primary-foreground">
-            {project.category}
-          </span>
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-1 flex-col p-6 md:p-8">
-          <h3 className="font-display text-lg font-semibold text-foreground md:text-xl">
-            {project.client}
-          </h3>
-          <p className="mt-2 text-[15px] leading-[1.6] text-foreground/75">{project.description}</p>
-
-          {/* Metric */}
-          <div className="mt-6 flex items-baseline gap-2">
-            <span className="font-display text-2xl font-bold text-brand">{project.metric}</span>
-            <span className="text-sm font-medium text-foreground/70">{project.metricLabel}</span>
-          </div>
-
-          {/* Features */}
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {project.features.map((f) => (
-              <li
-                key={f}
-                className="rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand"
-              >
-                {f}
-              </li>
-            ))}
-          </ul>
-
-          {/* CTA */}
-          {project.url ? (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`mt-6 inline-flex h-10 items-center justify-center rounded-md border-2 border-brand font-display text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-primary-foreground ${FOCUS_RING}`}
-            >
-              Ver detalles
-            </a>
-          ) : (
-            <span className="mt-6 inline-flex h-10 cursor-not-allowed items-center justify-center rounded-md border-2 border-hairline font-display text-sm font-semibold text-foreground/50">
-              Próximamente
-            </span>
-          )}
-        </div>
-      </article>
-    </div>
-  );
-}
-
 /* -------------------- FAQ -------------------- */
 const FAQS = [
   {
     q: "¿Cuánto tiempo tarda en estar lista mi web?",
-    a: "Típicamente entre 4 y 8 semanas dependiendo de la complejidad. La mayoría de negocios ven avances significativos en las primeras 4 semanas.",
+    a: "Típicamente entre 2 y 4 semanas dependiendo de la complejidad. La mayoría de negocios ven avances significativos en las primeras 4 semanas.",
   },
   {
     q: "¿Puedo editar la web después?",
@@ -1110,6 +913,18 @@ const FAQS = [
   {
     q: "¿Qué pasa si necesito cambios después?",
     a: "Tenemos planes de mantenimiento flexible. Un email, una llamada, y resolvemos en máximo 24 horas.",
+  },
+  {
+    q: "¿De quién es la web cuando terminamos?",
+    a: "Tuya, al 100%. Te entregamos los accesos y los archivos del proyecto. No quedas amarrado a nosotros: puedes seguir con quien quieras.",
+  },
+  {
+    q: "¿Por qué no son la opción más barata?",
+    a: "Porque no vendemos plantillas genéricas. Cada sitio se diseña a medida, optimizado para cargar rápido y para vender. Una web barata que no convierte termina saliendo más cara.",
+  },
+  {
+    q: "¿Trabajan con negocios fuera de Cali?",
+    a: "Sí. Trabajamos con toda Colombia de forma remota: reuniones por videollamada y coordinación por WhatsApp. La distancia no es problema.",
   },
 ];
 
@@ -1167,6 +982,8 @@ function Contact() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [errors, setErrors] = useState<ContactErrors>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -1186,21 +1003,36 @@ function Contact() {
     return next;
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setSubmitError(false);
     const next = validate();
     if (next.name) nameRef.current?.focus();
     else if (next.email) emailRef.current?.focus();
     else if (next.message) messageRef.current?.focus();
     if (Object.keys(next).length > 0) return;
-    // Sin backend: se compone un correo con los datos. En producción, reemplaza
-    // esto por un POST a tu endpoint (Formspree, Web3Forms o tu API).
-    const subject = encodeURIComponent(`Nueva consulta de ${form.name}`);
-    const body = encodeURIComponent(
-      `Nombre: ${form.name}\nEmail: ${form.email}\nTeléfono: ${form.phone || "—"}\n\n${form.message}`,
-    );
-    window.location.href = `mailto:hola@quimora.tech?subject=${subject}&body=${body}`;
-    setSent(true);
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone || "—",
+          message: form.message,
+          _subject: `Nueva consulta de ${form.name} · Quimora Tech`,
+        }),
+      });
+      if (!res.ok) throw new Error(`Formspree respondió ${res.status}`);
+      setSent(true);
+      trackEvent("generate_lead", { method: "contact_form" });
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const fieldBase = `w-full rounded-md border bg-background px-4 py-3 text-[15px] text-foreground transition-colors placeholder:text-muted-foreground/70 ${FOCUS_RING}`;
@@ -1223,7 +1055,7 @@ function Contact() {
             </p>
             <div className="mt-8 flex flex-col gap-4">
               <a
-                href="https://wa.me/573124567890?text=Hola%2C%20quiero%20una%20consulta%20gratis"
+                href={whatsappHref("Hola, quiero una consulta gratis")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
@@ -1234,22 +1066,22 @@ function Contact() {
                 WhatsApp directo
               </a>
               <a
-                href="tel:+573124567890"
+                href={`tel:${CONTACT_PHONE}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <Phone size={18} />
                 </span>
-                +57 312 456 7890
+                {CONTACT_PHONE_DISPLAY}
               </a>
               <a
-                href="mailto:hola@quimora.tech"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <Mail size={18} />
                 </span>
-                hola@quimora.tech
+                {CONTACT_EMAIL}
               </a>
             </div>
           </div>
@@ -1262,11 +1094,11 @@ function Contact() {
                   <Check size={28} />
                 </span>
                 <h3 className="mt-6 font-display text-xl font-semibold text-foreground">
-                  ¡Mensaje listo para enviar!
+                  ¡Mensaje enviado!
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-foreground/70">
-                  Se abrió tu correo con los datos. Si prefieres, escríbenos directo por WhatsApp y
-                  te respondemos al instante.
+                  Gracias por escribirnos. Te responderemos en menos de 24 horas. Si prefieres,
+                  escríbenos directo por WhatsApp y te contestamos al instante.
                 </p>
                 <button
                   type="button"
@@ -1286,7 +1118,7 @@ function Contact() {
                     htmlFor="cf-name"
                     className="font-display text-sm font-medium text-foreground"
                   >
-                    Nombre <span className="text-accent-orange">*</span>
+                    Nombre <span className="text-accent-strong">*</span>
                   </label>
                   <input
                     id="cf-name"
@@ -1312,7 +1144,7 @@ function Contact() {
                       htmlFor="cf-email"
                       className="font-display text-sm font-medium text-foreground"
                     >
-                      Email <span className="text-accent-orange">*</span>
+                      Email <span className="text-accent-strong">*</span>
                     </label>
                     <input
                       id="cf-email"
@@ -1354,7 +1186,7 @@ function Contact() {
                     htmlFor="cf-message"
                     className="font-display text-sm font-medium text-foreground"
                   >
-                    Mensaje <span className="text-accent-orange">*</span>
+                    Mensaje <span className="text-accent-strong">*</span>
                   </label>
                   <textarea
                     id="cf-message"
@@ -1374,15 +1206,28 @@ function Contact() {
                   )}
                 </div>
 
+                {submitError && (
+                  <p
+                    role="alert"
+                    className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+                  >
+                    No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className={`inline-flex h-14 items-center justify-center rounded-md bg-cta-orange px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-orange-hover ${FOCUS_RING}`}
+                  disabled={submitting}
+                  aria-busy={submitting}
+                  className={`inline-flex h-14 items-center justify-center rounded-md bg-cta px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING}`}
                 >
-                  Enviar consulta
+                  {submitting ? "Enviando…" : "Enviar consulta"}
                 </button>
                 <p className="text-center text-xs text-foreground/70">
-                  Al enviar aceptas que te contactemos sobre tu consulta. Nunca compartimos tus
-                  datos.
+                  Al enviar aceptas nuestra{" "}
+                  <a href="/privacidad" className="underline underline-offset-2 hover:text-brand">
+                    Política de Privacidad
+                  </a>{" "}
+                  y que te contactemos sobre tu consulta. Nunca compartimos tus datos.
                 </p>
               </form>
             )}
@@ -1396,40 +1241,45 @@ function Contact() {
 /* -------------------- Final CTA -------------------- */
 function FinalCTA() {
   return (
-    <section className="border-t border-hairline bg-hairline/60">
-      <div className="mx-auto max-w-[820px] px-6 py-24 text-center md:py-28">
-        <h2 className="font-display text-3xl font-bold leading-[1.15] tracking-tight text-brand md:text-[44px]">
+    <section className="relative overflow-hidden border-t border-hairline bg-brand-dark">
+      {/* Lightweight CSS backdrop (replaces the old 2 MB looping video). */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgba(255,255,255,0.10),transparent_55%),radial-gradient(circle_at_85%_85%,rgba(255,255,255,0.06),transparent_50%)]"
+      />
+      <div className="relative mx-auto max-w-[820px] px-6 py-24 text-center md:py-28">
+        <h2 className="font-display text-3xl font-bold leading-[1.15] tracking-tight text-white md:text-[44px]">
           No Dejes que tu Competencia te Pase Adelante
         </h2>
-        <p className="mx-auto mt-5 max-w-xl text-base text-foreground/80 md:text-lg">
+        <p className="mx-auto mt-5 max-w-xl text-base text-white/80 md:text-lg">
           Cada día que esperas es dinero que pierdes. Hablemos hoy.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
-            href="https://wa.me/573124567890?text=Hola%2C%20quiero%20una%20consulta%20gratis%20sobre%20mi%20p%C3%A1gina%20web"
+            href={whatsappHref("Hola, quiero una consulta gratis sobre mi página web")}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex h-14 w-full items-center justify-center rounded-md bg-cta-orange px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-orange-hover sm:w-auto ${FOCUS_RING}`}
+            className={`inline-flex h-14 w-full items-center justify-center rounded-md bg-white px-8 font-display text-[15px] font-semibold text-brand transition-colors duration-200 hover:bg-white/90 sm:w-auto ${LIGHT_RING}`}
           >
             Solicitar Consulta Gratis
           </a>
           <a
-            href="#testimonios"
-            className={`inline-flex h-14 w-full items-center justify-center rounded-md border-2 border-brand bg-transparent px-8 font-display text-[15px] font-semibold text-brand transition-colors duration-200 hover:bg-brand-soft sm:w-auto ${FOCUS_RING}`}
+            href="#showcase"
+            className={`inline-flex h-14 w-full items-center justify-center rounded-md border-2 border-white/50 bg-transparent px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-white/10 sm:w-auto ${LIGHT_RING}`}
           >
             Ver Casos de Éxito
           </a>
         </div>
-        <p className="mt-8 text-[15px] text-foreground/80">
+        <p className="mt-8 text-[15px] text-white/80">
           O llámanos:{" "}
           <a
-            href="tel:+573124567890"
-            className={`rounded-sm font-display font-semibold text-foreground hover:text-brand ${FOCUS_RING}`}
+            href={`tel:${CONTACT_PHONE}`}
+            className={`rounded-sm font-display font-semibold text-white hover:text-white/80 ${LIGHT_RING}`}
           >
-            +57 312 456 7890
+            {CONTACT_PHONE_DISPLAY}
           </a>
         </p>
-        <p className="mt-3 text-xs text-foreground/70">
+        <p className="mt-3 text-xs text-white/60">
           Sin compromiso · Respuesta en menos de 24 horas
         </p>
       </div>
@@ -1451,16 +1301,12 @@ const FOOTER_NAV = [
   {
     title: "Empresa",
     links: [
-      { href: "#portafolio", label: "Casos de Éxito" },
-      { href: "#testimonios", label: "Testimonios" },
+      { href: "#showcase", label: "Casos de Éxito" },
       { href: "#faq", label: "Preguntas Frecuentes" },
       { href: "#contacto", label: "Contacto" },
     ],
   },
 ] as const;
-
-const FOOTER_LIGHT_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]";
 
 function Footer() {
   return (
@@ -1469,10 +1315,7 @@ function Footer() {
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Brand column */}
           <div>
-            <a
-              href="#top"
-              className={`inline-flex items-center gap-2.5 rounded-md ${FOOTER_LIGHT_RING}`}
-            >
+            <a href="#top" className={`inline-flex items-center gap-2.5 rounded-md ${LIGHT_RING}`}>
               <span className="grid h-9 w-9 place-items-center rounded-md bg-white font-display text-lg font-bold text-[#09090b]">
                 Q
               </span>
@@ -1485,10 +1328,10 @@ function Footer() {
               Rápidos, medibles y hechos para crecer.
             </p>
             <a
-              href="https://wa.me/573124567890?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+              href={whatsappHref("Hola, quiero más información")}
               target="_blank"
               rel="noopener noreferrer"
-              className={`tilt-card mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 font-display text-sm font-semibold text-[#09090b] transition-colors hover:bg-white/90 ${FOOTER_LIGHT_RING}`}
+              className={`tilt-card mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 font-display text-sm font-semibold text-[#09090b] transition-colors hover:bg-white/90 ${LIGHT_RING}`}
             >
               <WhatsAppIcon size={16} />
               Escríbenos por WhatsApp
@@ -1506,7 +1349,7 @@ function Footer() {
                   <li key={l.href}>
                     <a
                       href={l.href}
-                      className={`rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+                      className={`rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
                     >
                       {l.label}
                     </a>
@@ -1524,24 +1367,24 @@ function Footer() {
             <ul className="mt-5 flex flex-col gap-4 text-sm text-white/65">
               <li>
                 <a
-                  href="tel:+573124567890"
-                  className={`inline-flex items-center gap-3 rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+                  href={`tel:${CONTACT_PHONE}`}
+                  className={`inline-flex items-center gap-3 rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <Phone size={15} />
                   </span>
-                  +57 312 456 7890
+                  {CONTACT_PHONE_DISPLAY}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:hola@quimora.tech"
-                  className={`inline-flex items-center gap-3 rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className={`inline-flex items-center gap-3 rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <Mail size={15} />
                   </span>
-                  hola@quimora.tech
+                  {CONTACT_EMAIL}
                 </a>
               </li>
             </ul>
@@ -1555,21 +1398,21 @@ function Footer() {
           <p>© 2026 Quimora Tech. Todos los derechos reservados.</p>
           <div className="flex items-center gap-6">
             <a
-              href="#"
-              className={`rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+              href="/privacidad"
+              className={`rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
             >
               Privacidad
             </a>
             <a
-              href="#"
-              className={`rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+              href="/terminos"
+              className={`rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
             >
               Términos
             </a>
             <a
               href="#top"
               aria-label="Volver arriba"
-              className={`inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-white ${FOOTER_LIGHT_RING}`}
+              className={`inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-white ${LIGHT_RING}`}
             >
               Arriba
               <ArrowUp size={14} />

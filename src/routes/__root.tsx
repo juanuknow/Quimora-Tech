@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { GA_MEASUREMENT_ID } from "../lib/site";
 
 function NotFoundComponent() {
   return (
@@ -91,19 +92,38 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Sitios web ultra-rápidos, mobile-first y diseñados para convertir visitantes en clientes reales.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://quimora.tech/" },
+      { property: "og:image", content: "https://quimora.tech/og-image.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: "Quimora Tech — Páginas web que convierten visitantes en clientes reales",
+      },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://quimora.tech/og-image.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "canonical", href: "https://quimora.tech/" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Self-hosted fonts (see @font-face in styles.css); preloaded to avoid FOUT.
       {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
+        rel: "preload",
+        href: "/fonts/inter-variable.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/space-grotesk-variable.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
       },
     ],
   }),
@@ -120,22 +140,11 @@ const STRUCTURED_DATA = {
   description:
     "Agencia de diseño y desarrollo web. Creamos sitios ultra-rápidos, mobile-first y optimizados para convertir visitantes en clientes.",
   url: "https://quimora.tech",
-  telephone: "+573124567890",
-  email: "hola@quimora.tech",
+  telephone: "+573244577198",
+  email: "devopsconsultoring@gmail.com",
   priceRange: "$$",
   areaServed: { "@type": "Country", name: "Colombia" },
-  serviceType: [
-    "Diseño web",
-    "Desarrollo web",
-    "Optimización de conversión",
-    "SEO",
-  ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    reviewCount: "27",
-    bestRating: "5",
-  },
+  serviceType: ["Diseño web", "Desarrollo web", "Optimización de conversión", "SEO"],
 };
 
 function RootShell({ children }: { children: ReactNode }) {
@@ -147,6 +156,20 @@ function RootShell({ children }: { children: ReactNode }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
         />
+        {/* Google Analytics 4 — solo se carga cuando GA_MEASUREMENT_ID está definido. */}
+        {GA_MEASUREMENT_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body>
         {children}

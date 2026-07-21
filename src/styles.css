@@ -2,6 +2,26 @@
 @source "../src";
 @import "tw-animate-css";
 
+/*
+ * Self-hosted fonts (latin subset, variable) — replaces the Google Fonts CDN
+ * so the site makes zero external font requests. Each family ships as a single
+ * variable woff2 covering its full weight range.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/inter-variable.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-variable.woff2") format("woff2");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -63,11 +83,11 @@
   --color-brand-dark: var(--brand-dark);
   --color-brand-soft: var(--brand-soft);
   --color-hairline: var(--hairline);
-  --color-accent-orange: var(--accent-orange);
-  --color-accent-orange-dark: var(--accent-orange-dark);
-  --color-accent-orange-soft: var(--accent-orange-soft);
-  --color-cta-orange: var(--cta-orange);
-  --color-cta-orange-hover: var(--cta-orange-hover);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-strong-dark: var(--accent-strong-dark);
+  --color-accent-strong-soft: var(--accent-strong-soft);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
   --color-success: var(--success);
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -81,18 +101,18 @@
    * primary emphasis where color used to; mid-grays provide secondary accent.
    */
   --background: #ffffff;
-  --foreground: #27272a;        /* zinc-800 — body text */
-  --brand: #18181b;             /* zinc-900 — headings / primary ink */
-  --brand-dark: #09090b;        /* zinc-950 — deepest black */
-  --brand-soft: #f4f4f5;        /* zinc-100 — soft fill / icon backgrounds */
-  --accent-orange: #3f3f46;     /* zinc-700 — secondary accent (charcoal) */
-  --accent-orange-dark: #27272a;/* zinc-800 */
-  --accent-orange-soft: #f4f4f5;/* zinc-100 */
+  --foreground: #27272a; /* zinc-800 — body text */
+  --brand: #18181b; /* zinc-900 — headings / primary ink */
+  --brand-dark: #09090b; /* zinc-950 — deepest black */
+  --brand-soft: #f4f4f5; /* zinc-100 — soft fill / icon backgrounds */
+  --accent-strong: #3f3f46; /* zinc-700 — secondary accent (charcoal) */
+  --accent-strong-dark: #27272a; /* zinc-800 */
+  --accent-strong-soft: #f4f4f5; /* zinc-100 */
   /* CTA: pure near-black on white for maximum contrast (21:1) and emphasis. */
-  --cta-orange: #18181b;        /* zinc-900 — primary CTA fill */
-  --cta-orange-hover: #000000;  /* pure black on hover */
+  --cta: #18181b; /* zinc-900 — primary CTA fill */
+  --cta-hover: #000000; /* pure black on hover */
   --success: #10b981;
-  --hairline: #e4e4e7;          /* zinc-200 — hairline borders */
+  --hairline: #e4e4e7; /* zinc-200 — hairline borders */
   --card: #ffffff;
   --card-foreground: #27272a;
   --popover: #ffffff;
@@ -102,7 +122,7 @@
   --secondary: #f4f4f5;
   --secondary-foreground: #27272a;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a;  /* zinc-500 */
+  --muted-foreground: #71717a; /* zinc-500 */
   --accent: #f4f4f5;
   --accent-foreground: #27272a;
   --destructive: oklch(0.577 0.245 27.325);
@@ -178,9 +198,55 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, .font-display {
+  h1,
+  h2,
+  h3,
+  .font-display {
     font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   }
+}
+
+/* -------------------- Legal pages prose -------------------- */
+.legal-prose {
+  color: #3f3f46;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.legal-prose h2 {
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--color-brand);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+.legal-prose h3 {
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--color-foreground);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.legal-prose p {
+  margin-bottom: 1rem;
+}
+.legal-prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+.legal-prose li {
+  margin-bottom: 0.4rem;
+}
+.legal-prose a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-prose strong {
+  font-weight: 600;
+  color: var(--color-foreground);
 }
 
 @keyframes testimonial-fade {
@@ -206,7 +272,9 @@
    so nested layers (.tilt-layer) can lift off the surface. */
 .tilt-card {
   transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
   will-change: transform;
 }
 
@@ -218,7 +286,8 @@
 
 /* Gentle 3D float for the hero visual — rotates subtly on two axes. */
 @keyframes float-3d {
-  0%, 100% {
+  0%,
+  100% {
     transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0);
   }
   50% {
@@ -229,6 +298,63 @@
 .animate-float-3d {
   animation: float-3d 7s ease-in-out infinite;
   transform-style: preserve-3d;
+}
+
+/* -------------------- Showcase 3D -------------------- */
+
+/* Shared 3D context + eased spring-back for the device cards. The live tilt is
+   written to `transform` inline by the useTilt hook (ref-based, no re-render). */
+.device-3d {
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Cursor-following highlight across the device glass. */
+.device-glare {
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 0%),
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0) 45%
+  );
+}
+
+/* Continuous slow "live demo" pan used inside the expanded lightbox preview. */
+@keyframes mock-pan {
+  0%,
+  10% {
+    transform: translateY(0);
+  }
+  50%,
+  60% {
+    transform: translateY(-52%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-mock-pan {
+  animation: mock-pan 14s ease-in-out infinite;
+}
+
+/* Live screenshot scroll inside a device frame.
+   - Pointer devices: reveals the lower part of the page on hover.
+   - Touch devices (no hover): pans automatically so it also feels "alive".
+   The `.group` ancestor is the hovered device wrapper. */
+.live-scroll {
+  transition: transform 6s linear;
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .live-scroll {
+    transform: translateY(-55%);
+  }
+}
+@media (hover: none) {
+  .live-scroll {
+    animation: mock-pan 18s ease-in-out infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
