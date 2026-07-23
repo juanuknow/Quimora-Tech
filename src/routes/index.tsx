@@ -36,6 +36,7 @@ import {
   Check,
   AlertCircle,
   Award,
+  Gift,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -739,7 +740,8 @@ const PLANS = [
   {
     name: "Presencia",
     price: "Desde $650.000",
-    period: "pago único · sin mensualidades",
+    period: "pago único",
+    promo: "Hosting 3 meses + dominio incluidos",
     description:
       "Ideal para negocios que necesitan estar en línea con una web profesional de una sola página.",
     features: [
@@ -753,7 +755,8 @@ const PLANS = [
   {
     name: "Crecimiento",
     price: "Desde $950.000",
-    period: "pago único · sin mensualidades",
+    period: "pago único",
+    promo: "Hosting 3 meses + dominio incluidos",
     description:
       "Para negocios que quieren convertir visitantes en clientes con analítica y varias secciones.",
     features: [
@@ -768,6 +771,7 @@ const PLANS = [
     name: "A Medida",
     price: "Cotización personalizada",
     period: "según alcance",
+    promo: null,
     description:
       "Para tiendas en línea, sistemas de reservas o integraciones específicas de tu negocio.",
     features: [
@@ -880,6 +884,12 @@ function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: num
         <h3 className="font-display text-xl font-semibold text-foreground">{plan.name}</h3>
         <p className="mt-4 font-display text-2xl font-bold text-brand">{plan.price}</p>
         <p className="text-sm text-foreground/70">{plan.period}</p>
+        {plan.promo && (
+          <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md border border-dashed border-brand bg-brand-soft px-3 py-1.5 font-display text-xs font-bold uppercase tracking-wide text-brand">
+            <Gift className="h-3.5 w-3.5" aria-hidden="true" />
+            {plan.promo}
+          </span>
+        )}
         <p className="mt-4 text-[15px] leading-[1.6] text-foreground/80">{plan.description}</p>
         <ul className="mt-6 flex flex-1 flex-col gap-2.5">
           {plan.features.map((f) => (
