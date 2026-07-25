@@ -824,7 +824,7 @@ const PLANS = [
     name: "Emprendedor",
     price: "Desde $450.000",
     period: "pago único",
-    promo: null,
+    promo: "Hosting 3 meses + dominio incluidos",
     description:
       "El punto de partida: tu negocio en línea con su catálogo y un canal directo para recibir pedidos.",
     features: [
@@ -832,6 +832,7 @@ const PLANS = [
       "Catálogo de productos o servicios",
       "Información de tu negocio",
       "Enlace directo a WhatsApp",
+      "Entrega en 2-3 semanas",
     ],
     featured: false,
   },
