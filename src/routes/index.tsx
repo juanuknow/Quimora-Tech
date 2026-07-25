@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
 import { Showcase3D } from "../components/Showcase3D";
+import { Reveal } from "../components/Reveal";
 import { useInView } from "../lib/hooks";
 import {
   FOCUS_RING,
@@ -21,8 +29,6 @@ import {
   Code2,
   Rocket,
   TrendingUp,
-  Plus,
-  Minus,
   Menu,
   X,
   Mail,
@@ -144,15 +150,21 @@ function WhatsAppIcon({ size = 24, className }: { size?: number; className?: str
 /* -------------------- Floating WhatsApp -------------------- */
 function FloatingWhatsApp() {
   return (
-    <div className="fixed bottom-5 right-5 z-50 md:bottom-8 md:right-8">
-      <span className="absolute inset-0 animate-ping rounded-full bg-brand/40" />
+    // La entrada vive en el contenedor y el hover en el enlace: si compartieran
+    // elemento, el `scale` final de la animación anularía el `hover:scale-110`.
+    // Entra ~1,2 s después de la carga, ya asentado el hero.
+    <div className="animate-pop-in-bounce fixed bottom-5 right-5 z-50 [--delay:1200ms] md:bottom-8 md:right-8">
+      <span
+        aria-hidden="true"
+        className="animate-soft-ping pointer-events-none absolute inset-0 rounded-full bg-brand/40"
+      />
       <a
         href={whatsappHref("Hola, quiero más información sobre sus servicios")}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escríbenos por WhatsApp"
         onClick={() => trackEvent("contact", { method: "whatsapp", location: "floating" })}
-        className={`relative grid h-14 w-14 place-items-center rounded-full bg-brand text-white shadow-lg transition-transform duration-200 hover:scale-110 ${FOCUS_RING}`}
+        className={`relative grid h-14 w-14 place-items-center rounded-full bg-brand text-white shadow-lg transition-[scale] duration-200 hover:scale-110 ${FOCUS_RING}`}
       >
         <WhatsAppIcon size={28} />
       </a>
@@ -411,7 +423,13 @@ function HeroVisual() {
         />
         {/* Data points — los retardos siguen el avance real del trazo, que va
             adelantado respecto al tiempo por el easing de salida cúbico. */}
-        <circle cx="240" cy="110" r="4" fill="#18181b" className="animate-fade-in [--delay:0.95s]" />
+        <circle
+          cx="240"
+          cy="110"
+          r="4"
+          fill="#18181b"
+          className="animate-fade-in [--delay:0.95s]"
+        />
         <circle cx="330" cy="70" r="5" fill="#71717a" className="animate-fade-in [--delay:1.6s]" />
         {/* Small bars — agrupadas: una sola animación, y así el `opacity` de la
             última barra no lo pisa el keyframe de fade. */}
@@ -467,17 +485,18 @@ function Problem() {
           </p>
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {PAINS.map(({ icon: Icon, title, body }) => (
-            <div
-              key={title}
-              className="flex flex-col rounded-xl border border-hairline bg-background p-6"
-            >
-              <div className="grid h-11 w-11 place-items-center rounded-lg bg-brand-soft text-brand">
-                <Icon size={22} strokeWidth={1.9} />
+          {PAINS.map(({ icon: Icon, title, body }, i) => (
+            <Reveal key={title} index={i}>
+              <div className="flex h-full flex-col rounded-xl border border-hairline bg-background p-6">
+                <div className="grid h-11 w-11 place-items-center rounded-lg bg-brand-soft text-brand">
+                  <Icon size={22} strokeWidth={1.9} />
+                </div>
+                <h3 className="mt-5 font-display text-base font-semibold text-foreground">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm leading-[1.6] text-foreground/70">{body}</p>
               </div>
-              <h3 className="mt-5 font-display text-base font-semibold text-foreground">{title}</h3>
-              <p className="mt-2 text-sm leading-[1.6] text-foreground/70">{body}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
         <p className="mx-auto mt-12 max-w-2xl text-center font-display text-lg font-medium text-foreground md:text-xl">
@@ -539,8 +558,8 @@ function Benefits() {
           </p>
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {BENEFITS.map((benefit) => (
-            <BenefitCard key={benefit.title} benefit={benefit} />
+          {BENEFITS.map((benefit, i) => (
+            <BenefitCard key={benefit.title} benefit={benefit} index={i} />
           ))}
         </div>
       </div>
@@ -548,30 +567,32 @@ function Benefits() {
   );
 }
 
-function BenefitCard({ benefit }: { benefit: (typeof BENEFITS)[number] }) {
+function BenefitCard({ benefit, index }: { benefit: (typeof BENEFITS)[number]; index: number }) {
   const { icon: Icon, iconColor, title, body, metric } = benefit;
   const tiltRef = useTilt<HTMLDivElement>(7);
 
   return (
-    <article
-      ref={tiltRef}
-      className="tilt-card flex flex-col rounded-xl border border-hairline bg-background p-8 hover:border-brand/40 hover:shadow-xl"
-    >
-      <div
-        className={`tilt-layer grid h-12 w-12 place-items-center rounded-lg ${
-          iconColor === "accent"
-            ? "bg-accent-strong-soft text-accent-strong"
-            : "bg-brand-soft text-brand"
-        }`}
+    <Reveal index={index} className="h-full">
+      <article
+        ref={tiltRef}
+        className="tilt-card flex h-full flex-col rounded-xl border border-hairline bg-background p-8 hover:border-brand/40 hover:shadow-xl"
       >
-        <Icon size={24} strokeWidth={1.9} />
-      </div>
-      <h3 className="mt-6 font-display text-lg font-semibold leading-snug text-foreground md:text-[22px]">
-        {title}
-      </h3>
-      <p className="mt-3 text-[15px] leading-[1.6] text-foreground/80">{body}</p>
-      <span className="mt-6 text-sm font-medium text-muted-foreground">{metric}</span>
-    </article>
+        <div
+          className={`tilt-layer grid h-12 w-12 place-items-center rounded-lg ${
+            iconColor === "accent"
+              ? "bg-accent-strong-soft text-accent-strong"
+              : "bg-brand-soft text-brand"
+          }`}
+        >
+          <Icon size={24} strokeWidth={1.9} />
+        </div>
+        <h3 className="mt-6 font-display text-lg font-semibold leading-snug text-foreground md:text-[22px]">
+          {title}
+        </h3>
+        <p className="mt-3 text-[15px] leading-[1.6] text-foreground/80">{body}</p>
+        <span className="mt-6 text-sm font-medium text-muted-foreground">{metric}</span>
+      </article>
+    </Reveal>
   );
 }
 
@@ -687,64 +708,133 @@ function Timeline() {
           </h2>
         </div>
 
-        {/* Desktop timeline */}
-        <div className="relative mt-20 hidden md:block">
-          {/* Track */}
-          <div className="absolute left-[8%] right-[8%] top-8 h-[2px] bg-white" />
-          <div className="absolute left-[8%] right-[8%] top-8 h-[2px] bg-brand" />
-          <div className="relative grid grid-cols-4 gap-6">
-            {STEPS.map(({ week, icon: Icon, accent, title, body }) => (
-              <div key={title} className="flex flex-col items-center text-center">
-                <div
-                  className={`relative z-10 grid h-16 w-16 place-items-center rounded-full border-2 ${
-                    accent
-                      ? "border-accent-strong bg-white text-accent-strong"
-                      : "border-brand bg-white text-brand"
-                  }`}
-                >
-                  <Icon size={26} strokeWidth={1.9} />
-                </div>
-                <p className="mt-6 font-display text-xs font-semibold uppercase tracking-[0.14em] text-brand">
-                  {week}
-                </p>
-                <h3 className="mt-2 font-display text-xl font-semibold text-foreground">{title}</h3>
-                <p className="mt-2 max-w-[240px] text-sm leading-[1.6] text-foreground/75">
-                  {body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile timeline */}
-        <ol className="relative mt-14 space-y-8 md:hidden">
-          <div className="absolute left-[27px] top-2 bottom-2 w-[2px] bg-brand/30" />
-          {STEPS.map(({ week, icon: Icon, accent, title, body }) => (
-            <li key={title} className="relative flex gap-5">
-              <div
-                className={`relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 bg-white ${
-                  accent ? "border-accent-strong text-accent-strong" : "border-brand text-brand"
-                }`}
-              >
-                <Icon size={22} strokeWidth={1.9} />
-              </div>
-              <div className="min-w-0 pt-1">
-                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
-                  {week}
-                </p>
-                <h3 className="mt-1 font-display text-lg font-semibold text-foreground">{title}</h3>
-                <p className="mt-1 text-[15px] leading-[1.6] text-foreground/75">{body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <TimelineDesktop />
+        <TimelineMobile />
       </div>
     </section>
   );
 }
 
+/** Duración del trazado de la línea de conexión. */
+const LINE_DRAW_MS = 1000;
+
+/**
+ * Momento en que la línea alcanza el ícono `i`, en ms desde que arranca.
+ *
+ * Con 4 columnas, los íconos quedan centrados en el 12,5 / 37,5 / 62,5 / 87,5 %
+ * del ancho, y la línea recorre del 8 % al 92 % (84 % de ancho útil). La
+ * fracción recorrida hasta cada ícono —(centro − 8) / 84— cae en 5,4 / 35,1 /
+ * 64,9 / 94,6 %, que sobre 1000 ms es prácticamente 50 + i·300.
+ *
+ * De ahí que la línea use `ease-linear`: con una curva de salida el trazo
+ * adelantaría al tiempo y los íconos aparecerían después de que la línea ya
+ * pasó por ellos.
+ */
+const stepPopDelay = (i: number) => 50 + i * 300;
+
+function TimelineDesktop() {
+  const { ref, inView } = useInView<HTMLDivElement>(0.35);
+
+  return (
+    <div ref={ref} className="relative mt-20 hidden md:block">
+      {/* Riel base, siempre completo; la línea de marca se dibuja encima. */}
+      <div className="absolute left-[8%] right-[8%] top-8 h-[2px] bg-white" />
+      <div
+        style={{ transitionDuration: `${LINE_DRAW_MS}ms` }}
+        className={`absolute left-[8%] right-[8%] top-8 h-[2px] origin-left bg-brand transition-[scale] ease-linear ${
+          inView ? "scale-x-100" : "scale-x-0"
+        }`}
+      />
+      <div className="relative grid grid-cols-4 gap-6">
+        {STEPS.map(({ week, icon: Icon, accent, title, body }, i) => (
+          <div key={title} className="flex flex-col items-center text-center">
+            <div
+              style={{ "--delay": `${stepPopDelay(i)}ms` } as CSSProperties}
+              className={`relative z-10 grid h-16 w-16 place-items-center rounded-full border-2 ${
+                accent
+                  ? "border-accent-strong bg-white text-accent-strong"
+                  : "border-brand bg-white text-brand"
+              } ${inView ? "animate-icon-pop" : "scale-0 opacity-0"}`}
+            >
+              <Icon size={26} strokeWidth={1.9} />
+            </div>
+            <p className="mt-6 font-display text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+              {week}
+            </p>
+            <h3 className="mt-2 font-display text-xl font-semibold text-foreground">{title}</h3>
+            <p className="mt-2 max-w-[240px] text-sm leading-[1.6] text-foreground/75">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TimelineMobile() {
+  const { ref, inView } = useInView<HTMLOListElement>(0.05);
+
+  return (
+    <ol ref={ref} className="relative mt-14 space-y-8 md:hidden">
+      {/* En vertical la línea se dibuja de arriba abajo. */}
+      <div
+        style={{ transitionDuration: `${LINE_DRAW_MS}ms` }}
+        className={`absolute bottom-2 left-[27px] top-2 w-[2px] origin-top bg-brand/30 transition-[scale] ease-linear ${
+          inView ? "scale-y-100" : "scale-y-0"
+        }`}
+      />
+      {STEPS.map((step) => (
+        <TimelineMobileStep key={step.title} step={step} />
+      ))}
+    </ol>
+  );
+}
+
+/**
+ * Apilados en vertical, los pasos rara vez caben juntos en pantalla: cada uno
+ * observa su propio elemento para que el ícono aparezca al llegar a él, en vez
+ * de haberse animado ya fuera de vista.
+ */
+function TimelineMobileStep({ step }: { step: (typeof STEPS)[number] }) {
+  const { week, icon: Icon, accent, title, body } = step;
+  const { ref, inView } = useInView<HTMLLIElement>(0.5);
+
+  return (
+    <li ref={ref} className="relative flex gap-5">
+      <div
+        className={`relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 bg-white ${
+          accent ? "border-accent-strong text-accent-strong" : "border-brand text-brand"
+        } ${inView ? "animate-icon-pop" : "scale-0 opacity-0"}`}
+      >
+        <Icon size={22} strokeWidth={1.9} />
+      </div>
+      <div className="min-w-0 pt-1">
+        <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
+          {week}
+        </p>
+        <h3 className="mt-1 font-display text-lg font-semibold text-foreground">{title}</h3>
+        <p className="mt-1 text-[15px] leading-[1.6] text-foreground/75">{body}</p>
+      </div>
+    </li>
+  );
+}
+
 /* -------------------- Pricing -------------------- */
 const PLANS = [
+  {
+    name: "Emprendedor",
+    price: "Desde $450.000",
+    period: "pago único",
+    promo: null,
+    description:
+      "El punto de partida: tu negocio en línea con su catálogo y un canal directo para recibir pedidos.",
+    features: [
+      "Desarrollo de tu sitio web",
+      "Catálogo de productos o servicios",
+      "Información de tu negocio",
+      "Enlace directo a WhatsApp",
+    ],
+    featured: false,
+  },
   {
     name: "Presencia",
     price: "Desde $650.000",
@@ -815,7 +905,9 @@ function Pricing() {
             trae. Sin costos ocultos y con precios claros desde el inicio.
           </p>
         </div>
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
+        {/* 4 planes: 1 col → 2 (sm) → 4 (lg), igual que las grillas de Problema
+            y Beneficios. */}
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {PLANS.map((plan, i) => (
             <PricingCard key={plan.name} plan={plan} index={i} />
           ))}
@@ -865,32 +957,39 @@ function Pricing() {
 }
 
 function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: number }) {
-  const { ref, inView } = useInView<HTMLDivElement>();
   const tiltRef = useTilt<HTMLDivElement>(6);
 
   return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: inView ? `${index * 120}ms` : "0ms" }}
-      className={`transition-all duration-700 ease-out ${
-        inView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-      }`}
-    >
+    <Reveal index={index} className="relative h-full">
+      {plan.featured && (
+        // Halo detrás de la tarjeta. Al ser un hermano y no la sombra propia de
+        // la tarjeta, late sin pisar el `hover:shadow-xl`.
+        <span
+          aria-hidden="true"
+          className="animate-featured-halo pointer-events-none absolute -inset-1 rounded-2xl bg-brand/25 blur-lg"
+        />
+      )}
       <article
         ref={tiltRef}
-        className={`tilt-card flex h-full flex-col rounded-xl border p-8 hover:shadow-xl ${
+        // La elevación usa `translate` (propiedad independiente en Tailwind v4),
+        // no `transform`, que useTilt ya ocupa. Los tiempos los pone .tilt-card.
+        className={`tilt-card relative flex h-full flex-col rounded-xl border p-6 hover:-translate-y-1.5 lg:p-7 ${
           plan.featured
-            ? "border-brand bg-brand-soft hover:shadow-brand/20"
-            : "border-hairline bg-background"
+            ? "border-brand bg-brand-soft hover:shadow-[0_18px_40px_rgba(24,24,27,0.22)]"
+            : "border-hairline bg-background hover:border-brand/40 hover:shadow-[0_18px_40px_rgba(0,0,0,0.14)]"
         }`}
       >
         {plan.featured && (
-          <span className="tilt-layer mb-4 inline-flex w-fit animate-pulse items-center rounded-full bg-brand px-3 py-1 font-display text-xs font-semibold uppercase tracking-wide text-primary-foreground">
+          <span className="tilt-layer mb-4 inline-flex w-fit items-center rounded-full bg-brand px-3 py-1 font-display text-xs font-semibold uppercase tracking-wide text-primary-foreground">
             Más elegido
           </span>
         )}
         <h3 className="font-display text-xl font-semibold text-foreground">{plan.name}</h3>
-        <p className="mt-4 font-display text-2xl font-bold text-brand">{plan.price}</p>
+        {/* 22px en vez de 24: con 4 columnas, "Cotización personalizada" no
+            desborda la caja en el breakpoint lg. */}
+        <p className="mt-4 font-display text-[22px] font-bold leading-tight text-brand">
+          {plan.price}
+        </p>
         <p className="text-sm text-foreground/70">{plan.period}</p>
         {plan.promo && (
           <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md border border-dashed border-brand bg-brand-soft px-3 py-1.5 font-display text-xs font-bold uppercase tracking-wide text-brand">
@@ -918,7 +1017,7 @@ function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: num
           Solicitar Cotización
         </a>
       </article>
-    </div>
+    </Reveal>
   );
 }
 
@@ -954,6 +1053,29 @@ const FAQS = [
   },
 ];
 
+/**
+ * "+" que se vuelve "−" girando su barra vertical 90°.
+ *
+ * Sustituye al intercambio de los íconos Plus y Minus de lucide: cambiar un
+ * nodo por otro no admite transición, así que el indicador saltaba de golpe
+ * mientras el panel se abría con calma.
+ */
+function PlusMinusIcon({ open }: { open: boolean }) {
+  const bar =
+    "absolute left-1/2 top-1/2 h-[1.5px] w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current";
+
+  return (
+    <span aria-hidden="true" className="relative block h-4 w-4">
+      <span className={bar} />
+      <span
+        className={`${bar} transition-[rotate] duration-300 ease-out ${
+          open ? "rotate-0" : "rotate-90"
+        }`}
+      />
+    </span>
+  );
+}
+
 function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
@@ -965,30 +1087,38 @@ function FAQ() {
         <div className="mt-12 divide-y divide-hairline border-y border-hairline">
           {FAQS.map((f, i) => {
             const isOpen = open === i;
+            const panelId = `faq-panel-${i}`;
             return (
               <div key={f.q}>
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   className={`flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-brand ${FOCUS_RING}`}
                   aria-expanded={isOpen}
+                  aria-controls={panelId}
                 >
                   <span className="font-display text-[16px] font-semibold text-foreground md:text-[17px]">
                     {f.q}
                   </span>
                   <span
-                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors ${
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors duration-300 ${
                       isOpen ? "border-brand bg-brand text-white" : "border-hairline text-brand"
                     }`}
                   >
-                    {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+                    <PlusMinusIcon open={isOpen} />
                   </span>
                 </button>
                 <div
+                  id={panelId}
+                  inert={!isOpen}
                   className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${
                     isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                   }`}
                 >
-                  <div className="min-h-0">
+                  <div
+                    className={`min-h-0 transition-opacity duration-300 ease-out ${
+                      isOpen ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
                     <p className="pb-6 pr-12 text-[15px] leading-[1.6] text-foreground/75">{f.a}</p>
                   </div>
                 </div>

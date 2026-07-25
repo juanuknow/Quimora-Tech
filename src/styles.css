@@ -311,17 +311,106 @@
   animation: draw-stroke 1.5s cubic-bezier(0.33, 1, 0.68, 1) 0.45s both;
 }
 
+/* Anillo del botón flotante de WhatsApp. Más lento y corto de recorrido que el
+   `animate-ping` de Tailwind (escala 2 en 1 s), que a tamaño fijo en pantalla
+   resultaba insistente. La pausa entre 70% y 100% deja respirar el ciclo. */
+@keyframes soft-ping {
+  0% {
+    scale: 1;
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    scale: 1.7;
+    opacity: 0;
+  }
+}
+.animate-soft-ping {
+  animation: soft-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Entrada con rebote. Va en el contenedor, nunca en el propio botón: con
+   `both`, el valor final de `scale` quedaría fijado por la animación y le
+   ganaría al `hover:scale-*` del enlace, que dejaría de responder. */
+@keyframes pop-in-bounce {
+  0% {
+    scale: 0;
+    opacity: 0;
+  }
+  60% {
+    scale: 1.12;
+    opacity: 1;
+  }
+  80% {
+    scale: 0.96;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+.animate-pop-in-bounce {
+  animation: pop-in-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Aparición de los íconos del timeline: crecen desde cero con un ligero
+   sobrepaso. Anima `scale` (propiedad independiente, igual que Tailwind v4) y
+   no `transform`. */
+@keyframes icon-pop {
+  0% {
+    scale: 0;
+    opacity: 0;
+  }
+  60% {
+    scale: 1.15;
+    opacity: 1;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+.animate-icon-pop {
+  animation: icon-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Halo pulsante del plan destacado. Va en un elemento aparte, detrás de la
+   tarjeta, y no en su `box-shadow`: una animación siempre le gana a una regla
+   normal, así que animar la sombra de la tarjeta anularía su `hover:shadow-xl`.
+   Separados, ambos efectos conviven. */
+@keyframes featured-halo {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+.animate-featured-halo {
+  animation: featured-halo 3s ease-in-out infinite;
+}
+
 /* -------------------- 3D effects -------------------- */
 
 /* Establishes a shared perspective and smooth return for interactive tilt cards.
    The tilt itself is applied via inline transform by the useTilt hook; this class
    provides the 3D context, the eased spring-back on mouse-leave, and preserve-3d
    so nested layers (.tilt-layer) can lift off the surface. */
+/* `translate` va aparte de `transform` a propósito: useTilt escribe `transform`
+   en línea, así que la elevación del hover se declara como propiedad
+   independiente y ambas se componen en vez de pisarse.
+   Esta regla no está en ninguna capa, por lo que gana a las utilidades
+   `transition-*` de Tailwind: los tiempos del hover se definen aquí. */
 .tilt-card {
   transform-style: preserve-3d;
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s ease;
+    translate 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    border-color 0.2s ease-out;
   will-change: transform;
 }
 
@@ -425,6 +514,28 @@
   .animate-rise-in,
   .animate-fade-in {
     animation: none;
+  }
+
+  /* El halo se queda fijo y tenue: sigue marcando el plan destacado sin latir. */
+  .animate-featured-halo {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  /* Crítico: la regla global de arriba acorta `animation-duration` pero NO
+     `animation-delay`. Sin este `none`, un ícono con 950 ms de retardo se
+     quedaría en escala 0 —invisible— casi un segundo. Igual el botón de
+     WhatsApp, que entra con retardo. */
+  .animate-icon-pop,
+  .animate-pop-in-bounce {
+    animation: none;
+  }
+
+  /* El anillo desaparece: sin latido no aporta nada y quedaría como un borde
+     estático detrás del botón. */
+  .animate-soft-ping {
+    animation: none;
+    opacity: 0;
   }
 
   .animate-draw-stroke {
