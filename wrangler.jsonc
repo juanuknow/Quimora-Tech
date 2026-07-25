@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+
+  // Fuente de verdad de la configuración del Worker.
+  //
+  // Nitro NO despliega este archivo: en cada build genera
+  // `.output/server/wrangler.json` fusionando, de mayor a menor prioridad,
+  // sus propios overrides (`main`, `assets`) → la config del módulo →
+  // ESTE archivo → sus defaults. Por eso aquí no se declaran `main` ni
+  // `assets`: Nitro los calcula y avisaría que los ignora.
+  //
+  // Lo que se ponga aquí queda versionado y se aplica en cada despliegue, que
+  // es justo lo que pide el aviso del panel de Cloudflare: sin esto, los
+  // ajustes hechos a mano en el dashboard no viven en ningún lado del repo.
+
+  "name": "juanuknow-conversion-craft-96",
+
+  // Fijada al valor que ya está desplegado. Sin declararla, la hereda el
+  // default de Nitro, que puede moverse al actualizar la dependencia y cambiar
+  // en silencio la semántica del runtime.
+  "compatibility_date": "2026-07-22",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Refleja el estado actual del panel: logs activos y persistidos, trazas
+  // desactivadas.
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  }
+}
