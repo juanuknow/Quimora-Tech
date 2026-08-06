@@ -229,10 +229,10 @@ const SOLUTIONS: Record<SolutionKey, Solution> = {
 };
 
 const COMPLEXITY_DATA: Record<Complexity, { time: string; budget: string; rank: number }> = {
-  // El piso sigue al plan más económico de la sección de precios (Emprendedor).
-  Baja: { time: "1 – 2 semanas", budget: "$450.000 – $1.200.000", rank: 1 },
-  Media: { time: "3 – 4 semanas", budget: "$1.500.000 – $3.000.000", rank: 2 },
-  Alta: { time: "6 – 8 semanas", budget: "$3.500.000 – $6.000.000", rank: 3 },
+  // Rangos alineados con la sección de precios (Emprendedor → A Medida).
+  Baja: { time: "1 – 2 semanas", budget: "$450.000 – $950.000", rank: 1 },
+  Media: { time: "3 – 4 semanas", budget: "$950.000 – $1.800.000", rank: 2 },
+  Alta: { time: "6 – 8 semanas", budget: "$1.800.000 – $3.500.000", rank: 3 },
 };
 
 const BUDGET_RANK: Record<BudgetId, number> = {
