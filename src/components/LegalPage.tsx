@@ -24,7 +24,7 @@ export function LegalPage({
             <span className="grid h-9 w-9 place-items-center rounded-md bg-brand font-display text-lg font-bold text-primary-foreground">
               Q
             </span>
-            <span className="font-display text-[17px] font-semibold tracking-tight">
+            <span className="font-display text-body font-semibold tracking-tight">
               Quimora Tech
             </span>
           </a>
@@ -39,7 +39,7 @@ export function LegalPage({
       </header>
 
       <main className="mx-auto max-w-[820px] px-6 py-16 md:py-20">
-        <h1 className="font-display text-3xl font-bold tracking-tight text-brand md:text-[40px]">
+        <h1 className="font-display text-3xl font-bold tracking-tight text-brand md:text-display">
           {title}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">Última actualización: {updated}</p>

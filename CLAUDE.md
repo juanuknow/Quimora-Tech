@@ -1,9 +1,9 @@
 # CLAUDE.md — Quimora Tech Landing Page
 
-**Versión:** 1.3  
-**Estado:** Landing completa en producción (Hero, Diagnóstico, Problema, Beneficios, Showcase, Stats, Timeline, Precios, FAQ, Contacto, CTA) + páginas legales  
+**Versión:** 1.4  
+**Estado:** Landing completa en producción (Hero, Diagnóstico, Problema, Beneficios, Soluciones de Software, Showcase, Stats, Timeline, Precios, FAQ, Contacto, CTA) + páginas legales  
 **Responsable:** Juan Pablo Toquica López (founder & Lead Developer)  
-**Última actualización:** 17 de julio de 2026  
+**Última actualización:** 6 de agosto de 2026  
 
 ---
 
@@ -148,7 +148,7 @@ Solo 3 secciones + navbar + footer:
 - Navbar fija (logo + enlaces básicos + CTA)
 - Título: "Páginas Web que Convierten tus Visitantes en Clientes Reales"
 - Subtítulo explicativo (2-3 líneas, elimina jerga técnica)
-- CTA primario: "Quiero Mi Web que Convierte" (azul #3350e0)
+- CTA primario: "Solicitar mi cotización gratis" (ver "Sistema de CTAs"; el plan decía "Quiero Mi Web que Convierte" en azul #3350e0 — hoy es negro y sigue el sistema de etiquetas)
 - Elemento visual minimalista (ilustración o patrón geométrico, bajo en opacidad)
 
 **Responsividad:**
@@ -260,17 +260,24 @@ conversion-craft-96/
 │   └── sitemap.xml
 ├── src/
 │   ├── routes/
-│   │   ├── __root.tsx         # Root layout + <head> (meta, OG, schema.org)
-│   │   ├── index.tsx          # Landing (secciones inline — todavía monolítica)
+│   │   ├── __root.tsx         # Root layout + <head> (meta, OG, schema.org) + 404/error
+│   │   ├── index.tsx          # Landing: solo composición de secciones (~56 líneas)
 │   │   ├── privacidad.tsx     # Política de Privacidad (Ley 1581)
 │   │   └── terminos.tsx       # Términos y Condiciones
 │   ├── components/
-│   │   ├── DigitalDiagnosis.tsx  # Wizard de diagnóstico (lead magnet)
-│   │   ├── Showcase3D.tsx        # Portafolio 3D (dispositivos + lightbox)
-│   │   └── LegalPage.tsx         # Layout compartido de páginas legales
+│   │   ├── TopBar.tsx / Nav.tsx / Footer.tsx        # Chrome del sitio
+│   │   ├── Hero.tsx / Problem.tsx / Benefits.tsx    # Secciones de la landing
+│   │   ├── Stats.tsx / Timeline.tsx / Pricing.tsx   #   (una sección = un archivo)
+│   │   ├── FAQ.tsx / Contact.tsx / FinalCTA.tsx
+│   │   ├── DigitalDiagnosis.tsx     # Wizard de diagnóstico (lead magnet)
+│   │   ├── SoftwareSolutions.tsx    # Soluciones de software a la medida (12 cards + mockup)
+│   │   ├── Showcase3D.tsx           # Portafolio 3D (dispositivos + lightbox)
+│   │   ├── WhatsAppIcon.tsx / FloatingWhatsApp.tsx  # Canal directo, compartido
+│   │   ├── Reveal.tsx               # Entrada escalonada al entrar en viewport
+│   │   └── LegalPage.tsx            # Layout compartido de páginas legales
 │   ├── lib/
 │   │   ├── site.ts            # Fuente única: contacto, WhatsApp, Formspree, FOCUS_RING
-│   │   ├── hooks.ts           # useInView (hook compartido)
+│   │   ├── hooks.ts           # useInView + useTilt (hooks compartidos)
 │   │   ├── error-capture.ts
 │   │   ├── error-page.ts
 │   │   └── lovable-error-reporting.ts
@@ -282,7 +289,29 @@ conversion-craft-96/
 └── CLAUDE.md                   # Este archivo
 ```
 
-**⚠️ Deuda técnica actual:** la landing (`src/routes/index.tsx`) sigue siendo un archivo grande con la mayoría de secciones inline (Hero, Problem, Benefits, Stats, Timeline, Pricing, FAQ, Contact, Footer, etc.). Ya se extrajeron los bloques más pesados a `src/components/` (`DigitalDiagnosis`, `Showcase3D`, `LegalPage`) y los helpers compartidos a `src/lib/` (`site.ts`, `hooks.ts`). Recomendado: seguir extrayendo secciones a `src/components/` a medida que se toquen, sin un refactor masivo. Los tokens de color, contacto y el endpoint de Formspree tienen **fuente única** en `src/lib/site.ts` — no hardcodear números/correos en los componentes.
+**Convención:** una sección = un archivo en `src/components/`. `src/routes/index.tsx` solo compone. Los tokens de color, contacto y el endpoint de Formspree tienen **fuente única** en `src/lib/site.ts` — no hardcodear números/correos en los componentes.
+
+### Sistema de CTAs (no inventar etiquetas nuevas)
+
+Cada destino tiene **un** verbo. Cambiar la etiqueta rompe la predictibilidad del recorrido:
+
+| Destino | Etiqueta |
+|---------|----------|
+| `#contacto` (formulario) | **Solicitar cotización** |
+| Navbar (versión compacta) | **Cotizar** |
+| Hero (primario, con incentivo) | **Solicitar mi cotización gratis** |
+| WhatsApp | **Escribir por WhatsApp** |
+| WhatsApp con oferta propia | *\<oferta\>* **por WhatsApp** (ej. "Agendar por WhatsApp") |
+
+### Escala tipográfica
+
+Tokens en `@theme` (`src/styles.css`), **no** tamaños arbitrarios: `text-note` (11) · `text-caption` (13) · `text-ui` (15) · `text-body` (17) · `text-subhead` (22) · `text-display-sm` (32) · `text-display` (40) · `text-display-lg` (44) · `text-display-xl` (56). Los nombres describen el rol, no el pixelaje.
+
+### Reglas de accesibilidad verificadas
+
+- Todo objetivo táctil ≥ 44×44 px (`min-h-11` en enlaces de texto).
+- Todo interactivo lleva `FOCUS_RING` o `LIGHT_RING` y estado `active:scale-[0.98]`.
+- Contraste mínimo AA (4.5:1) en texto normal: sobre `bg-brand-dark` no bajar de `text-white/55`.
 
 ---
 
@@ -471,7 +500,8 @@ conversion-craft-96/
 | 1.0 | Enero 2025 | Inicial — MVP Phase 1 estructura (asumía Next.js/Vercel) |
 | 1.1 | 13 de julio de 2026 | Corrección de stack real (TanStack Start + Vite + Cloudflare) y estructura de directorios |
 | 1.3 | 17 de julio de 2026 | Sincronización con producción: paleta monocromática real, Space Grotesk, tokens renombrados, `src/components` + `src/lib/site.ts`, formulario Formspree, páginas legales, og:image |
-| 1.4 | — | Agregar Fase 2 detalles |
+| 1.4 | 6 de agosto de 2026 | Sección "Soluciones de Software"; auditoría UX/A11y aplicada (contrastes AA, objetivos táctiles 44px, sistema de CTAs, estados pressed, 404 en español); tokens tipográficos; `.dark` muerto eliminado; landing extraída a un componente por sección |
+| 1.5 | — | Agregar Fase 2 detalles |
 | 2.0 | — | Después Fase 2 validación |
 
 ---

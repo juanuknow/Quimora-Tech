@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, Plus } from "lucide-react";
-import { useInView } from "../lib/hooks";
+import { useInView, useTilt } from "../lib/hooks";
 import { FOCUS_RING, whatsappHref } from "../lib/site";
 
 /* ============================ Data ============================ */
@@ -43,74 +43,22 @@ const FEATURED: FeaturedProject = {
   technologies: ["React", "Vite", "Tailwind CSS", "Supabase"],
 };
 
-/* ============================ Tilt ============================ */
-
-/**
- * Cursor-driven 3D tilt. Writes the transform + glare position directly to the
- * element via ref (no React re-render → 60 FPS). Disabled on touch pointers and
- * when the user prefers reduced motion.
- */
-function useTilt<T extends HTMLElement>(max = 6) {
-  const ref = useRef<T | null>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      window.matchMedia("(pointer: coarse)").matches
-    ) {
-      return;
-    }
-
-    let raf = 0;
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      const ry = (px - 0.5) * 2 * max;
-      const rx = -(py - 0.5) * 2 * max;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        el.style.transform = `perspective(1200px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(
-          2,
-        )}deg)`;
-        el.style.setProperty("--glare-x", `${(px * 100).toFixed(1)}%`);
-        el.style.setProperty("--glare-y", `${(py * 100).toFixed(1)}%`);
-      });
-    };
-    const onLeave = () => {
-      cancelAnimationFrame(raf);
-      el.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg)";
-      el.style.setProperty("--glare-x", "50%");
-      el.style.setProperty("--glare-y", "0%");
-    };
-
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
-    return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", onLeave);
-      cancelAnimationFrame(raf);
-    };
-  }, [max]);
-
-  return ref;
-}
-
 /* ============================ Live device ============================ */
 
 /** The real full-page screenshot, scrolling inside browser chrome. */
 function LiveScreenshot({ project }: { project: FeaturedProject }) {
   return (
     <div className="flex h-full w-full flex-col bg-white">
-      {/* Browser chrome */}
+      {/* Browser chrome.
+          Excepción deliberada al sistema: esto no es UI nuestra, es el dibujo
+          de un navegador ajeno. Por eso mide en porcentajes (escala con el
+          dispositivo) y no usa los tokens tipográficos de la marca. */}
       <div className="flex h-[8%] shrink-0 items-center gap-[1%] bg-zinc-100 px-[2.5%]">
         <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
         <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
         <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
         <span className="ml-[2.5%] flex h-[55%] flex-1 items-center gap-[1.5%] truncate rounded-full bg-white px-[2.5%] text-[0.5rem] font-medium text-zinc-400">
-          <span className="aspect-square h-[34%] min-h-[3px] shrink-0 animate-pulse rounded-full bg-emerald-500" />
+          <span className="aspect-square h-[34%] min-h-[3px] shrink-0 animate-pulse rounded-full bg-success" />
           {project.domain}
         </span>
       </div>
@@ -133,7 +81,7 @@ function LiveScreenshot({ project }: { project: FeaturedProject }) {
 }
 
 function LaptopDevice({ project }: { project: FeaturedProject }) {
-  const tiltRef = useTilt<HTMLDivElement>(6);
+  const tiltRef = useTilt<HTMLDivElement>({ max: 6, perspective: 1200, glare: true });
 
   return (
     <div className="group [perspective:1200px]">
@@ -189,10 +137,10 @@ export function Showcase3D() {
             <Sparkles size={14} />
             Un proyecto real, por dentro
           </span>
-          <h2 className="mt-6 font-display text-3xl font-semibold leading-[1.15] tracking-tight text-brand md:text-[40px]">
+          <h2 className="mt-6 font-display text-3xl font-semibold leading-[1.15] tracking-tight text-brand md:text-display">
             No te contamos que sabemos hacerlo. Te lo mostramos.
           </h2>
-          <p className="mt-4 text-base leading-[1.6] text-foreground/80 md:text-[17px]">
+          <p className="mt-4 text-base leading-[1.6] text-foreground/80 md:text-body">
             Explora un sitio que construimos —de verdad, no una imagen— y descubre cómo se ve por
             dentro.
           </p>
@@ -214,13 +162,13 @@ export function Showcase3D() {
             <h3 className="mt-4 font-display text-2xl font-semibold text-brand md:text-3xl">
               {FEATURED.name}
             </h3>
-            <p className="mt-3 text-[15px] leading-[1.6] text-foreground/80 md:text-base">
+            <p className="mt-3 text-ui leading-[1.6] text-foreground/80 md:text-base">
               {FEATURED.description}
             </p>
 
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
               {FEATURED.highlights.map((h) => (
-                <li key={h} className="flex items-center gap-2 text-[15px] text-foreground">
+                <li key={h} className="flex items-center gap-2 text-ui text-foreground">
                   <Check size={16} className="shrink-0 text-success" />
                   {h}
                 </li>
@@ -244,7 +192,7 @@ export function Showcase3D() {
                   href={FEATURED.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex h-12 items-center justify-center gap-2 rounded-md border-2 border-brand px-6 font-display text-sm font-semibold text-brand transition-colors duration-200 hover:bg-brand-soft ${FOCUS_RING}`}
+                  className={`inline-flex h-12 items-center justify-center gap-2 rounded-md border-2 border-brand px-6 font-display text-sm font-semibold text-brand transition duration-200 hover:bg-brand-soft active:scale-[0.98] ${FOCUS_RING}`}
                 >
                   <ExternalLink size={17} />
                   Ver en vivo
@@ -254,7 +202,7 @@ export function Showcase3D() {
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
+                className={`inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
               >
                 <MessageCircle size={17} />
                 Quiero un proyecto así

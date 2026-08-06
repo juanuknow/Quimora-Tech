@@ -476,17 +476,17 @@ function Intro({ onStart }: { onStart: () => void }) {
         <Sparkles size={14} />
         Diagnóstico Digital gratuito
       </span>
-      <h2 className="mx-auto mt-6 max-w-2xl font-display text-3xl font-semibold leading-[1.15] tracking-tight text-brand md:text-[40px]">
+      <h2 className="mx-auto mt-6 max-w-2xl font-display text-3xl font-semibold leading-[1.15] tracking-tight text-brand md:text-display">
         Descubre la mejor solución para tu negocio en menos de 2 minutos
       </h2>
-      <p className="mx-auto mt-4 max-w-xl text-base leading-[1.6] text-foreground/80 md:text-[17px]">
+      <p className="mx-auto mt-4 max-w-xl text-base leading-[1.6] text-foreground/80 md:text-body">
         Responde unas preguntas y te recomendaremos la solución ideal, el tiempo estimado de
         desarrollo y una aproximación del presupuesto.
       </p>
       <button
         type="button"
         onClick={onStart}
-        className={`mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-md bg-cta px-8 font-display text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-cta-hover ${FOCUS_RING}`}
+        className={`mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-md bg-cta px-8 font-display text-ui font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
       >
         <Sparkles size={18} />
         Descubre qué solución necesita tu negocio
@@ -585,7 +585,7 @@ function Wizard({ step, answers, setAnswers, canAdvance, onNext, onBack }: Wizar
           type="button"
           onClick={onBack}
           disabled={step === 0}
-          className={`inline-flex h-11 items-center gap-1.5 rounded-md px-4 font-display text-sm font-semibold text-foreground transition-colors hover:text-brand disabled:pointer-events-none disabled:opacity-0 ${FOCUS_RING}`}
+          className={`inline-flex h-11 items-center gap-1.5 rounded-md px-4 font-display text-sm font-semibold text-foreground transition hover:text-brand disabled:pointer-events-none disabled:opacity-0 active:scale-[0.98] ${FOCUS_RING}`}
         >
           <ArrowLeft size={16} />
           Atrás
@@ -594,7 +594,7 @@ function Wizard({ step, answers, setAnswers, canAdvance, onNext, onBack }: Wizar
           type="button"
           onClick={onNext}
           disabled={!canAdvance}
-          className={`inline-flex h-12 items-center gap-2 rounded-md bg-cta px-7 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS_RING}`}
+          className={`inline-flex h-12 items-center gap-2 rounded-md bg-cta px-7 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-[0.98] ${FOCUS_RING}`}
         >
           {step === TOTAL_STEPS - 1 ? "Ver mi diagnóstico" : "Siguiente"}
           <ArrowRight size={16} />
@@ -650,7 +650,7 @@ function SingleSelect<T extends string>({
               >
                 <Icon size={18} strokeWidth={1.9} />
               </span>
-              <span className="font-display text-[15px] font-medium text-foreground">{label}</span>
+              <span className="font-display text-ui font-medium text-foreground">{label}</span>
               {selected && <Check size={18} className="ml-auto text-brand" />}
             </button>
           );
@@ -700,7 +700,7 @@ function MultiSelect<T extends string>({
               >
                 <Icon size={18} strokeWidth={1.9} />
               </span>
-              <span className="font-display text-[15px] font-medium text-foreground">{label}</span>
+              <span className="font-display text-ui font-medium text-foreground">{label}</span>
               <span
                 className={`ml-auto grid h-5 w-5 shrink-0 place-items-center rounded-md border ${
                   selected ? "border-brand bg-brand text-white" : "border-hairline"
@@ -725,7 +725,7 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
           <Sparkles size={14} />
           Diagnóstico Digital
         </span>
-        <h2 className="mt-5 font-display text-2xl font-semibold tracking-tight text-brand md:text-[32px]">
+        <h2 className="mt-5 font-display text-2xl font-semibold tracking-tight text-brand md:text-display-sm">
           Tu recomendación personalizada
         </h2>
       </div>
@@ -744,14 +744,14 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
           </h3>
           <Stars value={d.stars} />
         </div>
-        <p className="mt-2 text-[15px] leading-[1.6] text-foreground/80">{d.solutionTagline}</p>
+        <p className="mt-2 text-ui leading-[1.6] text-foreground/80">{d.solutionTagline}</p>
 
         <p className="mt-6 font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Necesitas
         </p>
         <ul className="mt-3 grid gap-2 sm:grid-cols-2">
           {d.neededFeatures.map((f) => (
-            <li key={f} className="flex items-center gap-2 text-[15px] text-foreground">
+            <li key={f} className="flex items-center gap-2 text-ui text-foreground">
               <Check size={16} className="shrink-0 text-success" />
               {f}
             </li>
@@ -795,13 +795,13 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
           </span>
         </div>
         <MaturityBar score={d.maturityScore} />
-        <p className="mt-4 text-[15px] leading-[1.6] text-foreground/80">{d.maturityText}</p>
+        <p className="mt-4 text-ui leading-[1.6] text-foreground/80">{d.maturityText}</p>
       </div>
 
       {/* Next step */}
       <div className="mt-8 rounded-xl bg-brand p-6 text-center text-white md:p-8">
         <h3 className="font-display text-xl font-semibold md:text-2xl">Siguiente paso</h3>
-        <p className="mx-auto mt-2 max-w-md text-[15px] leading-[1.6] text-white/80">
+        <p className="mx-auto mt-2 max-w-md text-ui leading-[1.6] text-white/80">
           {d.express
             ? "Sabemos que tienes prisa: agenda una videollamada gratuita de 20 minutos y priorizamos tu proyecto."
             : "Agenda una videollamada gratuita de 20 minutos y definimos juntos el plan exacto."}
@@ -811,10 +811,10 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackEvent("generate_lead", { method: "whatsapp", source: "diagnostico" })}
-          className={`mt-6 inline-flex h-14 items-center justify-center gap-2 rounded-md bg-white px-8 font-display text-[15px] font-semibold text-brand transition-colors duration-200 hover:bg-white/90 ${FOCUS_RING}`}
+          className={`mt-6 inline-flex h-14 items-center justify-center gap-2 rounded-md bg-white px-8 font-display text-ui font-semibold text-brand transition duration-200 hover:bg-white/90 active:scale-[0.98] ${FOCUS_RING}`}
         >
           <MessageCircle size={18} />
-          Agendar videollamada gratuita
+          Agendar por WhatsApp
         </a>
       </div>
 
