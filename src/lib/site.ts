@@ -18,7 +18,7 @@ export const FORMSPREE_ENDPOINT = "https://formspree.io/f/mzdnenqv";
  * Pégalo aquí cuando crees la propiedad en analytics.google.com.
  * Mientras esté vacío, NO se carga ningún script de analytics.
  */
-export const GA_MEASUREMENT_ID = "";
+export const GA_MEASUREMENT_ID = "G-42YGEBWHMT";
 
 /** Envía un evento a GA4 si está cargado. No-op en SSR o sin ID configurado. */
 export function trackEvent(name: string, params?: Record<string, unknown>): void {
