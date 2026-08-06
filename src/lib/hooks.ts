@@ -90,7 +90,7 @@ export function useTilt<T extends HTMLElement>({
  * contenido nunca queda atrapado en su estado oculto: los consumidores pueden
  * partir de `opacity-0` sin arriesgar una página en blanco.
  */
-export function useInView<T extends HTMLElement>(threshold = 0.2) {
+export function useInView<T extends Element>(threshold = 0.2) {
   const ref = useRef<T | null>(null);
   const [inView, setInView] = useState(false);
 

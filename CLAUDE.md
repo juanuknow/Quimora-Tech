@@ -254,6 +254,7 @@ conversion-craft-96/
 ├── public/                    # Assets estáticos
 │   ├── fonts/                 # Inter + Space Grotesk (variable woff2, self-hosted)
 │   ├── images/                # Imágenes del showcase (webp)
+│   ├── videos/                # soluciones.mp4 (1,15 MB) — carga diferida, nunca en el load inicial
 │   ├── og-image.png           # Open Graph 1200×630
 │   ├── favicon.ico
 │   ├── robots.txt
