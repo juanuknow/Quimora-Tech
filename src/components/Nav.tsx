@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { FOCUS_RING } from "../lib/site";
 
@@ -52,10 +52,52 @@ function useScrollSpy(ids: readonly string[]) {
   return active;
 }
 
+type IndicatorBox = { left: number; width: number };
+
+/**
+ * Mide dónde está el enlace activo dentro de la barra para que un único
+ * subrayado pueda viajar hasta él.
+ *
+ * Se mide en el DOM en lugar de calcularlo: las etiquetas tienen anchos
+ * distintos y dependen de la fuente ya cargada. Un `ResizeObserver` sobre la
+ * barra recupera la posición cuando cambia el ancho de la ventana o cuando
+ * Space Grotesk termina de cargar y el texto se reajusta.
+ */
+function useActiveIndicator(active: string) {
+  const navRef = useRef<HTMLElement | null>(null);
+  const [box, setBox] = useState<IndicatorBox | null>(null);
+  // La primera medición se coloca sin transición. Si no, al entrar por un
+  // enlace profundo (…/#precios) el subrayado saldría del origen y recorrería
+  // media barra en la carga, contando un movimiento que nunca ocurrió.
+  const [travels, setTravels] = useState(false);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const measure = () => {
+      const el = nav.querySelector<HTMLElement>(`[data-nav-section="${active}"]`);
+      setBox(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
+    };
+
+    measure();
+    const frame = requestAnimationFrame(() => setTravels(true));
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [active]);
+
+  return { navRef, box, travels };
+}
+
 export function Nav() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const active = useScrollSpy(NAV_SECTION_IDS);
+  const { navRef, box, travels } = useActiveIndicator(active);
 
   useEffect(() => {
     if (!open) return;
@@ -73,7 +115,9 @@ export function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full border-b transition-all duration-200 ${
+      // Propiedades nombradas, no `transition-all`: con `all` entraba en la
+      // transición cualquier propiedad que cambiara, incluida la geometría.
+      className={`sticky top-0 z-40 w-full border-b transition-[background-color,border-color,box-shadow] duration-200 ${
         scrolled
           ? "border-hairline bg-background/85 shadow-sm backdrop-blur-md"
           : "border-transparent bg-background"
@@ -86,27 +130,43 @@ export function Nav() {
           </span>
           <span className="font-display text-body font-semibold tracking-tight">Quimora Tech</span>
         </a>
-        <nav className="hidden items-center gap-10 text-sm md:flex">
+        <nav ref={navRef} className="relative hidden items-center gap-10 text-sm md:flex">
           {NAV_LINKS.map((l) => {
             const isActive = active === l.href.slice(1);
             return (
               <a
                 key={l.href}
                 href={l.href}
+                data-nav-section={l.href.slice(1)}
                 aria-current={isActive ? "location" : undefined}
-                className={`relative rounded-sm py-1 transition-colors duration-200 hover:text-brand ${
-                  isActive ? "font-medium text-brand" : "text-foreground"
+                // El peso de la fuente ya no cambia con el estado activo: al
+                // pasar a `font-medium` el texto se ensanchaba y empujaba a los
+                // enlaces siguientes, así que la barra se movía sola al hacer
+                // scroll. El color y el subrayado ya distinguen el estado.
+                className={`rounded-sm py-1 transition-colors duration-200 hover:text-brand ${
+                  isActive ? "text-brand" : "text-foreground"
                 } ${FOCUS_RING}`}
               >
                 {l.label}
-                <span
-                  className={`absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-brand transition-opacity duration-200 ${
-                    isActive ? "opacity-100" : "opacity-0"
-                  }`}
-                />
               </a>
             );
           })}
+          {/*
+            Un solo subrayado que viaja entre enlaces, en vez de uno por enlace
+            fundiéndose de forma independiente: así se lee como el mismo objeto
+            desplazándose y el recorrido cuenta hacia dónde va la lectura.
+
+            Es una transición y no un keyframe a propósito — al hacer scroll
+            rápido la sección activa cambia varias veces por segundo, y una
+            transición retoma desde donde está en vez de reiniciarse.
+          */}
+          <span
+            aria-hidden="true"
+            style={box ? { transform: `translateX(${box.left}px)`, width: box.width } : undefined}
+            className={`pointer-events-none absolute -bottom-1 left-0 h-0.5 rounded-full bg-brand ${
+              travels ? "transition-[transform,width,opacity] duration-250 ease-in-out-strong" : ""
+            } ${box ? "opacity-100" : "opacity-0"}`}
+          />
         </nav>
         <div className="hidden items-center md:flex">
           <a
@@ -142,7 +202,7 @@ export function Nav() {
                 onClick={() => setOpen(false)}
                 aria-current={isActive ? "location" : undefined}
                 className={`rounded-sm py-3 text-ui transition-colors ${
-                  isActive ? "font-medium text-brand" : "text-foreground"
+                  isActive ? "text-brand" : "text-foreground"
                 } hover:text-brand ${FOCUS_RING}`}
               >
                 {l.label}

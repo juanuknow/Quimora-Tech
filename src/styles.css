@@ -121,6 +121,17 @@
   --text-display: 40px;
   --text-display-lg: 44px;
   --text-display-xl: 56px;
+  /*
+   * Curvas. `--ease-out-strong` es la que ya usaban en línea las animaciones de
+   * entrada (rise-in, tilt): se registra aquí para poder nombrarla desde el
+   * markup en vez de repetir el cubic-bezier.
+   *
+   * `--ease-in-out-strong` es nueva y sirve a otro caso: algo que se desplaza
+   * de un punto a otro dentro de la pantalla —no entra ni sale—, donde la
+   * salida acelerada sola arranca de golpe.
+   */
+  --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 :root {

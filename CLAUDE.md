@@ -308,6 +308,10 @@ Cada destino tiene **un** verbo. Cambiar la etiqueta rompe la predictibilidad de
 
 Tokens en `@theme` (`src/styles.css`), **no** tamaños arbitrarios: `text-note` (11) · `text-caption` (13) · `text-ui` (15) · `text-body` (17) · `text-subhead` (22) · `text-display-sm` (32) · `text-display` (40) · `text-display-lg` (44) · `text-display-xl` (56). Los nombres describen el rol, no el pixelaje.
 
+### Curvas de animación
+
+Tokens en `@theme`: `ease-out-strong` (0.22, 1, 0.36, 1) para entradas y salidas · `ease-in-out-strong` (0.77, 0, 0.175, 1) para algo que se **desplaza** dentro de la pantalla. Nunca `ease-in` en UI, nunca `transition-all`, y las duraciones de interfaz por debajo de 300 ms.
+
 ### Reglas de accesibilidad verificadas
 
 - Todo objetivo táctil ≥ 44×44 px (`min-h-11` en enlaces de texto).
