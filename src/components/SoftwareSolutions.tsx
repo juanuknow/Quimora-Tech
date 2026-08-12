@@ -1,96 +1,11 @@
-import {
-  Globe,
-  MousePointerClick,
-  ShoppingCart,
-  ClipboardList,
-  LayoutDashboard,
-  Layers,
-  CalendarCheck,
-  Workflow,
-  Plug,
-  Users,
-  BrainCircuit,
-  Server,
-  Sparkles,
-  ArrowRight,
-  type LucideIcon,
-} from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Reveal } from "./Reveal";
 import { useInView } from "../lib/hooks";
 import { LIGHT_RING, whatsappHref, trackEvent } from "../lib/site";
+import { services, type Service } from "../lib/services-data";
 
 /* ============================ Data ============================ */
-
-interface Solution {
-  icon: LucideIcon;
-  title: string;
-  /** Beneficio para el cliente, no la funcionalidad técnica. */
-  body: string;
-}
-
-const SOLUTIONS: readonly Solution[] = [
-  {
-    icon: Globe,
-    title: "Sitios web corporativos",
-    body: "Presencia profesional que transmite confianza desde el primer clic y explica tu negocio sin que tengas que repetirlo.",
-  },
-  {
-    icon: MousePointerClick,
-    title: "Landing pages",
-    body: "Páginas enfocadas en una sola acción: que el visitante te escriba, agende o compre.",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Tiendas online (eCommerce)",
-    body: "Vende las 24 horas con catálogo, carrito y pagos en línea, sin depender solo de las redes sociales.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Sistemas administrativos",
-    body: "Centraliza pedidos, inventario y clientes en un solo lugar y deja atrás las hojas de cálculo sueltas.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Paneles de gestión",
-    body: "Mira los números de tu negocio en tiempo real y toma decisiones con datos, no con intuición.",
-  },
-  {
-    icon: Layers,
-    title: "Plataformas web personalizadas",
-    body: "Software hecho a la medida de tu operación, no un molde genérico al que tengas que adaptarte.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "Reservas y citas",
-    body: "Tus clientes agendan solos a cualquier hora: menos llamadas, menos cruces de horario.",
-  },
-  {
-    icon: Workflow,
-    title: "Automatización de procesos",
-    body: "Las tareas repetitivas se hacen solas: menos errores manuales y más horas libres para vender.",
-  },
-  {
-    icon: Plug,
-    title: "Integraciones con APIs",
-    body: "Conectamos tu web con pagos, envíos, WhatsApp o el sistema que ya usas a diario.",
-  },
-  {
-    icon: Users,
-    title: "Portales para clientes",
-    body: "Un espacio privado donde cada cliente consulta su información sin escribirte por cada dato.",
-  },
-  {
-    icon: BrainCircuit,
-    title: "Soluciones con inteligencia artificial",
-    body: "Asistentes, búsqueda inteligente y clasificación automática que responden por ti.",
-  },
-  {
-    icon: Server,
-    title: "Aplicaciones web escalables",
-    body: "Arquitectura preparada para crecer: más usuarios y más datos sin tener que rehacer todo.",
-  },
-] as const;
 
 /** Compromisos del proceso, no métricas de trayectoria. */
 const CAPABILITIES = [
@@ -167,7 +82,7 @@ export function SoftwareSolutions() {
 
         {/* Catálogo de soluciones */}
         <div className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {SOLUTIONS.map((solution, i) => (
+          {services.map((solution, i) => (
             // El escalonado se reinicia cada 4 tarjetas: con 12 en pantalla, una
             // cascada continua dejaría la última esperando casi un segundo.
             <SolutionCard key={solution.title} solution={solution} index={i % 4} />
@@ -214,7 +129,7 @@ export function SoftwareSolutions() {
 
 /* ============================ Card ============================ */
 
-function SolutionCard({ solution, index }: { solution: Solution; index: number }) {
+function SolutionCard({ solution, index }: { solution: Service; index: number }) {
   const { icon: Icon, title, body } = solution;
 
   return (

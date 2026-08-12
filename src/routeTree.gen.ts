@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServiciosTiendasOnlineRouteImport } from './routes/servicios/tiendas-online'
+import { Route as ServiciosLandingPagesRouteImport } from './routes/servicios/landing-pages'
+import { Route as ServiciosDesarrolloWebRouteImport } from './routes/servicios/desarrollo-web'
 
 const TerminosRoute = TerminosRouteImport.update({
   id: '/terminos',
@@ -28,35 +31,81 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiciosTiendasOnlineRoute = ServiciosTiendasOnlineRouteImport.update({
+  id: '/servicios/tiendas-online',
+  path: '/servicios/tiendas-online',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiciosLandingPagesRoute = ServiciosLandingPagesRouteImport.update({
+  id: '/servicios/landing-pages',
+  path: '/servicios/landing-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiciosDesarrolloWebRoute = ServiciosDesarrolloWebRouteImport.update({
+  id: '/servicios/desarrollo-web',
+  path: '/servicios/desarrollo-web',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
+  '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
+  '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
+  '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacidad' | '/terminos'
+  fullPaths:
+    | '/'
+    | '/privacidad'
+    | '/terminos'
+    | '/servicios/desarrollo-web'
+    | '/servicios/landing-pages'
+    | '/servicios/tiendas-online'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacidad' | '/terminos'
-  id: '__root__' | '/' | '/privacidad' | '/terminos'
+  to:
+    | '/'
+    | '/privacidad'
+    | '/terminos'
+    | '/servicios/desarrollo-web'
+    | '/servicios/landing-pages'
+    | '/servicios/tiendas-online'
+  id:
+    | '__root__'
+    | '/'
+    | '/privacidad'
+    | '/terminos'
+    | '/servicios/desarrollo-web'
+    | '/servicios/landing-pages'
+    | '/servicios/tiendas-online'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacidadRoute: typeof PrivacidadRoute
   TerminosRoute: typeof TerminosRoute
+  ServiciosDesarrolloWebRoute: typeof ServiciosDesarrolloWebRoute
+  ServiciosLandingPagesRoute: typeof ServiciosLandingPagesRoute
+  ServiciosTiendasOnlineRoute: typeof ServiciosTiendasOnlineRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +131,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicios/tiendas-online': {
+      id: '/servicios/tiendas-online'
+      path: '/servicios/tiendas-online'
+      fullPath: '/servicios/tiendas-online'
+      preLoaderRoute: typeof ServiciosTiendasOnlineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicios/landing-pages': {
+      id: '/servicios/landing-pages'
+      path: '/servicios/landing-pages'
+      fullPath: '/servicios/landing-pages'
+      preLoaderRoute: typeof ServiciosLandingPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicios/desarrollo-web': {
+      id: '/servicios/desarrollo-web'
+      path: '/servicios/desarrollo-web'
+      fullPath: '/servicios/desarrollo-web'
+      preLoaderRoute: typeof ServiciosDesarrolloWebRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacidadRoute: PrivacidadRoute,
   TerminosRoute: TerminosRoute,
+  ServiciosDesarrolloWebRoute: ServiciosDesarrolloWebRoute,
+  ServiciosLandingPagesRoute: ServiciosLandingPagesRoute,
+  ServiciosTiendasOnlineRoute: ServiciosTiendasOnlineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

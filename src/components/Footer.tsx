@@ -13,19 +13,19 @@ const FOOTER_NAV = [
   {
     title: "Navegación",
     links: [
-      { href: "#top", label: "Inicio" },
-      { href: "#servicios", label: "Servicios" },
-      { href: "#soluciones", label: "Soluciones de Software" },
-      { href: "#nosotros", label: "Cómo Trabajamos" },
-      { href: "#precios", label: "Precios" },
+      { href: "/#top", label: "Inicio" },
+      { href: "/#servicios", label: "Servicios" },
+      { href: "/#soluciones", label: "Soluciones de Software" },
+      { href: "/#nosotros", label: "Cómo Trabajamos" },
+      { href: "/#precios", label: "Precios" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { href: "#showcase", label: "Casos de Éxito" },
-      { href: "#faq", label: "Preguntas Frecuentes" },
-      { href: "#contacto", label: "Contacto" },
+      { href: "/#showcase", label: "Casos de Éxito" },
+      { href: "/#faq", label: "Preguntas Frecuentes" },
+      { href: "/#contacto", label: "Contacto" },
     ],
   },
 ] as const;
@@ -37,7 +37,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Brand column */}
           <div>
-            <a href="#top" className={`inline-flex items-center gap-2.5 rounded-md ${LIGHT_RING}`}>
+            <a href="/#top" className={`inline-flex items-center gap-2.5 rounded-md ${LIGHT_RING}`}>
               <span className="grid h-9 w-9 place-items-center rounded-md bg-white p-1">
                 <img src="/images/logo-mark.png" alt="" className="h-full w-full object-contain" />
               </span>
@@ -132,7 +132,7 @@ export function Footer() {
               Términos
             </a>
             <a
-              href="#top"
+              href="/#top"
               aria-label="Volver arriba"
               className={`inline-flex min-h-11 items-center gap-1.5 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
             >
