@@ -1,5 +1,6 @@
 import { Phone, Mail, ArrowUp } from "lucide-react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
+import { verticals } from "../lib/verticals-data";
 import {
   LIGHT_RING,
   CONTACT_EMAIL,
@@ -30,11 +31,21 @@ const FOOTER_NAV = [
   },
 ] as const;
 
+/** Enlaces a las páginas de industria (`/para/[slug]`) — refuerza el SEO
+ *  interno y evita que queden huérfanas fuera del sitemap. */
+const INDUSTRY_LINKS = verticals.map((v) => ({
+  href: `/para/${v.slug}`,
+  label: v.name.charAt(0).toUpperCase() + v.name.slice(1),
+}));
+
 export function Footer() {
   return (
     <footer className="bg-brand-dark text-white">
       <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-10 md:py-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        {/* 5 columnas necesitan más ancho del que hay en el arranque de "md"
+            (768px) sin que el correo de contacto se desborde — grid-cols-2
+            de paso en md, y la disposición final solo desde "lg" (1024px). */}
+        <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr_1fr] lg:gap-x-12">
           {/* Brand column */}
           <div>
             <a href="/#top" className={`inline-flex items-center gap-2.5 rounded-md ${LIGHT_RING}`}>
@@ -80,6 +91,25 @@ export function Footer() {
               </ul>
             </nav>
           ))}
+
+          {/* Industry column */}
+          <nav>
+            <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-white/55">
+              Soluciones por industria
+            </h3>
+            <ul className="mt-3 flex flex-col text-sm text-white/65">
+              {INDUSTRY_LINKS.map((l) => (
+                <li key={l.href}>
+                  <a
+                    href={l.href}
+                    className={`flex min-h-11 items-center rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* Contact column */}
           <div>

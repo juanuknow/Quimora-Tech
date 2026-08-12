@@ -15,6 +15,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiciosTiendasOnlineRouteImport } from './routes/servicios/tiendas-online'
 import { Route as ServiciosLandingPagesRouteImport } from './routes/servicios/landing-pages'
 import { Route as ServiciosDesarrolloWebRouteImport } from './routes/servicios/desarrollo-web'
+import { Route as ParaTiendasRouteImport } from './routes/para/tiendas'
+import { Route as ParaRestaurantesRouteImport } from './routes/para/restaurantes'
+import { Route as ParaInmobiliariasRouteImport } from './routes/para/inmobiliarias'
+import { Route as ParaClinicasRouteImport } from './routes/para/clinicas'
 
 const TerminosRoute = TerminosRouteImport.update({
   id: '/terminos',
@@ -46,11 +50,35 @@ const ServiciosDesarrolloWebRoute = ServiciosDesarrolloWebRouteImport.update({
   path: '/servicios/desarrollo-web',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParaTiendasRoute = ParaTiendasRouteImport.update({
+  id: '/para/tiendas',
+  path: '/para/tiendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParaRestaurantesRoute = ParaRestaurantesRouteImport.update({
+  id: '/para/restaurantes',
+  path: '/para/restaurantes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParaInmobiliariasRoute = ParaInmobiliariasRouteImport.update({
+  id: '/para/inmobiliarias',
+  path: '/para/inmobiliarias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParaClinicasRoute = ParaClinicasRouteImport.update({
+  id: '/para/clinicas',
+  path: '/para/clinicas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/para/clinicas': typeof ParaClinicasRoute
+  '/para/inmobiliarias': typeof ParaInmobiliariasRoute
+  '/para/restaurantes': typeof ParaRestaurantesRoute
+  '/para/tiendas': typeof ParaTiendasRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
@@ -59,6 +87,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/para/clinicas': typeof ParaClinicasRoute
+  '/para/inmobiliarias': typeof ParaInmobiliariasRoute
+  '/para/restaurantes': typeof ParaRestaurantesRoute
+  '/para/tiendas': typeof ParaTiendasRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
@@ -68,6 +100,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/privacidad': typeof PrivacidadRoute
   '/terminos': typeof TerminosRoute
+  '/para/clinicas': typeof ParaClinicasRoute
+  '/para/inmobiliarias': typeof ParaInmobiliariasRoute
+  '/para/restaurantes': typeof ParaRestaurantesRoute
+  '/para/tiendas': typeof ParaTiendasRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
@@ -78,6 +114,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacidad'
     | '/terminos'
+    | '/para/clinicas'
+    | '/para/inmobiliarias'
+    | '/para/restaurantes'
+    | '/para/tiendas'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
     | '/servicios/tiendas-online'
@@ -86,6 +126,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacidad'
     | '/terminos'
+    | '/para/clinicas'
+    | '/para/inmobiliarias'
+    | '/para/restaurantes'
+    | '/para/tiendas'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
     | '/servicios/tiendas-online'
@@ -94,6 +138,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacidad'
     | '/terminos'
+    | '/para/clinicas'
+    | '/para/inmobiliarias'
+    | '/para/restaurantes'
+    | '/para/tiendas'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
     | '/servicios/tiendas-online'
@@ -103,6 +151,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacidadRoute: typeof PrivacidadRoute
   TerminosRoute: typeof TerminosRoute
+  ParaClinicasRoute: typeof ParaClinicasRoute
+  ParaInmobiliariasRoute: typeof ParaInmobiliariasRoute
+  ParaRestaurantesRoute: typeof ParaRestaurantesRoute
+  ParaTiendasRoute: typeof ParaTiendasRoute
   ServiciosDesarrolloWebRoute: typeof ServiciosDesarrolloWebRoute
   ServiciosLandingPagesRoute: typeof ServiciosLandingPagesRoute
   ServiciosTiendasOnlineRoute: typeof ServiciosTiendasOnlineRoute
@@ -152,6 +204,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiciosDesarrolloWebRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/para/tiendas': {
+      id: '/para/tiendas'
+      path: '/para/tiendas'
+      fullPath: '/para/tiendas'
+      preLoaderRoute: typeof ParaTiendasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/para/restaurantes': {
+      id: '/para/restaurantes'
+      path: '/para/restaurantes'
+      fullPath: '/para/restaurantes'
+      preLoaderRoute: typeof ParaRestaurantesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/para/inmobiliarias': {
+      id: '/para/inmobiliarias'
+      path: '/para/inmobiliarias'
+      fullPath: '/para/inmobiliarias'
+      preLoaderRoute: typeof ParaInmobiliariasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/para/clinicas': {
+      id: '/para/clinicas'
+      path: '/para/clinicas'
+      fullPath: '/para/clinicas'
+      preLoaderRoute: typeof ParaClinicasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -159,6 +239,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacidadRoute: PrivacidadRoute,
   TerminosRoute: TerminosRoute,
+  ParaClinicasRoute: ParaClinicasRoute,
+  ParaInmobiliariasRoute: ParaInmobiliariasRoute,
+  ParaRestaurantesRoute: ParaRestaurantesRoute,
+  ParaTiendasRoute: ParaTiendasRoute,
   ServiciosDesarrolloWebRoute: ServiciosDesarrolloWebRoute,
   ServiciosLandingPagesRoute: ServiciosLandingPagesRoute,
   ServiciosTiendasOnlineRoute: ServiciosTiendasOnlineRoute,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useInView } from "../lib/hooks";
+import { LivePerformance } from "./LivePerformance";
 
 /* -------------------- Stats -------------------- */
 // Compromisos y estándares del servicio (verificables), no métricas de
@@ -50,6 +51,7 @@ export function Stats() {
           <StatItem key={stat.label} stat={stat} active={inView} />
         ))}
       </div>
+      <LivePerformance />
     </section>
   );
 }

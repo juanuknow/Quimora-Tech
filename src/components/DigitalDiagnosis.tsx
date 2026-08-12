@@ -32,6 +32,7 @@ import {
   Cpu,
   Gauge,
   RotateCcw,
+  Calculator,
   type LucideIcon,
 } from "lucide-react";
 import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
@@ -410,6 +411,104 @@ function computeMaturity(a: Answers): number {
   score += Math.min(a.features.length * 2, 12); // awareness of what they need
 
   return Math.max(35, Math.min(92, Math.round(score)));
+}
+
+/* ============================ Cost-of-inaction estimator ============================ */
+// Con los números que la persona ingresa —no datos inventados ni prometidos
+// como exactos—, y un único supuesto público y citado (no se combinan varias
+// tasas estimadas para simular falsa precisión): Google/SOASTA (2017)
+// midieron que el 53% de las visitas móviles se abandonan si una página
+// tarda más de 3 segundos en cargar. Se asume una conversión conservadora
+// del 2% sobre esas visitas recuperadas.
+const MOBILE_ABANDON_RATE = 0.53;
+const ASSUMED_RECOVERY_CONVERSION = 0.02;
+
+const formatCOP = (value: number) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(value);
+
+function CostEstimator() {
+  const [visitors, setVisitors] = useState("");
+  const [ticket, setTicket] = useState("");
+
+  const v = Number(visitors);
+  const t = Number(ticket);
+  const hasInputs = v > 0 && t > 0;
+  const lostClients = hasInputs ? v * MOBILE_ABANDON_RATE * ASSUMED_RECOVERY_CONVERSION : 0;
+  const lostRevenue = lostClients * t;
+
+  return (
+    <div className="mt-6 rounded-xl border border-hairline bg-background p-6 md:p-8">
+      <div className="flex items-center gap-2.5">
+        <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-soft text-brand">
+          <Calculator size={18} strokeWidth={1.9} />
+        </span>
+        <h3 className="font-display text-lg font-semibold text-brand md:text-xl">
+          ¿Cuánto podrías estar perdiendo al mes?
+        </h3>
+      </div>
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <label className="block">
+          <span className="text-sm font-medium text-foreground/80">
+            Visitas mensuales aproximadas
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Ej: 500"
+            value={visitors}
+            onChange={(e) => setVisitors(e.target.value)}
+            className={`mt-1.5 h-11 w-full rounded-md border border-hairline bg-background px-3 text-ui text-foreground ${FOCUS_RING}`}
+          />
+        </label>
+        <label className="block">
+          <span className="text-sm font-medium text-foreground/80">
+            Valor promedio de una venta o cliente (COP)
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Ej: 150000"
+            value={ticket}
+            onChange={(e) => setTicket(e.target.value)}
+            className={`mt-1.5 h-11 w-full rounded-md border border-hairline bg-background px-3 text-ui text-foreground ${FOCUS_RING}`}
+          />
+        </label>
+      </div>
+
+      <div className="mt-5 rounded-lg bg-brand-soft/60 p-5">
+        {hasInputs ? (
+          <>
+            <p className="font-display text-2xl font-bold tabular-nums text-brand md:text-3xl">
+              ≈ {formatCOP(lostRevenue)}{" "}
+              <span className="text-base font-medium text-muted-foreground">al mes</span>
+            </p>
+            <p className="mt-1 text-sm text-foreground/70">
+              ≈ {Math.round(lostClients * 10) / 10} clientes potenciales que hoy podrías estar
+              perdiendo por lentitud o falta de optimización.
+            </p>
+          </>
+        ) : (
+          <p className="text-sm text-foreground/70">
+            Ingresa tus números para ver una estimación de lo que podrías estar dejando sobre la
+            mesa cada mes.
+          </p>
+        )}
+      </div>
+      <p className="mt-3 text-xs leading-[1.6] text-muted-foreground">
+        Estimación orientativa, no una promesa de resultados. Se calcula así: Google y SOASTA (2017)
+        midieron que el 53% de las visitas móviles se abandonan cuando una página tarda más de 3
+        segundos en cargar; asumimos que recuperas una conversión conservadora del 2% sobre esas
+        visitas con un sitio optimizado.
+      </p>
+    </div>
+  );
 }
 
 /* ============================ UI ============================ */
@@ -797,6 +896,9 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
         <MaturityBar score={d.maturityScore} />
         <p className="mt-4 text-ui leading-[1.6] text-foreground/80">{d.maturityText}</p>
       </div>
+
+      {/* Cost of inaction */}
+      <CostEstimator />
 
       {/* Next step */}
       <div className="mt-8 rounded-xl bg-brand p-6 text-center text-white md:p-8">
