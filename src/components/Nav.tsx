@@ -85,9 +85,21 @@ function useActiveIndicator(active: string) {
     const nav = navRef.current;
     if (!nav) return;
 
+    // getBoundingClientRect en vez de offsetLeft/offsetWidth: "Servicios" vive
+    // dentro de un wrapper con `position: relative` propio (necesario para
+    // anclar el dropdown), lo que lo convierte en su `offsetParent` y rompe el
+    // cálculo de `offsetLeft` para ese enlace en particular. Restando rects
+    // el resultado es correcto sin importar cuántos contenedores posicionados
+    // haya de por medio.
     const measure = () => {
       const el = nav.querySelector<HTMLElement>(`[data-nav-section="${active}"]`);
-      setBox(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
+      if (!el) {
+        setBox(null);
+        return;
+      }
+      const navRect = nav.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      setBox({ left: elRect.left - navRect.left, width: elRect.width });
     };
 
     measure();
@@ -288,7 +300,7 @@ function ServicesNavItem({
           className="transition-transform duration-200 ease-out-strong group-hover:rotate-180 group-focus-within:rotate-180"
         />
       </a>
-      <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-200 ease-out-strong group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+      <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-[opacity,visibility,translate] duration-200 ease-out-strong group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <div className="rounded-lg border border-hairline bg-background p-2 shadow-xl">
           {servicesWithPage.map((service) => {
             const Icon = service.icon;
