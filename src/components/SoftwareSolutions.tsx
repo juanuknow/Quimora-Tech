@@ -249,13 +249,16 @@ function SolutionCard({ solution, index }: { solution: Solution; index: number }
  * aparece en el HTML servido. El vídeo nunca es la única versión del bloque.
  */
 function SolutionsVisual() {
-  const { ref, inView } = useInView<HTMLDivElement>(0.25);
+  // rootMargin adelanta el disparo ~250px antes de que el bloque entre en el
+  // viewport: el vídeo ya está descargando cuando el usuario lo alcanza, en
+  // vez de arrancar justo al 25% de visibilidad y notarse el fundido tarde.
+  const { ref, inView } = useInView<HTMLDivElement>(0, "250px");
   const [videoReady, setVideoReady] = useState(false);
   const [playVideo, setPlayVideo] = useState(false);
 
-  // El `src` solo se monta al entrar la sección en pantalla: así el vídeo no
-  // compite por ancho de banda con la carga inicial —vive muy por debajo del
-  // pliegue— y quien nunca baja hasta aquí no lo descarga jamás.
+  // El `src` solo se monta al acercarse la sección al viewport: así el vídeo
+  // no compite por ancho de banda con la carga inicial —vive muy por debajo
+  // del pliegue— y quien nunca baja hasta aquí no lo descarga jamás.
   useEffect(() => {
     if (!inView) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -277,7 +280,7 @@ function SolutionsVisual() {
             muted
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             aria-hidden="true"
             tabIndex={-1}
             onCanPlay={() => setVideoReady(true)}
