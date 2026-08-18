@@ -176,11 +176,6 @@ function PricingCard({ plan, index }: { plan: (typeof PLANS)[number]; index: num
             : "border-hairline bg-background hover:border-brand/40 hover:shadow-[0_18px_40px_rgba(0,0,0,0.14)]"
         }`}
       >
-        {plan.featured && (
-          <span className="tilt-layer mb-4 inline-flex w-fit items-center rounded-full bg-brand px-3 py-1 font-display text-xs font-semibold uppercase tracking-wide text-primary-foreground">
-            Más elegido
-          </span>
-        )}
         <h3 className="font-display text-xl font-semibold text-foreground">{plan.name}</h3>
         {/* 22px en vez de 24: con 4 columnas, "Cotización personalizada" no
             desborda la caja en el breakpoint lg. */}
