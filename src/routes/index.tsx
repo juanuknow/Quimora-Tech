@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
 import { Showcase3D } from "../components/Showcase3D";
 import { SoftwareSolutions } from "../components/SoftwareSolutions";
+import { Specialists } from "../components/Specialists";
 import { FloatingWhatsApp } from "../components/FloatingWhatsApp";
 import { TopBar } from "../components/TopBar";
 import { Nav } from "../components/Nav";
@@ -41,6 +42,7 @@ function LandingPage() {
         <Problem />
         <Benefits />
         <SoftwareSolutions />
+        <Specialists />
         <Showcase3D />
         <Stats />
         <Timeline />
