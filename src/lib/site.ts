@@ -8,6 +8,10 @@ export const WHATSAPP_NUMBER = "573244577198";
 export const CONTACT_EMAIL = "devopsconsultoring@gmail.com";
 export const CONTACT_PHONE = "+573244577198";
 export const CONTACT_PHONE_DISPLAY = "+57 324 457 7198";
+/** Segundo número de contacto (cofundador) — mismos canales que el principal, sin etiqueta distinta. */
+export const WHATSAPP_NUMBER_2 = "573044744337";
+export const CONTACT_PHONE_2 = "+573044744337";
+export const CONTACT_PHONE_2_DISPLAY = "+57 304 474 4337";
 export const SITE_URL = "https://quimoratech.com";
 
 /** Formspree endpoint that receives contact-form submissions (no backend). */
@@ -28,8 +32,8 @@ export function trackEvent(name: string, params?: Record<string, unknown>): void
 }
 
 /** Builds a wa.me deep link with a pre-filled, URL-encoded message. */
-export function whatsappHref(text: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+export function whatsappHref(text: string, number: string = WHATSAPP_NUMBER): string {
+  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
 
 /** Standard focus ring for interactive elements on light surfaces. */

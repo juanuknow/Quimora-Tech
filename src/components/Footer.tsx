@@ -6,6 +6,9 @@ import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
   CONTACT_PHONE_DISPLAY,
+  WHATSAPP_NUMBER_2,
+  CONTACT_PHONE_2,
+  CONTACT_PHONE_2_DISPLAY,
   whatsappHref,
 } from "../lib/site";
 
@@ -126,6 +129,30 @@ export function Footer() {
                     <Phone size={15} />
                   </span>
                   {CONTACT_PHONE_DISPLAY}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={whatsappHref("Hola, quiero más información", WHATSAPP_NUMBER_2)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
+                    <WhatsAppIcon size={15} />
+                  </span>
+                  {CONTACT_PHONE_2_DISPLAY}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${CONTACT_PHONE_2}`}
+                  className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
+                    <Phone size={15} />
+                  </span>
+                  {CONTACT_PHONE_2_DISPLAY}
                 </a>
               </li>
               <li>

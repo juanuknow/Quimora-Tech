@@ -6,6 +6,9 @@ import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
   CONTACT_PHONE_DISPLAY,
+  WHATSAPP_NUMBER_2,
+  CONTACT_PHONE_2,
+  CONTACT_PHONE_2_DISPLAY,
   FORMSPREE_ENDPOINT,
   whatsappHref,
   trackEvent,
@@ -109,6 +112,26 @@ export function Contact() {
                   <Phone size={18} />
                 </span>
                 {CONTACT_PHONE_DISPLAY}
+              </a>
+              <a
+                href={whatsappHref("Hola, quiero una consulta gratis", WHATSAPP_NUMBER_2)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
+                  <WhatsAppIcon size={18} />
+                </span>
+                {CONTACT_PHONE_2_DISPLAY}
+              </a>
+              <a
+                href={`tel:${CONTACT_PHONE_2}`}
+                className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
+                  <Phone size={18} />
+                </span>
+                {CONTACT_PHONE_2_DISPLAY}
               </a>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
