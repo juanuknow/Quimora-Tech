@@ -4,7 +4,7 @@ import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { getVerticalBySlug } from "../lib/verticals-data";
-import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
+import { FOCUS_RING, SITE_URL, whatsappHref, trackEvent } from "../lib/site";
 
 /**
  * Layout de una página de industria (`/para/[slug]`) — mismo chrome que
@@ -12,12 +12,28 @@ import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
  * de dolores propia: el gancho aquí es "esto te está pasando a ti", no una
  * lista de funcionalidades.
  */
+/** Breadcrumb estructurado — espeja el `<nav>` visual de abajo, misma fuente de datos. */
+function breadcrumbJsonLd(title: string, slug: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: title, item: `${SITE_URL}/para/${slug}` },
+    ],
+  };
+}
+
 export function VerticalDetail({ slug }: { slug: string }) {
   const vertical = getVerticalBySlug(slug);
   const { icon: Icon, title, intro, painPoints, benefits, name } = vertical;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(title, slug)) }}
+      />
       <TopBar />
       <Nav />
       <main>
@@ -46,9 +62,9 @@ export function VerticalDetail({ slug }: { slug: string }) {
 
             {/* Pain points */}
             <div className="mt-10 rounded-2xl border border-hairline bg-background p-6 md:p-8">
-              <p className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Lo que probablemente te está pasando
-              </p>
+              </h2>
               <ul className="mt-4 flex flex-col gap-3">
                 {painPoints.map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-ui text-foreground/85">
@@ -65,9 +81,9 @@ export function VerticalDetail({ slug }: { slug: string }) {
 
             {/* Benefits */}
             <div className="mt-6">
-              <p className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Lo que incluye tu proyecto
-              </p>
+              </h2>
               <ul className="mt-4 flex flex-col gap-3">
                 {benefits.map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-ui text-foreground/85">

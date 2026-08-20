@@ -9,11 +9,11 @@ const service = getServiceBySlug(SLUG);
 export const Route = createFileRoute("/servicios/landing-pages")({
   head: () => ({
     meta: [
-      { title: `${service.title} · Quimora Tech` },
-      { name: "description", content: service.body },
+      { title: "Diseño de Landing Pages en Cali · Quimora Tech" },
+      { name: "description", content: service.metaDescription ?? service.body },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: `${service.title} · Quimora Tech` },
-      { property: "og:description", content: service.body },
+      { property: "og:title", content: "Diseño de Landing Pages en Cali · Quimora Tech" },
+      { property: "og:description", content: service.metaDescription ?? service.body },
       { property: "og:url", content: `${SITE_URL}/servicios/${SLUG}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/servicios/${SLUG}` }],

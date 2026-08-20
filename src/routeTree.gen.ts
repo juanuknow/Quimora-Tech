@@ -13,8 +13,11 @@ import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiciosTiendasOnlineRouteImport } from './routes/servicios/tiendas-online'
+import { Route as ServiciosSistemasDeInventarioRouteImport } from './routes/servicios/sistemas-de-inventario'
+import { Route as ServiciosSistemasDeFacturacionRouteImport } from './routes/servicios/sistemas-de-facturacion'
 import { Route as ServiciosLandingPagesRouteImport } from './routes/servicios/landing-pages'
 import { Route as ServiciosDesarrolloWebRouteImport } from './routes/servicios/desarrollo-web'
+import { Route as ServiciosAutomatizacionDeProcesosRouteImport } from './routes/servicios/automatizacion-de-procesos'
 import { Route as ParaTiendasRouteImport } from './routes/para/tiendas'
 import { Route as ParaRestaurantesRouteImport } from './routes/para/restaurantes'
 import { Route as ParaInmobiliariasRouteImport } from './routes/para/inmobiliarias'
@@ -40,6 +43,18 @@ const ServiciosTiendasOnlineRoute = ServiciosTiendasOnlineRouteImport.update({
   path: '/servicios/tiendas-online',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiciosSistemasDeInventarioRoute =
+  ServiciosSistemasDeInventarioRouteImport.update({
+    id: '/servicios/sistemas-de-inventario',
+    path: '/servicios/sistemas-de-inventario',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServiciosSistemasDeFacturacionRoute =
+  ServiciosSistemasDeFacturacionRouteImport.update({
+    id: '/servicios/sistemas-de-facturacion',
+    path: '/servicios/sistemas-de-facturacion',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ServiciosLandingPagesRoute = ServiciosLandingPagesRouteImport.update({
   id: '/servicios/landing-pages',
   path: '/servicios/landing-pages',
@@ -50,6 +65,12 @@ const ServiciosDesarrolloWebRoute = ServiciosDesarrolloWebRouteImport.update({
   path: '/servicios/desarrollo-web',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiciosAutomatizacionDeProcesosRoute =
+  ServiciosAutomatizacionDeProcesosRouteImport.update({
+    id: '/servicios/automatizacion-de-procesos',
+    path: '/servicios/automatizacion-de-procesos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ParaTiendasRoute = ParaTiendasRouteImport.update({
   id: '/para/tiendas',
   path: '/para/tiendas',
@@ -79,8 +100,11 @@ export interface FileRoutesByFullPath {
   '/para/inmobiliarias': typeof ParaInmobiliariasRoute
   '/para/restaurantes': typeof ParaRestaurantesRoute
   '/para/tiendas': typeof ParaTiendasRoute
+  '/servicios/automatizacion-de-procesos': typeof ServiciosAutomatizacionDeProcesosRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/sistemas-de-facturacion': typeof ServiciosSistemasDeFacturacionRoute
+  '/servicios/sistemas-de-inventario': typeof ServiciosSistemasDeInventarioRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRoutesByTo {
@@ -91,8 +115,11 @@ export interface FileRoutesByTo {
   '/para/inmobiliarias': typeof ParaInmobiliariasRoute
   '/para/restaurantes': typeof ParaRestaurantesRoute
   '/para/tiendas': typeof ParaTiendasRoute
+  '/servicios/automatizacion-de-procesos': typeof ServiciosAutomatizacionDeProcesosRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/sistemas-de-facturacion': typeof ServiciosSistemasDeFacturacionRoute
+  '/servicios/sistemas-de-inventario': typeof ServiciosSistemasDeInventarioRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRoutesById {
@@ -104,8 +131,11 @@ export interface FileRoutesById {
   '/para/inmobiliarias': typeof ParaInmobiliariasRoute
   '/para/restaurantes': typeof ParaRestaurantesRoute
   '/para/tiendas': typeof ParaTiendasRoute
+  '/servicios/automatizacion-de-procesos': typeof ServiciosAutomatizacionDeProcesosRoute
   '/servicios/desarrollo-web': typeof ServiciosDesarrolloWebRoute
   '/servicios/landing-pages': typeof ServiciosLandingPagesRoute
+  '/servicios/sistemas-de-facturacion': typeof ServiciosSistemasDeFacturacionRoute
+  '/servicios/sistemas-de-inventario': typeof ServiciosSistemasDeInventarioRoute
   '/servicios/tiendas-online': typeof ServiciosTiendasOnlineRoute
 }
 export interface FileRouteTypes {
@@ -118,8 +148,11 @@ export interface FileRouteTypes {
     | '/para/inmobiliarias'
     | '/para/restaurantes'
     | '/para/tiendas'
+    | '/servicios/automatizacion-de-procesos'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
+    | '/servicios/sistemas-de-facturacion'
+    | '/servicios/sistemas-de-inventario'
     | '/servicios/tiendas-online'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -130,8 +163,11 @@ export interface FileRouteTypes {
     | '/para/inmobiliarias'
     | '/para/restaurantes'
     | '/para/tiendas'
+    | '/servicios/automatizacion-de-procesos'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
+    | '/servicios/sistemas-de-facturacion'
+    | '/servicios/sistemas-de-inventario'
     | '/servicios/tiendas-online'
   id:
     | '__root__'
@@ -142,8 +178,11 @@ export interface FileRouteTypes {
     | '/para/inmobiliarias'
     | '/para/restaurantes'
     | '/para/tiendas'
+    | '/servicios/automatizacion-de-procesos'
     | '/servicios/desarrollo-web'
     | '/servicios/landing-pages'
+    | '/servicios/sistemas-de-facturacion'
+    | '/servicios/sistemas-de-inventario'
     | '/servicios/tiendas-online'
   fileRoutesById: FileRoutesById
 }
@@ -155,8 +194,11 @@ export interface RootRouteChildren {
   ParaInmobiliariasRoute: typeof ParaInmobiliariasRoute
   ParaRestaurantesRoute: typeof ParaRestaurantesRoute
   ParaTiendasRoute: typeof ParaTiendasRoute
+  ServiciosAutomatizacionDeProcesosRoute: typeof ServiciosAutomatizacionDeProcesosRoute
   ServiciosDesarrolloWebRoute: typeof ServiciosDesarrolloWebRoute
   ServiciosLandingPagesRoute: typeof ServiciosLandingPagesRoute
+  ServiciosSistemasDeFacturacionRoute: typeof ServiciosSistemasDeFacturacionRoute
+  ServiciosSistemasDeInventarioRoute: typeof ServiciosSistemasDeInventarioRoute
   ServiciosTiendasOnlineRoute: typeof ServiciosTiendasOnlineRoute
 }
 
@@ -190,6 +232,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiciosTiendasOnlineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicios/sistemas-de-inventario': {
+      id: '/servicios/sistemas-de-inventario'
+      path: '/servicios/sistemas-de-inventario'
+      fullPath: '/servicios/sistemas-de-inventario'
+      preLoaderRoute: typeof ServiciosSistemasDeInventarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicios/sistemas-de-facturacion': {
+      id: '/servicios/sistemas-de-facturacion'
+      path: '/servicios/sistemas-de-facturacion'
+      fullPath: '/servicios/sistemas-de-facturacion'
+      preLoaderRoute: typeof ServiciosSistemasDeFacturacionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicios/landing-pages': {
       id: '/servicios/landing-pages'
       path: '/servicios/landing-pages'
@@ -202,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/servicios/desarrollo-web'
       fullPath: '/servicios/desarrollo-web'
       preLoaderRoute: typeof ServiciosDesarrolloWebRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicios/automatizacion-de-procesos': {
+      id: '/servicios/automatizacion-de-procesos'
+      path: '/servicios/automatizacion-de-procesos'
+      fullPath: '/servicios/automatizacion-de-procesos'
+      preLoaderRoute: typeof ServiciosAutomatizacionDeProcesosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/para/tiendas': {
@@ -243,8 +306,12 @@ const rootRouteChildren: RootRouteChildren = {
   ParaInmobiliariasRoute: ParaInmobiliariasRoute,
   ParaRestaurantesRoute: ParaRestaurantesRoute,
   ParaTiendasRoute: ParaTiendasRoute,
+  ServiciosAutomatizacionDeProcesosRoute:
+    ServiciosAutomatizacionDeProcesosRoute,
   ServiciosDesarrolloWebRoute: ServiciosDesarrolloWebRoute,
   ServiciosLandingPagesRoute: ServiciosLandingPagesRoute,
+  ServiciosSistemasDeFacturacionRoute: ServiciosSistemasDeFacturacionRoute,
+  ServiciosSistemasDeInventarioRoute: ServiciosSistemasDeInventarioRoute,
   ServiciosTiendasOnlineRoute: ServiciosTiendasOnlineRoute,
 }
 export const routeTree = rootRouteImport

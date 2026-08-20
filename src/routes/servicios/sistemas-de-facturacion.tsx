@@ -3,16 +3,19 @@ import { ServiceDetail } from "../../components/ServiceDetail";
 import { getServiceBySlug } from "../../lib/services-data";
 import { SITE_URL } from "../../lib/site";
 
-const SLUG = "tiendas-online";
+const SLUG = "sistemas-de-facturacion";
 const service = getServiceBySlug(SLUG);
 
-export const Route = createFileRoute("/servicios/tiendas-online")({
+export const Route = createFileRoute("/servicios/sistemas-de-facturacion")({
   head: () => ({
     meta: [
-      { title: "Tiendas Online y Ecommerce en Cali · Quimora Tech" },
+      { title: "Sistemas de Facturación para Empresas en Cali · Quimora Tech" },
       { name: "description", content: service.metaDescription ?? service.body },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Tiendas Online y Ecommerce en Cali · Quimora Tech" },
+      {
+        property: "og:title",
+        content: "Sistemas de Facturación para Empresas en Cali · Quimora Tech",
+      },
       { property: "og:description", content: service.metaDescription ?? service.body },
       { property: "og:url", content: `${SITE_URL}/servicios/${SLUG}` },
     ],

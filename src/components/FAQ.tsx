@@ -56,10 +56,25 @@ function PlusMinusIcon({ open }: { open: boolean }) {
   );
 }
 
+/** Mismo texto que se ve en pantalla — el JSON-LD nunca puede decir algo distinto del acordeón. */
+const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section id="faq" className="border-t border-hairline bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
+      />
       <div className="mx-auto max-w-[820px] px-6 py-24 md:py-28">
         <h2 className="text-center font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-display">
           Preguntas Frecuentes

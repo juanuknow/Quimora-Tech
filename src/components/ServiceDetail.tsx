@@ -4,7 +4,7 @@ import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { getServiceBySlug } from "../lib/services-data";
-import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
+import { FOCUS_RING, SITE_URL, whatsappHref, trackEvent } from "../lib/site";
 
 /**
  * Layout de una página de servicio individual (`/servicios/[slug]`).
@@ -14,13 +14,30 @@ import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
  * minimalista propio porque privacidad/términos no son páginas de venta.
  * Estas sí lo son, así que llevan el navbar completo con el CTA "Cotizar".
  */
+/** Breadcrumb estructurado — espeja el `<nav>` visual de abajo, misma fuente de datos. */
+function breadcrumbJsonLd(title: string, slug: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Servicios", item: `${SITE_URL}/#soluciones` },
+      { "@type": "ListItem", position: 3, name: title, item: `${SITE_URL}/servicios/${slug}` },
+    ],
+  };
+}
+
 export function ServiceDetail({ slug }: { slug: string }) {
   const service = getServiceBySlug(slug);
   const { icon: Icon, title, body, longDescription, benefits } = service;
-  const description = longDescription ?? body;
+  const paragraphs = (longDescription ?? body).split("\n\n");
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(title, slug)) }}
+      />
       <TopBar />
       <Nav />
       <main>
@@ -47,19 +64,31 @@ export function ServiceDetail({ slug }: { slug: string }) {
             <h1 className="mt-6 font-display text-3xl font-bold leading-[1.15] tracking-tight text-brand md:text-display">
               {title}
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-[1.7] text-foreground/80 md:text-body">
-              {description}
-            </p>
+            <div className="mt-5 flex max-w-2xl flex-col gap-4">
+              {paragraphs.map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="text-base leading-[1.7] text-foreground/80 md:text-body"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
 
             {benefits && benefits.length > 0 && (
-              <ul className="mt-8 flex flex-col gap-3">
-                {benefits.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-ui text-foreground/85">
-                    <Check size={18} className="mt-0.5 shrink-0 text-brand" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <h2 className="mt-10 font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Qué incluye
+                </h2>
+                <ul className="mt-4 flex flex-col gap-3">
+                  {benefits.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-ui text-foreground/85">
+                      <Check size={18} className="mt-0.5 shrink-0 text-brand" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
 
             {/* CTA */}
