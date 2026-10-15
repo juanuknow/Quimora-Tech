@@ -272,7 +272,9 @@ conversion-craft-96/
 │   │   ├── FAQ.tsx / Contact.tsx / FinalCTA.tsx
 │   │   ├── DigitalDiagnosis.tsx     # Wizard de diagnóstico (lead magnet)
 │   │   ├── SoftwareSolutions.tsx    # Soluciones de software a la medida (12 cards + mockup)
-│   │   ├── Showcase3D.tsx           # Portafolio 3D (dispositivos + lightbox)
+│   │   ├── Showcase3D.tsx           # Portafolio: caso destacado (laptop 3D + cifras + funciones) y galería
+│   │   ├── ShowcaseGallery.tsx      # Galería con pestañas (6 capturas reales de Diosa's Make up)
+│   │   ├── BrowserChrome.tsx        # Barra de navegador compartida por los marcos de capturas
 │   │   ├── WhatsAppIcon.tsx / FloatingWhatsApp.tsx  # Canal directo, compartido
 │   │   ├── Reveal.tsx               # Entrada escalonada al entrar en viewport
 │   │   └── LegalPage.tsx            # Layout compartido de páginas legales

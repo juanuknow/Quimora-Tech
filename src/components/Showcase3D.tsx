@@ -2,8 +2,15 @@ import { useEffect, useRef } from "react";
 import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, Plus } from "lucide-react";
 import { useInView, useTilt } from "../lib/hooks";
 import { FOCUS_RING, whatsappHref } from "../lib/site";
+import { BrowserChrome } from "./BrowserChrome";
+import { ShowcaseGallery, type GalleryView } from "./ShowcaseGallery";
 
 /* ============================ Data ============================ */
+
+interface ProjectFact {
+  value: string;
+  label: string;
+}
 
 interface FeaturedProject {
   name: string;
@@ -16,13 +23,16 @@ interface FeaturedProject {
   /** Shown if `fullImage` is missing, so the frame never looks broken. */
   fallbackImage: string;
   description: string;
+  /** Cifras verificables del proyecto (no métricas de resultados). */
+  facts: ProjectFact[];
   /** Real capabilities of the site (no invented metrics). */
   highlights: string[];
   technologies: string[];
 }
 
 // Proyecto real construido por Quimora Tech. Sin métricas de resultados
-// inventadas: se muestra el sitio de verdad y lo que hace.
+// inventadas: se muestra el sitio de verdad y lo que hace. Las cifras de
+// `facts` son conteos reales del catálogo y de las funciones del sitio.
 // liveUrl se activará cuando el sitio esté desplegado en un dominio estable.
 const FEATURED: FeaturedProject = {
   name: "Diosa's Make up",
@@ -31,17 +41,91 @@ const FEATURED: FeaturedProject = {
   fullImage: "/images/diosas-full.webp",
   fallbackImage: "/images/diosas-cosmeticos.webp",
   description:
-    "Tienda de maquillaje y cuidado personal con catálogo por categorías, buscador de productos, lista de favoritos, carrito y reseñas de clientas. Envíos a toda Colombia.",
+    "Tienda online de maquillaje y cuidado capilar: catálogo con menú por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp, compra al por mayor y reseñas moderadas. La dueña administra precios, stock, fotos y reseñas desde su propio panel.",
+  facts: [
+    { value: "+850", label: "productos en el catálogo" },
+    { value: "5", label: "grupos de categorías, con subcategorías y tipos" },
+    { value: "2", label: "modos de compra: al detal y al por mayor" },
+  ],
   highlights: [
-    "Catálogo por categorías",
+    "Catálogo por categorías y marcas",
     "Buscador de productos",
     "Carrito de compras",
+    "Pedido por WhatsApp",
+    "Compra al por mayor",
     "Lista de favoritos",
     "Reseñas de clientas",
+    "Panel de administración propio",
+    "Mapa y horarios de la tienda",
     "Envíos a toda Colombia",
   ],
-  technologies: ["React", "Vite", "Tailwind CSS", "Supabase"],
+  technologies: ["React", "Vite", "Tailwind CSS", "Supabase", "Netlify"],
 };
+
+// Capturas reales del mismo proyecto (public/images/). Cada una explica una
+// parte del sitio; solo se describen funciones que existen.
+const GALLERY_VIEWS: readonly GalleryView[] = [
+  {
+    id: "inicio",
+    label: "Inicio",
+    title: "Una portada que invita a comprar",
+    caption:
+      "Barra de avisos, menú por categorías, buscador y un hero con los productos destacados de la tienda.",
+    image: "/images/diosas-hero.webp",
+    alt: "Portada de Diosa's Make up con menú de categorías, buscador y productos destacados",
+    device: "browser",
+  },
+  {
+    id: "menu",
+    label: "Menú",
+    title: "Menú por categorías, con filtro de marca",
+    caption:
+      "Cada grupo despliega sus subcategorías y tipos de producto, con un selector de marca para llegar rápido a lo que la clienta busca.",
+    image: "/images/diosas-menu.webp",
+    alt: "Menú desplegable de Cuidado Capilar con selector de marca y lista de subcategorías",
+    device: "browser",
+  },
+  {
+    id: "producto",
+    label: "Producto",
+    title: "Ficha de producto sin salir del catálogo",
+    caption:
+      "Foto grande, precio, descripción y sugerencias de productos relacionados, todo en una ventana que se abre sobre el catálogo.",
+    image: "/images/diosas-producto.webp",
+    alt: "Ficha de un polvo suelto con foto, precio, botón de agregar al carrito y productos relacionados",
+    device: "browser",
+  },
+  {
+    id: "carrito",
+    label: "Carrito",
+    title: "Carrito y pedido directo a WhatsApp",
+    caption:
+      "El pedido se arma en el carrito y se envía por WhatsApp. Incluye la opción de compra al por mayor, con sus mínimos validados.",
+    image: "/images/diosas-carrito.webp",
+    alt: "Carrito de compras con dos productos, opción de pedido al por mayor y botón para finalizar por WhatsApp",
+    device: "browser",
+  },
+  {
+    id: "ubicacion",
+    label: "Ubicación",
+    title: "Ubicación, horarios y contacto",
+    caption:
+      "Mapa de la tienda, dirección, horarios de atención y acceso directo a WhatsApp para que las clientas lleguen o escriban.",
+    image: "/images/diosas-ubicacion.webp",
+    alt: "Sección de ubicación de la tienda con mapa de Google, dirección, horarios y botón de WhatsApp",
+    device: "browser",
+  },
+  {
+    id: "movil",
+    label: "Celular",
+    title: "Pensada para el celular",
+    caption:
+      "El sitio se adapta a pantallas pequeñas: menú, catálogo, carrito y pedido funcionan igual desde el teléfono.",
+    image: "/images/diosas-movil.webp",
+    alt: "Vista de Diosa's Make up en un celular, con menú, hero y productos",
+    device: "phone",
+  },
+];
 
 /* ============================ Live device ============================ */
 
@@ -49,19 +133,7 @@ const FEATURED: FeaturedProject = {
 function LiveScreenshot({ project }: { project: FeaturedProject }) {
   return (
     <div className="flex h-full w-full flex-col bg-white">
-      {/* Browser chrome.
-          Excepción deliberada al sistema: esto no es UI nuestra, es el dibujo
-          de un navegador ajeno. Por eso mide en porcentajes (escala con el
-          dispositivo) y no usa los tokens tipográficos de la marca. */}
-      <div className="flex h-[8%] shrink-0 items-center gap-[1%] bg-zinc-100 px-[2.5%]">
-        <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
-        <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
-        <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
-        <span className="ml-[2.5%] flex h-[55%] flex-1 items-center gap-[1.5%] truncate rounded-full bg-white px-[2.5%] text-[0.5rem] font-medium text-zinc-400">
-          <span className="aspect-square h-[34%] min-h-[3px] shrink-0 animate-pulse rounded-full bg-success" />
-          {project.domain}
-        </span>
-      </div>
+      <BrowserChrome domain={project.domain} />
       {/* Scrolling screenshot */}
       <div className="relative flex-1 overflow-hidden">
         <img
@@ -166,6 +238,18 @@ export function Showcase3D() {
               {FEATURED.description}
             </p>
 
+            <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-hairline py-5">
+              {FEATURED.facts.map((fact) => (
+                // dt/dd van en orden de lectura (etiqueta → valor); flex-col-reverse deja el número arriba.
+                <div key={fact.label} className="flex flex-col-reverse justify-end gap-2">
+                  <dt className="text-caption leading-[1.4] text-muted-foreground">{fact.label}</dt>
+                  <dd className="font-display text-display-sm font-semibold leading-none text-brand">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
               {FEATURED.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2 text-ui text-foreground">
@@ -210,6 +294,9 @@ export function Showcase3D() {
             </div>
           </div>
         </div>
+
+        {/* The same project, part by part */}
+        <ShowcaseGallery domain={FEATURED.domain} views={GALLERY_VIEWS} />
 
         {/* Next project invitation */}
         <NextProjectCard />
