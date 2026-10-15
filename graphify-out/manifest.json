@@ -1,0 +1,446 @@
+{
+  ".claude/launch.json": {
+    "mtime": 1787230286.2251925,
+    "seen": 1788494176.3052523,
+    "ast_hash": "eeeeebf27cb25ddaed638f4c451c0ab2",
+    "semantic_hash": "eeeeebf27cb25ddaed638f4c451c0ab2"
+  },
+  ".lovable/project.json": {
+    "mtime": 1783822526.7917624,
+    "seen": 1788494176.3052573,
+    "ast_hash": "bf327db5b838a4079e1d1ffff942623a",
+    "semantic_hash": "bf327db5b838a4079e1d1ffff942623a"
+  },
+  "eslint.config.js": {
+    "mtime": 1783822526.7927685,
+    "seen": 1788494176.305259,
+    "ast_hash": "20097f0c1a669549b3a8d3a194c3c25d",
+    "semantic_hash": "20097f0c1a669549b3a8d3a194c3c25d"
+  },
+  "package.json": {
+    "mtime": 1786551052.8711839,
+    "seen": 1788494176.3052597,
+    "ast_hash": "ab0e4edb4ad555b5e52b40a918ca7b80",
+    "semantic_hash": "ab0e4edb4ad555b5e52b40a918ca7b80"
+  },
+  "src/components/Benefits.tsx": {
+    "mtime": 1786038798.1581788,
+    "seen": 1788494176.3052607,
+    "ast_hash": "b80ec0532097b61e22aaa47046f259ba",
+    "semantic_hash": "b80ec0532097b61e22aaa47046f259ba"
+  },
+  "src/components/Contact.tsx": {
+    "mtime": 1787237971.534057,
+    "seen": 1788494176.3052614,
+    "ast_hash": "3ca352ecc7bae83601f49b1aafd67538",
+    "semantic_hash": "3ca352ecc7bae83601f49b1aafd67538"
+  },
+  "src/components/DigitalDiagnosis.tsx": {
+    "mtime": 1786551267.6506903,
+    "seen": 1788494176.305262,
+    "ast_hash": "e535dd2190ac0b30d74142f50f28759d",
+    "semantic_hash": "e535dd2190ac0b30d74142f50f28759d"
+  },
+  "src/components/FAQ.tsx": {
+    "mtime": 1787235386.9249616,
+    "seen": 1788494176.3052626,
+    "ast_hash": "2bbb3019e81ec26b294424c5a1af6c6b",
+    "semantic_hash": "2bbb3019e81ec26b294424c5a1af6c6b"
+  },
+  "src/components/FinalCTA.tsx": {
+    "mtime": 1786038798.1669006,
+    "seen": 1788494176.305263,
+    "ast_hash": "ae689ba351c87a7a4d9271694f1e2339",
+    "semantic_hash": "ae689ba351c87a7a4d9271694f1e2339"
+  },
+  "src/components/FloatingWhatsApp.tsx": {
+    "mtime": 1786038798.1515188,
+    "seen": 1788494176.3052638,
+    "ast_hash": "bf26c755fbdf4766d27feda5fee72999",
+    "semantic_hash": "bf26c755fbdf4766d27feda5fee72999"
+  },
+  "src/components/Footer.tsx": {
+    "mtime": 1787237958.1560957,
+    "seen": 1788494176.3052645,
+    "ast_hash": "a5031bf020e4785655826501219434d9",
+    "semantic_hash": "a5031bf020e4785655826501219434d9"
+  },
+  "src/components/Hero.tsx": {
+    "mtime": 1786038798.1575358,
+    "seen": 1788494176.3052654,
+    "ast_hash": "cf094240075963b5cb1fd5d237411472",
+    "semantic_hash": "cf094240075963b5cb1fd5d237411472"
+  },
+  "src/components/LegalPage.tsx": {
+    "mtime": 1786038594.2935615,
+    "seen": 1788494176.305266,
+    "ast_hash": "22bb17533b5e1e46072ba8bf819d807d",
+    "semantic_hash": "22bb17533b5e1e46072ba8bf819d807d"
+  },
+  "src/components/LivePerformance.tsx": {
+    "mtime": 1786551119.9627922,
+    "seen": 1788494176.3052666,
+    "ast_hash": "1e5923fd447fc6397b5091ce8254e96d",
+    "semantic_hash": "1e5923fd447fc6397b5091ce8254e96d"
+  },
+  "src/components/Nav.tsx": {
+    "mtime": 1786538798.8807044,
+    "seen": 1788494176.3052676,
+    "ast_hash": "0979bcb089696cd953f3a29454257248",
+    "semantic_hash": "0979bcb089696cd953f3a29454257248"
+  },
+  "src/components/Pricing.tsx": {
+    "mtime": 1787015876.2720373,
+    "seen": 1788494176.3052683,
+    "ast_hash": "10d23fece5712f4c09dddbb815116168",
+    "semantic_hash": "10d23fece5712f4c09dddbb815116168"
+  },
+  "src/components/Problem.tsx": {
+    "mtime": 1786038798.1581788,
+    "seen": 1788494176.3052688,
+    "ast_hash": "547560781c8d9f8fcd30eac5f305c8c2",
+    "semantic_hash": "547560781c8d9f8fcd30eac5f305c8c2"
+  },
+  "src/components/Reveal.tsx": {
+    "mtime": 1785006800.6117232,
+    "seen": 1788494176.3052695,
+    "ast_hash": "220d39e250cb1b57548b1fcc6d63fb59",
+    "semantic_hash": "220d39e250cb1b57548b1fcc6d63fb59"
+  },
+  "src/components/ServiceDetail.tsx": {
+    "mtime": 1787235529.073389,
+    "seen": 1788494176.30527,
+    "ast_hash": "7e04d61fdbf4aae5c452ee1fb709970b",
+    "semantic_hash": "7e04d61fdbf4aae5c452ee1fb709970b"
+  },
+  "src/components/Showcase3D.tsx": {
+    "mtime": 1786038933.6123705,
+    "seen": 1788494176.3052707,
+    "ast_hash": "a289add11d196ccd120005d19b388606",
+    "semantic_hash": "a289add11d196ccd120005d19b388606"
+  },
+  "src/components/SoftwareSolutions.tsx": {
+    "mtime": 1787235397.3490994,
+    "seen": 1788494176.3052714,
+    "ast_hash": "3dc5288789da1ed2f6e07a30328135a9",
+    "semantic_hash": "3dc5288789da1ed2f6e07a30328135a9"
+  },
+  "src/components/Specialists.tsx": {
+    "mtime": 1787230241.300688,
+    "seen": 1788494176.3052719,
+    "ast_hash": "f60fdcad9eb838ce6c04b6509849c237",
+    "semantic_hash": "f60fdcad9eb838ce6c04b6509849c237"
+  },
+  "src/components/Stats.tsx": {
+    "mtime": 1786551128.4626124,
+    "seen": 1788494176.3052728,
+    "ast_hash": "ca0d8a038a4bf0cd936d02276325dc8d",
+    "semantic_hash": "ca0d8a038a4bf0cd936d02276325dc8d"
+  },
+  "src/components/Timeline.tsx": {
+    "mtime": 1786038798.1581788,
+    "seen": 1788494176.3052735,
+    "ast_hash": "527b2c3d461d93a488741f5c7f6672cf",
+    "semantic_hash": "527b2c3d461d93a488741f5c7f6672cf"
+  },
+  "src/components/TopBar.tsx": {
+    "mtime": 1786038798.1515188,
+    "seen": 1788494176.3052745,
+    "ast_hash": "9296b444601df61de1bce74de2f4d5db",
+    "semantic_hash": "9296b444601df61de1bce74de2f4d5db"
+  },
+  "src/components/VerticalDetail.tsx": {
+    "mtime": 1787235380.1523418,
+    "seen": 1788494176.305275,
+    "ast_hash": "e51d6d295d0b55170485bd457aa098b0",
+    "semantic_hash": "e51d6d295d0b55170485bd457aa098b0"
+  },
+  "src/components/WhatsAppIcon.tsx": {
+    "mtime": 1786038798.1515188,
+    "seen": 1788494176.3052757,
+    "ast_hash": "2b0d39a942d94f511050902804910e15",
+    "semantic_hash": "2b0d39a942d94f511050902804910e15"
+  },
+  "src/lib/error-capture.ts": {
+    "mtime": 1783822526.8139813,
+    "seen": 1788494176.3052762,
+    "ast_hash": "1d158c2d639c781546da5f816c39f48d",
+    "semantic_hash": "1d158c2d639c781546da5f816c39f48d"
+  },
+  "src/lib/error-page.ts": {
+    "mtime": 1783822526.8139813,
+    "seen": 1788494176.3052769,
+    "ast_hash": "cc10be665a4bf6be668d0c29c207b92d",
+    "semantic_hash": "cc10be665a4bf6be668d0c29c207b92d"
+  },
+  "src/lib/hooks.ts": {
+    "mtime": 1786507355.9707227,
+    "seen": 1788494176.3052773,
+    "ast_hash": "2366c51abe5f81e64f9f150f91882543",
+    "semantic_hash": "2366c51abe5f81e64f9f150f91882543"
+  },
+  "src/lib/lovable-error-reporting.ts": {
+    "mtime": 1783822526.8139813,
+    "seen": 1788494176.3052783,
+    "ast_hash": "b49ff1965eef0c8a30e88ae6d2b54fb9",
+    "semantic_hash": "b49ff1965eef0c8a30e88ae6d2b54fb9"
+  },
+  "src/lib/services-data.ts": {
+    "mtime": 1787236308.0624993,
+    "seen": 1788494176.3052788,
+    "ast_hash": "0bee9765bd4d76e536c4a05b6f92f89f",
+    "semantic_hash": "0bee9765bd4d76e536c4a05b6f92f89f"
+  },
+  "src/lib/site.ts": {
+    "mtime": 1787237944.8857584,
+    "seen": 1788494176.3052795,
+    "ast_hash": "a366f853e530b05cc3eaa3e68074e5c7",
+    "semantic_hash": "a366f853e530b05cc3eaa3e68074e5c7"
+  },
+  "src/lib/use-web-vitals.ts": {
+    "mtime": 1786551105.9950845,
+    "seen": 1788494176.30528,
+    "ast_hash": "60d9d3e240d8d38fc909b28e979fd359",
+    "semantic_hash": "60d9d3e240d8d38fc909b28e979fd359"
+  },
+  "src/lib/verticals-data.ts": {
+    "mtime": 1786551267.8992176,
+    "seen": 1788494176.3052807,
+    "ast_hash": "22ecfd5fd161545470a91e5bcca2d26d",
+    "semantic_hash": "22ecfd5fd161545470a91e5bcca2d26d"
+  },
+  "src/routeTree.gen.ts": {
+    "mtime": 1787235449.1388905,
+    "seen": 1788494176.3052812,
+    "ast_hash": "d604cd803040551363a2bc3830c69e1c",
+    "semantic_hash": "d604cd803040551363a2bc3830c69e1c"
+  },
+  "src/router.tsx": {
+    "mtime": 1786506628.0513086,
+    "seen": 1788494176.305282,
+    "ast_hash": "6b2a3091463749f2c5c59cc290af99cb",
+    "semantic_hash": "6b2a3091463749f2c5c59cc290af99cb"
+  },
+  "src/routes/__root.tsx": {
+    "mtime": 1786506623.1940446,
+    "seen": 1788494176.3052826,
+    "ast_hash": "d2b6538a7a1f8c09f6b6333ab1e3fa10",
+    "semantic_hash": "d2b6538a7a1f8c09f6b6333ab1e3fa10"
+  },
+  "src/routes/index.tsx": {
+    "mtime": 1787230216.007955,
+    "seen": 1788494176.3052833,
+    "ast_hash": "373ae091401321e8376f8b2a4d2a461a",
+    "semantic_hash": "373ae091401321e8376f8b2a4d2a461a"
+  },
+  "src/routes/para/clinicas.tsx": {
+    "mtime": 1786550949.7471657,
+    "seen": 1788494176.3052838,
+    "ast_hash": "e1da83a06d500fa72973957e901e09ae",
+    "semantic_hash": "e1da83a06d500fa72973957e901e09ae"
+  },
+  "src/routes/para/inmobiliarias.tsx": {
+    "mtime": 1786550952.3121293,
+    "seen": 1788494176.3052845,
+    "ast_hash": "0c095dae9949d82c20ff28ddeef6571f",
+    "semantic_hash": "0c095dae9949d82c20ff28ddeef6571f"
+  },
+  "src/routes/para/restaurantes.tsx": {
+    "mtime": 1786550946.8618357,
+    "seen": 1788494176.3052852,
+    "ast_hash": "c1ef5d6d9d965efd394b54f5b24ca187",
+    "semantic_hash": "c1ef5d6d9d965efd394b54f5b24ca187"
+  },
+  "src/routes/para/tiendas.tsx": {
+    "mtime": 1786550955.0655642,
+    "seen": 1788494176.305286,
+    "ast_hash": "3537b83d05ecfa3663f3ce4cc376aa21",
+    "semantic_hash": "3537b83d05ecfa3663f3ce4cc376aa21"
+  },
+  "src/routes/privacidad.tsx": {
+    "mtime": 1784664836.7449157,
+    "seen": 1788494176.305287,
+    "ast_hash": "2415d0c5bc7c75695c458d55f1406e07",
+    "semantic_hash": "2415d0c5bc7c75695c458d55f1406e07"
+  },
+  "src/routes/servicios/automatizacion-de-procesos.tsx": {
+    "mtime": 1787235412.3468492,
+    "seen": 1788494176.3052874,
+    "ast_hash": "30d29292d664389715d5433172f6b9d8",
+    "semantic_hash": "30d29292d664389715d5433172f6b9d8"
+  },
+  "src/routes/servicios/desarrollo-web.tsx": {
+    "mtime": 1787236090.203155,
+    "seen": 1788494176.305288,
+    "ast_hash": "dbe9b9ea5fc84a53255dc87f49ca90f7",
+    "semantic_hash": "dbe9b9ea5fc84a53255dc87f49ca90f7"
+  },
+  "src/routes/servicios/landing-pages.tsx": {
+    "mtime": 1787236093.611045,
+    "seen": 1788494176.3052888,
+    "ast_hash": "004e6b73adedfed24e563edcc0bda4e9",
+    "semantic_hash": "004e6b73adedfed24e563edcc0bda4e9"
+  },
+  "src/routes/servicios/sistemas-de-facturacion.tsx": {
+    "mtime": 1787235407.9472482,
+    "seen": 1788494176.3052895,
+    "ast_hash": "8bbb75e23d0ac64fdcb2970f21485424",
+    "semantic_hash": "8bbb75e23d0ac64fdcb2970f21485424"
+  },
+  "src/routes/servicios/sistemas-de-inventario.tsx": {
+    "mtime": 1787235529.073389,
+    "seen": 1788494176.30529,
+    "ast_hash": "7ad5645bf1d4f09ac92a11fefbd734b0",
+    "semantic_hash": "7ad5645bf1d4f09ac92a11fefbd734b0"
+  },
+  "src/routes/servicios/tiendas-online.tsx": {
+    "mtime": 1787236097.5960448,
+    "seen": 1788494176.3052907,
+    "ast_hash": "6b429b75e3f677c22f3825e3ca1b5fa7",
+    "semantic_hash": "6b429b75e3f677c22f3825e3ca1b5fa7"
+  },
+  "src/routes/terminos.tsx": {
+    "mtime": 1784664836.8629203,
+    "seen": 1788494176.3052912,
+    "ast_hash": "c93827ee6fbbca7fa6384f3e66e76aed",
+    "semantic_hash": "c93827ee6fbbca7fa6384f3e66e76aed"
+  },
+  "src/server.ts": {
+    "mtime": 1783822526.8199754,
+    "seen": 1788494176.3052921,
+    "ast_hash": "2df9e6eef196729ff47146962fd38714",
+    "semantic_hash": "2df9e6eef196729ff47146962fd38714"
+  },
+  "src/start.ts": {
+    "mtime": 1783822526.8199754,
+    "seen": 1788494176.3052926,
+    "ast_hash": "9194c218691e3dd0b8856096bb81c3b4",
+    "semantic_hash": "9194c218691e3dd0b8856096bb81c3b4"
+  },
+  "tsconfig.json": {
+    "mtime": 1783822526.8208172,
+    "seen": 1788494176.3052933,
+    "ast_hash": "662721996bc74d1469c21a681e37be5e",
+    "semantic_hash": "662721996bc74d1469c21a681e37be5e"
+  },
+  "vite.config.ts": {
+    "mtime": 1783822526.8208172,
+    "seen": 1788494176.3052938,
+    "ast_hash": "b4e8af3f0f230eee39d6bd32d195195f",
+    "semantic_hash": "b4e8af3f0f230eee39d6bd32d195195f"
+  },
+  ".claude/skills/Anti-AI-Slop.md": {
+    "mtime": 1786551766.843366,
+    "seen": 1788494176.3052945,
+    "ast_hash": "5c760644d9c12341ac769617504bfdb1",
+    "semantic_hash": "5c760644d9c12341ac769617504bfdb1"
+  },
+  ".claude/skills/ArquitectoComponentes.md": {
+    "mtime": 1786551766.846331,
+    "seen": 1788494176.305295,
+    "ast_hash": "459bdac45af80cefe88c786db78da63e",
+    "semantic_hash": "459bdac45af80cefe88c786db78da63e"
+  },
+  ".claude/skills/AuditorUX.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.305296,
+    "ast_hash": "7358daabc960b945798b5bc7d92920e9",
+    "semantic_hash": "7358daabc960b945798b5bc7d92920e9"
+  },
+  ".claude/skills/beauty-catalog-architect.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.3052964,
+    "ast_hash": "b358883e18bebafc0b5e63e235e901ea",
+    "semantic_hash": "b358883e18bebafc0b5e63e235e901ea"
+  },
+  ".claude/skills/ui-styling/SKILL.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.3052971,
+    "ast_hash": "94b699581e02c54bcd8dc727a556f600",
+    "semantic_hash": "94b699581e02c54bcd8dc727a556f600"
+  },
+  ".claude/skills/ui-ux-review/SKILL.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.3052976,
+    "ast_hash": "70b93690eed54279ae381423f65da2e8",
+    "semantic_hash": "70b93690eed54279ae381423f65da2e8"
+  },
+  ".lovable/plan.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.3052983,
+    "ast_hash": "9167bc65d7752f48130bf7f5067cba3c",
+    "semantic_hash": "9167bc65d7752f48130bf7f5067cba3c"
+  },
+  "AGENTS.md": {
+    "mtime": 1786551766.8481648,
+    "seen": 1788494176.305299,
+    "ast_hash": "0c4b4b50b295f3a5ce106d71eee276fc",
+    "semantic_hash": "0c4b4b50b295f3a5ce106d71eee276fc"
+  },
+  "CLAUDE.md": {
+    "mtime": 1786551766.8534753,
+    "seen": 1788494176.3052998,
+    "ast_hash": "4ce8603fec9e4cff02d03998abade734",
+    "semantic_hash": "4ce8603fec9e4cff02d03998abade734"
+  },
+  "docs/PLANTILLA_CASO_DE_EXITO.md": {
+    "mtime": 1784347544.463701,
+    "seen": 1788494176.3053002,
+    "ast_hash": "8587d8178f1a4ca0215240bb7c74a12c",
+    "semantic_hash": "8587d8178f1a4ca0215240bb7c74a12c"
+  },
+  "public/robots.txt": {
+    "mtime": 1784664837.100986,
+    "seen": 1788494176.305301,
+    "ast_hash": "e6d05d5ba7251d7834313d565fbf90a8",
+    "semantic_hash": "e6d05d5ba7251d7834313d565fbf90a8"
+  },
+  "src/routes/README.md": {
+    "mtime": 1786551766.8541615,
+    "seen": 1788494176.3053017,
+    "ast_hash": "7c596cbb4d31d216707c1fb18d7d4d3b",
+    "semantic_hash": "7c596cbb4d31d216707c1fb18d7d4d3b"
+  },
+  "img/Diosas cosmeticos.jpg": {
+    "mtime": 1783832079.175125,
+    "seen": 1788494176.3053026,
+    "ast_hash": "efc7d3a0626442aa7a870404dcf3239b",
+    "semantic_hash": "efc7d3a0626442aa7a870404dcf3239b"
+  },
+  "img/logomarca.jpeg": {
+    "mtime": 1784655940.654136,
+    "seen": 1788494176.305303,
+    "ast_hash": "a7bc4db805ad4cec37be6773d99a1a95",
+    "semantic_hash": "a7bc4db805ad4cec37be6773d99a1a95"
+  },
+  "public/images/diosas-cosmeticos.webp": {
+    "mtime": 1783983089.423,
+    "seen": 1788494176.3053038,
+    "ast_hash": "5c71706e9cb2c6d258cc48805e57df02",
+    "semantic_hash": "5c71706e9cb2c6d258cc48805e57df02"
+  },
+  "public/images/diosas-full.webp": {
+    "mtime": 1784346591.493,
+    "seen": 1788494176.3053043,
+    "ast_hash": "f69b187d243fb14cc8302eb826bde7e5",
+    "semantic_hash": "f69b187d243fb14cc8302eb826bde7e5"
+  },
+  "public/images/logo-mark.png": {
+    "mtime": 1786506455.406,
+    "seen": 1788494176.305305,
+    "ast_hash": "c00de7e8829340553cb3cd883b5f6745",
+    "semantic_hash": "c00de7e8829340553cb3cd883b5f6745"
+  },
+  "public/og-image.png": {
+    "mtime": 1784344678.597,
+    "seen": 1788494176.3053055,
+    "ast_hash": "0f368857b5507bab7472f5b5653fcc69",
+    "semantic_hash": "0f368857b5507bab7472f5b5653fcc69"
+  },
+  "public/videos/soluciones.mp4": {
+    "mtime": 1786040182.0392296,
+    "seen": 1788494176.3053064,
+    "ast_hash": "4f579254b27c67c1af11800397da7fa4",
+    "semantic_hash": "4f579254b27c67c1af11800397da7fa4"
+  }
+}
