@@ -243,54 +243,9 @@ Solo 3 secciones + navbar + footer:
 
 ## ⚡ Arquitectura & Componentes
 
-### Estructura de directorios (real)
+### Estructura de directorios
 
-```
-conversion-craft-96/
-├── .gitignore
-├── vite.config.ts             # Config vía @lovable.dev/vite-tanstack-config
-├── tsconfig.json
-├── package.json
-├── public/                    # Assets estáticos
-│   ├── fonts/                 # Inter + Space Grotesk (variable woff2, self-hosted)
-│   ├── images/                # Imágenes del showcase (webp)
-│   ├── videos/                # soluciones.mp4 (1,15 MB) — carga diferida, nunca en el load inicial
-│   ├── og-image.png           # Open Graph 1200×630
-│   ├── favicon.ico
-│   ├── robots.txt
-│   └── sitemap.xml
-├── src/
-│   ├── routes/
-│   │   ├── __root.tsx         # Root layout + <head> (meta, OG, schema.org) + 404/error
-│   │   ├── index.tsx          # Landing: solo composición de secciones (~56 líneas)
-│   │   ├── privacidad.tsx     # Política de Privacidad (Ley 1581)
-│   │   └── terminos.tsx       # Términos y Condiciones
-│   ├── components/
-│   │   ├── TopBar.tsx / Nav.tsx / Footer.tsx        # Chrome del sitio
-│   │   ├── Hero.tsx / Problem.tsx / Benefits.tsx    # Secciones de la landing
-│   │   ├── Stats.tsx / Timeline.tsx / Pricing.tsx   #   (una sección = un archivo)
-│   │   ├── FAQ.tsx / Contact.tsx / FinalCTA.tsx
-│   │   ├── DigitalDiagnosis.tsx     # Wizard de diagnóstico (lead magnet)
-│   │   ├── SoftwareSolutions.tsx    # Soluciones de software a la medida (12 cards + mockup)
-│   │   ├── Showcase3D.tsx           # Portafolio: caso destacado (laptop 3D + cifras + funciones) y galería
-│   │   ├── ShowcaseGallery.tsx      # Galería con pestañas (6 capturas reales de Diosa's Make up)
-│   │   ├── BrowserChrome.tsx        # Barra de navegador compartida por los marcos de capturas
-│   │   ├── WhatsAppIcon.tsx / FloatingWhatsApp.tsx  # Canal directo, compartido
-│   │   ├── Reveal.tsx               # Entrada escalonada al entrar en viewport
-│   │   └── LegalPage.tsx            # Layout compartido de páginas legales
-│   ├── lib/
-│   │   ├── site.ts            # Fuente única: contacto, WhatsApp, Formspree, FOCUS_RING
-│   │   ├── hooks.ts           # useInView + useTilt (hooks compartidos)
-│   │   ├── error-capture.ts
-│   │   ├── error-page.ts
-│   │   └── lovable-error-reporting.ts
-│   ├── router.tsx
-│   ├── server.ts               # Entry SSR (Nitro/Cloudflare)
-│   ├── start.ts
-│   └── styles.css
-├── .lovable/                   # Metadata del proyecto Lovable
-└── CLAUDE.md                   # Este archivo
-```
+El mapa completo (carpetas, rutas, componentes, datos, despliegue y dónde cambiar cada cosa) vive en [`docs/ESTRUCTURA.md`](docs/ESTRUCTURA.md). Se mantiene ahí para no duplicarlo ni desactualizarlo aquí.
 
 **Convención:** una sección = un archivo en `src/components/`. `src/routes/index.tsx` solo compone. Los tokens de color, contacto y el endpoint de Formspree tienen **fuente única** en `src/lib/site.ts` — no hardcodear números/correos en los componentes.
 
