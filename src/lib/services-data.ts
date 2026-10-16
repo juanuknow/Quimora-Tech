@@ -125,16 +125,16 @@ export const services: readonly Service[] = [
   },
   {
     icon: Receipt,
-    title: "Sistemas de facturación",
-    body: "Soluciones para digitalizar y optimizar los procesos de facturación de tu negocio.",
+    title: "Control de ventas, caja y cotizaciones",
+    body: "Registra tus ventas, ordena la caja y genera cotizaciones y comprobantes internos desde un solo sistema.",
     slug: "sistemas-de-facturacion",
     metaDescription:
-      "Sistemas de facturación a medida para empresas en Cali: digitaliza y organiza tus facturas en un solo lugar.",
+      "Control de ventas, caja y cotizaciones a medida para empresas en Cali: registra ventas y comprobantes internos en un solo lugar.",
     longDescription:
-      "Facturar a mano o con plantillas sueltas es lento y deja espacio para errores que después cuestan tiempo en contabilidad. Desarrollamos sistemas de facturación a medida para digitalizar ese proceso: generar, organizar y consultar tus facturas desde un solo sistema, sin depender de hojas de cálculo ni de rehacer plantillas cada mes.\n\nCada sistema se adapta a cómo factura realmente tu negocio — productos, servicios o ambos — y queda listo para crecer junto con tu operación.\n\nEl sistema se enfoca en generar, organizar y consultar tus facturas — no incluye integración con la facturación electrónica de la DIAN. Si tu negocio la necesita, contanoslo antes de arrancar para confirmar si aplica a tu proyecto.",
+      "Llevar las ventas, la caja y las cotizaciones en hojas de cálculo o plantillas sueltas es lento y deja espacio para errores que después cuestan tiempo en contabilidad. Desarrollamos sistemas a medida para digitalizar ese proceso: registrar ventas, generar cotizaciones y comprobantes o facturas internas, y consultar todo desde un solo sistema, sin rehacer plantillas cada mes.\n\nCada sistema se adapta a cómo vende realmente tu negocio — productos, servicios o ambos — y queda listo para crecer junto con tu operación.\n\nEl sistema se enfoca en registrar, organizar y consultar tus ventas y comprobantes internos — no incluye integración con la facturación electrónica de la DIAN. Si tu negocio la necesita, contanoslo antes de arrancar para confirmar si aplica a tu proyecto.",
     benefits: [
-      "Generación y organización de facturas desde un solo sistema",
-      "A la medida de cómo factura tu negocio hoy",
+      "Ventas, caja y cotizaciones desde un solo sistema",
+      "A la medida de cómo vende tu negocio hoy",
       "Reduce el trabajo manual y el margen de error",
       "Pensado para crecer junto con tu operación",
     ],

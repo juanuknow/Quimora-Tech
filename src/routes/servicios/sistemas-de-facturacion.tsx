@@ -9,12 +9,12 @@ const service = getServiceBySlug(SLUG);
 export const Route = createFileRoute("/servicios/sistemas-de-facturacion")({
   head: () => ({
     meta: [
-      { title: "Sistemas de Facturación para Empresas en Cali · Quimora Tech" },
+      { title: "Control de Ventas, Caja y Cotizaciones en Cali · Quimora Tech" },
       { name: "description", content: service.metaDescription ?? service.body },
       { name: "robots", content: "index, follow" },
       {
         property: "og:title",
-        content: "Sistemas de Facturación para Empresas en Cali · Quimora Tech",
+        content: "Control de Ventas, Caja y Cotizaciones en Cali · Quimora Tech",
       },
       { property: "og:description", content: service.metaDescription ?? service.body },
       { property: "og:url", content: `${SITE_URL}/servicios/${SLUG}` },

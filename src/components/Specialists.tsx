@@ -15,8 +15,8 @@ const SPECIALTIES = [
   },
   {
     icon: Receipt,
-    title: "Sistemas de facturación",
-    body: "Soluciones para digitalizar y optimizar los procesos de facturación de tu negocio.",
+    title: "Control de ventas, caja y cotizaciones",
+    body: "Registra tus ventas, ordena la caja y genera cotizaciones y comprobantes internos desde un solo sistema.",
   },
   {
     icon: Workflow,
