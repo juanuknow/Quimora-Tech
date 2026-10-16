@@ -16,6 +16,37 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+/** Grupos del catálogo de la home. Un servicio pertenece a exactamente uno. */
+export type ServiceCategoryId = "web-ventas" | "gestion" | "a-medida";
+
+export interface ServiceCategory {
+  id: ServiceCategoryId;
+  /** Etiqueta corta de la pestaña. */
+  label: string;
+  /** Una línea que dice para qué sirve el grupo; se muestra sobre sus tarjetas. */
+  description: string;
+}
+
+/** Orden de las pestañas; la primera es la que se ve al cargar. */
+export const SERVICE_CATEGORIES: readonly ServiceCategory[] = [
+  {
+    id: "web-ventas",
+    label: "Web y ventas",
+    description: "Que te encuentren, te escriban y te compren a cualquier hora.",
+  },
+  {
+    id: "gestion",
+    label: "Gestión",
+    description: "Ordena tu operación: inventario, ventas, caja y clientes en un solo lugar.",
+  },
+  {
+    id: "a-medida",
+    label: "A medida",
+    description:
+      "Tecnología hecha para tu negocio: automatización, integraciones y software propio.",
+  },
+] as const;
+
 /**
  * Fuente única del catálogo de "Soluciones de software" — usada por la
  * sección `SoftwareSolutions` en la home y por las páginas individuales en
@@ -29,6 +60,8 @@ import {
 export interface Service {
   slug?: string;
   icon: LucideIcon;
+  /** Grupo del catálogo al que pertenece (ver `SERVICE_CATEGORIES`). */
+  category: ServiceCategoryId;
   title: string;
   /** Beneficio para el cliente, no la funcionalidad técnica — texto corto de la tarjeta. */
   body: string;
@@ -48,6 +81,7 @@ export const services: readonly Service[] = [
   {
     icon: Globe,
     title: "Sitios web corporativos",
+    category: "web-ventas",
     body: "Presencia profesional que transmite confianza desde el primer clic y explica tu negocio sin que tengas que repetirlo.",
     slug: "desarrollo-web",
     metaDescription:
@@ -66,6 +100,7 @@ export const services: readonly Service[] = [
   {
     icon: MousePointerClick,
     title: "Landing pages",
+    category: "web-ventas",
     body: "Páginas enfocadas en una sola acción: que el visitante te escriba, agende o compre.",
     slug: "landing-pages",
     metaDescription:
@@ -83,6 +118,7 @@ export const services: readonly Service[] = [
   {
     icon: ShoppingCart,
     title: "Tiendas online (eCommerce)",
+    category: "web-ventas",
     body: "Vende las 24 horas con catálogo, carrito y pagos en línea, sin depender solo de las redes sociales.",
     slug: "tiendas-online",
     metaDescription:
@@ -100,16 +136,19 @@ export const services: readonly Service[] = [
   {
     icon: ClipboardList,
     title: "Sistemas administrativos",
+    category: "gestion",
     body: "Centraliza pedidos, inventario y clientes en un solo lugar y deja atrás las hojas de cálculo sueltas.",
   },
   {
     icon: LayoutDashboard,
     title: "Paneles de gestión",
+    category: "gestion",
     body: "Mira los números de tu negocio en tiempo real y toma decisiones con datos, no con intuición.",
   },
   {
     icon: Boxes,
     title: "Sistemas de inventario",
+    category: "gestion",
     body: "Herramientas para controlar productos, existencias, movimientos y operaciones de forma eficiente.",
     slug: "sistemas-de-inventario",
     metaDescription:
@@ -126,6 +165,7 @@ export const services: readonly Service[] = [
   {
     icon: Receipt,
     title: "Control de ventas, caja y cotizaciones",
+    category: "gestion",
     body: "Registra tus ventas, ordena la caja y genera cotizaciones y comprobantes internos desde un solo sistema.",
     slug: "sistemas-de-facturacion",
     metaDescription:
@@ -142,16 +182,19 @@ export const services: readonly Service[] = [
   {
     icon: Layers,
     title: "Plataformas web personalizadas",
+    category: "a-medida",
     body: "Software hecho a la medida de tu operación, no un molde genérico al que tengas que adaptarte.",
   },
   {
     icon: CalendarCheck,
     title: "Reservas y citas",
+    category: "web-ventas",
     body: "Tus clientes agendan solos a cualquier hora: menos llamadas, menos cruces de horario.",
   },
   {
     icon: Workflow,
     title: "Automatización de procesos",
+    category: "a-medida",
     body: "Las tareas repetitivas se hacen solas: menos errores manuales y más horas libres para vender.",
     slug: "automatizacion-de-procesos",
     metaDescription:
@@ -168,21 +211,25 @@ export const services: readonly Service[] = [
   {
     icon: Plug,
     title: "Integraciones con APIs",
+    category: "a-medida",
     body: "Conectamos tu web con pagos, envíos, WhatsApp o el sistema que ya usas a diario.",
   },
   {
     icon: Users,
     title: "Portales para clientes",
+    category: "gestion",
     body: "Un espacio privado donde cada cliente consulta su información sin escribirte por cada dato.",
   },
   {
     icon: BrainCircuit,
     title: "Soluciones con inteligencia artificial",
+    category: "a-medida",
     body: "Asistentes, búsqueda inteligente y clasificación automática que responden por ti.",
   },
   {
     icon: Server,
     title: "Aplicaciones web escalables",
+    category: "a-medida",
     body: "Arquitectura preparada para crecer: más usuarios y más datos sin tener que rehacer todo.",
   },
 ] as const;

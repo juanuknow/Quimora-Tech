@@ -499,6 +499,24 @@
   }
 }
 
+/* -------------------- Cambio de pestaña --------------------
+   El panel entra al pasar de `display: none` a visible, que reinicia la
+   animación sola: no hace falta JS ni una clase por estado. Recorrido corto
+   (6 px) y 200 ms: se cambia de pestaña a menudo y no debe sentirse lento. */
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-tab-in {
+  animation: tab-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* -------------------- Progreso de lectura --------------------
    Barra ligada al scroll de la página, sin JS: `animation-timeline` la avanza
    en el compositor. Donde el navegador no lo soporta se queda oculta en vez de
@@ -549,7 +567,8 @@
 
   /* Estado final directo: sin recorrido, sin parpadeo. */
   .animate-rise-in,
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-tab-in {
     animation: none;
   }
 

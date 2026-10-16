@@ -93,6 +93,7 @@ fundan entre sí; al mover una sección, revisar sus vecinas.
 | Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `ReadingProgress` |
 | Secciones de la landing | `Hero`, `Problem`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Stats`, `Timeline`, `Specialists`, `Pricing`, `FAQ`, `Contact`, `FinalCTA` |
 | Diagnóstico (lead magnet) | `DigitalDiagnosis` (wizard de 5 pasos), `DiagnosisShortcuts` (chips que lo abren con el negocio ya elegido) |
+| Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
 | Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador), `LivePerformance` (métricas web reales) |
 | Plantillas de página | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`) |
 | Movimiento reutilizable | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones) |
@@ -102,7 +103,7 @@ fundan entre sí; al mover una sección, revisar sus vecinas.
 | Archivo | Responsabilidad |
 | --- | --- |
 | `site.ts` | **Fuente única** de contacto (WhatsApp, correo, teléfonos), `SITE_URL`, endpoint de Formspree, ID de Google Analytics, `trackEvent` y los anillos de foco `FOCUS_RING` / `LIGHT_RING`. No hardcodear estos valores en componentes. |
-| `services-data.ts` | Catálogo de servicios y soluciones (alimenta `SoftwareSolutions`, `ServiceDetail`, `Nav`, `Footer`) |
+| `services-data.ts` | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer`) |
 | `verticals-data.ts` | Contenido de las páginas por rubro `/para/*` (alimenta `VerticalDetail`) |
 | `diagnosis.ts` | Tipos y opciones compartidos del Diagnóstico, y `requestDiagnosis()` para abrirlo desde otra sección |
 | `hooks.ts` | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor) |
@@ -148,7 +149,7 @@ npm run format     # Prettier
 | Quiero… | Edito… |
 | --- | --- |
 | Cambiar teléfono, correo, WhatsApp o endpoint del formulario | `src/lib/site.ts` |
-| Añadir o editar un servicio | `src/lib/services-data.ts` (+ una ruta en `src/routes/servicios/` si tiene página) |
+| Añadir o editar un servicio | `src/lib/services-data.ts`, eligiendo su `category` (+ una ruta en `src/routes/servicios/` si tiene página) |
 | Añadir una página por rubro | `src/lib/verticals-data.ts` + una ruta en `src/routes/para/` |
 | Reordenar la landing | `src/routes/index.tsx` |
 | Cambiar colores, tipografía o curvas | `src/styles.css` (`@theme`) |
