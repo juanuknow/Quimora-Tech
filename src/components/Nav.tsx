@@ -158,7 +158,7 @@ export function Nav() {
           </span>
           <span className="font-display text-body font-semibold tracking-tight">Quimora Tech</span>
         </a>
-        <nav ref={navRef} className="relative hidden items-center gap-10 text-sm md:flex">
+        <nav ref={navRef} className="relative hidden items-center gap-6 text-sm md:flex lg:gap-10">
           {NAV_LINKS.map((l) => {
             const isActive = active === l.id;
             if (l.id === "soluciones") {

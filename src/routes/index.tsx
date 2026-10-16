@@ -38,14 +38,14 @@ function LandingPage() {
       <Nav />
       <main id="main">
         <Hero />
-        <DigitalDiagnosis />
         <Problem />
         <Benefits />
         <SoftwareSolutions />
-        <Specialists />
         <Showcase3D />
         <Stats />
         <Timeline />
+        <Specialists />
+        <DigitalDiagnosis />
         <Pricing />
         <FAQ />
         <Contact />
