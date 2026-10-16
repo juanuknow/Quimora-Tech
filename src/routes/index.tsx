@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
+import { DiagnosisShortcuts } from "../components/DiagnosisShortcuts";
+import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
 import { SoftwareSolutions } from "../components/SoftwareSolutions";
 import { Specialists } from "../components/Specialists";
@@ -34,6 +36,7 @@ function LandingPage() {
       >
         Saltar al contenido principal
       </a>
+      <ReadingProgress />
       <TopBar />
       <Nav />
       <main id="main">
@@ -45,6 +48,7 @@ function LandingPage() {
         <Stats />
         <Timeline />
         <Specialists />
+        <DiagnosisShortcuts />
         <DigitalDiagnosis />
         <Pricing />
         <FAQ />

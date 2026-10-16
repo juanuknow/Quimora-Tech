@@ -1,13 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Store,
-  ShoppingBag,
-  UtensilsCrossed,
-  Coffee,
-  Stethoscope,
-  Scale,
   Building2,
-  Briefcase,
   CircleEllipsis,
   Users,
   Globe,
@@ -36,19 +29,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
+import {
+  BUSINESS_OPTIONS,
+  DIAGNOSIS_START_EVENT,
+  type BusinessId,
+  type Option,
+} from "../lib/diagnosis";
 
 /* ============================ Domain model ============================ */
-
-type BusinessId =
-  | "tienda-fisica"
-  | "tienda-online"
-  | "restaurante"
-  | "cafeteria"
-  | "clinica"
-  | "abogado"
-  | "inmobiliaria"
-  | "empresa"
-  | "otro";
 
 type ObjectiveId =
   | "mas-clientes"
@@ -72,24 +60,6 @@ type FeatureId =
 type TimingId = "asap" | "este-mes" | "dos-meses" | "investigando";
 
 type BudgetId = "menos-500" | "500-1000" | "1000-3000" | "mas-3000" | "no-se";
-
-interface Option<T extends string> {
-  id: T;
-  label: string;
-  icon: LucideIcon;
-}
-
-const BUSINESS_OPTIONS: Option<BusinessId>[] = [
-  { id: "tienda-fisica", label: "Tienda física", icon: Store },
-  { id: "tienda-online", label: "Tienda online", icon: ShoppingBag },
-  { id: "restaurante", label: "Restaurante", icon: UtensilsCrossed },
-  { id: "cafeteria", label: "Cafetería", icon: Coffee },
-  { id: "clinica", label: "Clínica", icon: Stethoscope },
-  { id: "abogado", label: "Abogado", icon: Scale },
-  { id: "inmobiliaria", label: "Inmobiliaria", icon: Building2 },
-  { id: "empresa", label: "Empresa", icon: Briefcase },
-  { id: "otro", label: "Otro", icon: CircleEllipsis },
-];
 
 const OBJECTIVE_OPTIONS: Option<ObjectiveId>[] = [
   { id: "mas-clientes", label: "Conseguir más clientes", icon: Users },
@@ -519,6 +489,16 @@ export function DigitalDiagnosis() {
   const [phase, setPhase] = useState<"intro" | "wizard" | "result">("intro");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
+
+  useEffect(() => {
+    const onStart = (e: Event) => {
+      setAnswers({ ...EMPTY_ANSWERS, business: (e as CustomEvent<BusinessId>).detail });
+      setStep(0);
+      setPhase("wizard");
+    };
+    window.addEventListener(DIAGNOSIS_START_EVENT, onStart);
+    return () => window.removeEventListener(DIAGNOSIS_START_EVENT, onStart);
+  }, []);
 
   const start = () => {
     setAnswers(EMPTY_ANSWERS);

@@ -1,5 +1,6 @@
 import { SearchX, Clock, UserX, TrendingDown, AlertCircle } from "lucide-react";
 import { Reveal } from "./Reveal";
+import { FlowConnector } from "./FlowConnector";
 
 /* -------------------- Problem -------------------- */
 const PAINS = [
@@ -61,6 +62,7 @@ export function Problem() {
           La buena noticia: todo esto tiene solución.{" "}
           <span className="text-brand">Y es más simple de lo que crees.</span>
         </p>
+        <FlowConnector className="mt-8" />
       </div>
     </section>
   );

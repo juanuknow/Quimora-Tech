@@ -81,13 +81,7 @@ export function SoftwareSolutions() {
         </div>
 
         {/* Catálogo de soluciones */}
-        <div className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {services.map((solution, i) => (
-            // El escalonado se reinicia cada 4 tarjetas: con 12 en pantalla, una
-            // cascada continua dejaría la última esperando casi un segundo.
-            <SolutionCard key={solution.title} solution={solution} index={i % 4} />
-          ))}
-        </div>
+        <SolutionsCatalog />
 
         {/* Cierre + CTA */}
         <div className="mt-16 rounded-2xl border border-white/15 bg-white/[0.04] p-8 text-center md:p-12">
@@ -124,6 +118,71 @@ export function SoftwareSolutions() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ============================ Catalog ============================ */
+
+/** Tarjetas siempre visibles en móvil; el resto se despliega a demanda. */
+const PREVIEW_COUNT = 4;
+const COLLAPSE_MS = 300;
+const EXTRA_ID = "soluciones-adicionales";
+
+/**
+ * Catálogo de soluciones. En móvil las 12 tarjetas sumaban ~5 000 px de scroll,
+ * así que solo se muestran las primeras y el resto se despliega con un botón.
+ *
+ * Desde `md` el pliegue desaparece: los contenedores intermedios pasan a
+ * `display: contents` y las 12 tarjetas vuelven a ser hijas de una sola rejilla,
+ * sin huecos entre la primera tanda y la segunda.
+ */
+function SolutionsCatalog() {
+  const [expanded, setExpanded] = useState(false);
+  const preview = services.slice(0, PREVIEW_COUNT);
+  const extra = services.slice(PREVIEW_COUNT);
+
+  return (
+    <div className="mt-20">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {preview.map((solution, i) => (
+          // El escalonado se reinicia cada 4 tarjetas: con 12 en pantalla, una
+          // cascada continua dejaría la última esperando casi un segundo.
+          <SolutionCard key={solution.title} solution={solution} index={i % 4} />
+        ))}
+        {/* Animar `grid-template-rows` 0fr → 1fr evita medir la altura real. */}
+        <div
+          id={EXTRA_ID}
+          className={`col-span-full grid transition-[grid-template-rows] ease-out-strong md:contents ${
+            expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+          style={{ transitionDuration: `${COLLAPSE_MS}ms` }}
+        >
+          {/* `invisible` retira del foco las tarjetas plegadas, y se aplaza al final
+              de la transición para que el cierre no las haga desaparecer de golpe. */}
+          <div
+            className={`grid min-h-0 gap-4 overflow-hidden sm:grid-cols-2 md:contents ${
+              expanded
+                ? "visible"
+                : "max-md:invisible max-md:[transition:visibility_0s_linear_300ms]"
+            }`}
+          >
+            {extra.map((solution, i) => (
+              <SolutionCard key={solution.title} solution={solution} index={i % 4} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={EXTRA_ID}
+        onClick={() => setExpanded((v) => !v)}
+        className={`mt-6 inline-flex h-11 w-full items-center justify-center rounded-md border border-white/25 bg-transparent px-6 font-display text-ui font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-white/10 active:scale-[0.98] md:hidden ${LIGHT_RING}`}
+      >
+        {expanded ? "Ver menos" : `Ver las ${services.length} soluciones`}
+      </button>
+    </div>
   );
 }
 

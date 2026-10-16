@@ -499,9 +499,40 @@
   }
 }
 
+/* -------------------- Progreso de lectura --------------------
+   Barra ligada al scroll de la página, sin JS: `animation-timeline` la avanza
+   en el compositor. Donde el navegador no lo soporta se queda oculta en vez de
+   quedar congelada en cero. */
+@keyframes reading-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    display: block;
+    transform-origin: left;
+    animation: reading-progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* Es un indicador de posición, no un adorno: se mantiene. Sin este override
+     la regla global de abajo fijaría una duración de 0.01 ms y la desvincularía
+     del scroll. */
+  .reading-progress {
+    animation-duration: auto !important;
   }
 
   .animate-testimonial-fade {
