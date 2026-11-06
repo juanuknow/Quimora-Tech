@@ -91,9 +91,12 @@ function VitalTile({
           </span>
         </div>
       ) : (
-        <div className="mt-3 flex items-center gap-2">
+        // min-h-8 = alto de la fila con valor (text-2xl); leading-4 hace que el
+        // texto quepa ahí aunque se parta en dos líneas. Así la casilla no cambia de
+        // alto al llegar la medición y no desplaza la página (ni las anclas).
+        <div className="mt-3 flex min-h-8 items-center gap-2">
           <span className="h-2 w-2 animate-pulse rounded-full bg-white/40" aria-hidden="true" />
-          <span className="text-sm text-white/50">{waitingLabel}</span>
+          <span className="text-sm leading-4 text-white/50">{waitingLabel}</span>
         </div>
       )}
     </div>

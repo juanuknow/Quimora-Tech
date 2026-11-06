@@ -22,10 +22,10 @@ export function Hero() {
               Solicitar mi cotización gratis
             </a>
             <a
-              href="#nosotros"
+              href="#showcase"
               className={`inline-flex h-14 items-center justify-center rounded-md border-2 border-brand bg-transparent px-8 font-display text-ui font-semibold text-brand transition-all duration-200 hover:scale-[1.03] hover:bg-brand-soft hover:shadow-[0_8px_22px_rgba(0,0,0,0.12)] active:scale-100 ${FOCUS_RING}`}
             >
-              Ver Cómo Funciona
+              Ver Casos de Éxito
             </a>
           </div>
         </div>

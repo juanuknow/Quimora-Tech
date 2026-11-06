@@ -39,17 +39,27 @@ function LandingPage() {
       <ReadingProgress />
       <TopBar />
       <Nav />
+      {/* Recorrido comercial por bloques. Las seis secciones enlazadas en el
+          navbar (top, soluciones, showcase, nosotros, precios, contacto) DEBEN
+          conservar este orden relativo: el scroll-spy de Nav depende de él. */}
       <main id="main">
+        {/* 1. Presentación */}
         <Hero />
-        <Problem />
-        <Benefits />
-        <SoftwareSolutions />
-        <Showcase3D />
+        {/* 2. Respaldo técnico y beneficios */}
         <Stats />
+        <Benefits />
+        {/* 3. Servicios y soluciones */}
+        <SoftwareSolutions />
+        {/* 4. Casos de éxito */}
+        <Showcase3D />
+        {/* 5. Cómo trabajamos y especialidades */}
         <Timeline />
         <Specialists />
+        {/* 6. Diagnóstico: el problema y la herramienta para resolverlo */}
+        <Problem />
         <DiagnosisShortcuts />
         <DigitalDiagnosis />
+        {/* 7–9. Precios, objeciones y cierre */}
         <Pricing />
         <FAQ />
         <Contact />

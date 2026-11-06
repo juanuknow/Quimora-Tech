@@ -79,12 +79,22 @@ descripción, canonical) y delega el cuerpo en una plantilla compartida
 
 ### Orden de la landing (`/`)
 
-`Hero` → `Problem` → `Benefits` → `SoftwareSolutions` → `Showcase3D` → `Stats` →
-`Timeline` → `Specialists` → `DiagnosisShortcuts` → `DigitalDiagnosis` → `Pricing` →
-`FAQ` → `Contact` → `FinalCTA`
+| Bloque                              | Secciones                                             |
+| ----------------------------------- | ----------------------------------------------------- |
+| 1. Presentación                     | `Hero`                                                |
+| 2. Respaldo técnico y beneficios    | `Stats` → `Benefits`                                  |
+| 3. Servicios y soluciones           | `SoftwareSolutions`                                   |
+| 4. Casos de éxito                   | `Showcase3D`                                          |
+| 5. Cómo trabajamos y especialidades | `Timeline` → `Specialists`                            |
+| 6. Diagnóstico                      | `Problem` → `DiagnosisShortcuts` → `DigitalDiagnosis` |
+| 7. Precios                          | `Pricing`                                             |
+| 8. Preguntas frecuentes             | `FAQ`                                                 |
+| 9. Contacto y cierre                | `Contact` → `FinalCTA`                                |
 
 Los fondos de secciones contiguas alternan (blanco, gris, oscuro) para que no se
-fundan entre sí; al mover una sección, revisar sus vecinas.
+fundan entre sí; al mover una sección, revisar sus vecinas. Las seis secciones
+enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
+`contacto`) deben conservar su orden relativo: el scroll-spy de `Nav` depende de él.
 
 ### Por función
 

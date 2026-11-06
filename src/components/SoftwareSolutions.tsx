@@ -30,9 +30,10 @@ const GRID_STYLE: CSSProperties = {
  * Bloque "somos tu aliado tecnológico": amplía el alcance de la marca más allá
  * de la página web.
  *
- * Es la única sección oscura en mitad del recorrido, y esa inversión de
- * contraste es intencional: dentro de una paleta monocromática es la forma de
- * hacerla destacar sin introducir color, que rompería el sistema.
+ * Su fondo oscuro es intencional: dentro de una paleta monocromática, la
+ * inversión de contraste es la forma de hacerla destacar sin introducir color,
+ * que rompería el sistema. Va precedida de `Benefits` (blanca) para no fundirse
+ * con la franja oscura de `Stats`.
  */
 export function SoftwareSolutions() {
   return (

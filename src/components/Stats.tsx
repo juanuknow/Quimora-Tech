@@ -42,7 +42,13 @@ function useCountUp(end: number, active: boolean, duration = 1400) {
 export function Stats() {
   const { ref, inView } = useInView<HTMLDivElement>(0.3);
   return (
-    <section className="bg-brand text-white">
+    <section aria-labelledby="stats-title" className="bg-brand text-white">
+      {/* La franja no lleva título visible (las cifras se explican solas), pero
+          necesita un h2: va justo después del h1 del Hero y contiene el h3 de
+          LivePerformance, que sin él saltaría un nivel de encabezado. */}
+      <h2 id="stats-title" className="sr-only">
+        Estándares con los que trabajamos cada proyecto
+      </h2>
       <div
         ref={ref}
         className="mx-auto grid max-w-[1200px] grid-cols-2 gap-y-10 px-6 py-16 md:grid-cols-4 md:px-10 md:py-20"
