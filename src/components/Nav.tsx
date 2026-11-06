@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { FOCUS_RING } from "../lib/site";
@@ -9,6 +9,10 @@ import { servicesWithPage } from "../lib/services-data";
 // no solo en la home. "/#id" navega a la home y salta a la sección tanto si ya
 // estás ahí (el navegador solo mueve el scroll, sin recargar) como si vienes
 // de otra ruta.
+//
+// El orden DEBE seguir el de las secciones en la página (src/routes/index.tsx):
+// el subrayado activo viaja de izquierda a derecha a medida que se baja, y un
+// enlace fuera de orden lo hacía saltar hacia adelante y volver atrás.
 const NAV_LINKS = [
   { id: "top", href: "/#top", label: "Inicio" },
   // Apunta a "#soluciones" (la sección con el catálogo real) y no a
@@ -16,12 +20,15 @@ const NAV_LINKS = [
   // de este ítem lista justamente esos servicios, así que el clic debe
   // aterrizar donde vive el contenido que el submenú promete.
   { id: "soluciones", href: "/#soluciones", label: "Servicios" },
+  { id: "showcase", href: "/#showcase", label: "Casos de Éxito" },
   { id: "nosotros", href: "/#nosotros", label: "Nosotros" },
   { id: "precios", href: "/#precios", label: "Precios" },
-  { id: "showcase", href: "/#showcase", label: "Casos de Éxito" },
   { id: "contacto", href: "/#contacto", label: "Contacto" },
 ] as const;
-const NAV_SECTION_IDS = NAV_LINKS.map((l) => l.id);
+const NAV_SECTION_IDS: readonly string[] = NAV_LINKS.map((l) => l.id);
+/** Referencia estable para "sin scroll-spy" (fuera de la home): un `[]` literal
+ *  sería un array nuevo en cada render y reejecutaría el efecto cada vez. */
+const NO_SECTION_IDS: readonly string[] = [];
 
 /** True once the page has scrolled past `threshold`; drives the header's "lifted" look. */
 function useScrolled(threshold = 8) {
@@ -37,27 +44,79 @@ function useScrolled(threshold = 8) {
   return scrolled;
 }
 
-/** Tracks which section id is currently in view, for nav "active link" highlighting. */
-function useScrollSpy(ids: readonly string[]) {
+/**
+ * Fracción del área visible bajo el header donde está la "línea de lectura": una
+ * sección pasa a ser la actual cuando su borde superior cruza el primer cuarto.
+ */
+const READING_LINE_RATIO = 0.25;
+
+/**
+ * Sección actual para el resaltado del navbar, calculada por POSICIÓN.
+ *
+ * La activa es la sección enlazada cuyo borde superior ya cruzó la línea de
+ * lectura y está más abajo que las demás que la cruzaron. Esto:
+ * - funciona igual al bajar, al subir y tras un salto por ancla (todo eso
+ *   dispara `scroll`);
+ * - en las secciones que no tienen enlace (Problem, Stats, Diagnóstico, FAQ…)
+ *   mantiene la última sección enlazada que quedó por encima, en vez de
+ *   quedarse con la que estuviera marcada antes (el fallo del enfoque anterior
+ *   con IntersectionObserver, que solo reaccionaba a entradas en una franja).
+ *
+ * Costo: un cálculo por frame como máximo (`requestAnimationFrame`), con el
+ * listener de scroll pasivo, y React solo se entera si la sección cambia.
+ *
+ * `ResizeObserver` observa únicamente `<main>`: su alto cambia cada vez que
+ * cambia el de cualquier sección (imágenes que cargan, FAQ que se despliega,
+ * pasos del diagnóstico), que es justo lo que mueve las secciones sin que haya
+ * scroll. `resize` cubre los cambios de viewport y orientación.
+ */
+function useScrollSpy(ids: readonly string[], headerRef: RefObject<HTMLElement | null>) {
   const [active, setActive] = useState(ids[0]);
 
   useEffect(() => {
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
+    if (ids.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id);
+    let frame = 0;
+    let current: string | undefined;
+
+    const compute = () => {
+      frame = 0;
+      const headerBottom = headerRef.current?.getBoundingClientRect().bottom ?? 0;
+      const line = headerBottom + (window.innerHeight - headerBottom) * READING_LINE_RATIO;
+
+      let next = ids[0];
+      let nextTop = Number.NEGATIVE_INFINITY;
+      for (const id of ids) {
+        const top = document.getElementById(id)?.getBoundingClientRect().top;
+        if (top !== undefined && top <= line && top > nextTop) {
+          next = id;
+          nextTop = top;
         }
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [ids]);
+      }
+
+      if (next !== current) {
+        current = next;
+        setActive(next);
+      }
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(compute);
+    };
+
+    compute();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const main = document.querySelector("main");
+    const resizeObserver = main ? new ResizeObserver(schedule) : null;
+    if (main) resizeObserver?.observe(main);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      resizeObserver?.disconnect();
+    };
+  }, [ids, headerRef]);
 
   return active;
 }
@@ -117,6 +176,8 @@ function useActiveIndicator(active: string) {
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const scrolled = useScrolled();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -124,7 +185,7 @@ export function Nav() {
   // El scroll-spy solo tiene sentido en la home: en /servicios/[slug] esos ids
   // no existen en el documento. Fuera de la home, "Servicios" se marca activo
   // por ruta en vez de por scroll.
-  const scrollSpyActive = useScrollSpy(onHome ? NAV_SECTION_IDS : []);
+  const scrollSpyActive = useScrollSpy(onHome ? NAV_SECTION_IDS : NO_SECTION_IDS, headerRef);
   const active = onHome ? scrollSpyActive : pathname.startsWith("/servicios/") ? "soluciones" : "";
   const { navRef, box, travels } = useActiveIndicator(active);
 
@@ -140,14 +201,39 @@ export function Nav() {
       }
     };
     window.addEventListener("keydown", onKey);
+    // Desde `md` el panel queda oculto por CSS (`md:hidden`), pero el estado
+    // seguiría abierto y el body bloqueado: al girar el móvil a horizontal o
+    // ensanchar la ventana, la página se quedaba sin scroll. Se cierra el menú.
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onBreakpoint = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+    desktop.addEventListener("change", onBreakpoint);
+    // Alto disponible para el panel: desde el borde inferior REAL del header
+    // hasta el final del viewport. No es constante —la barra superior ocupa
+    // una o dos líneas según el ancho, y solo se ve antes de hacer scroll—, así
+    // que se mide. Con el body bloqueado el header no se mueve mientras el menú
+    // está abierto; solo hace falta volver a medir si cambia el viewport.
+    const fitPanel = () => {
+      const headerBottom = headerRef.current?.getBoundingClientRect().bottom ?? 0;
+      mobileMenuRef.current?.style.setProperty(
+        "--menu-max-h",
+        `${Math.max(0, window.innerHeight - headerBottom)}px`,
+      );
+    };
+    fitPanel();
+    window.addEventListener("resize", fitPanel);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onBreakpoint);
+      window.removeEventListener("resize", fitPanel);
     };
   }, [open]);
 
   return (
     <header
+      ref={headerRef}
       // Propiedades nombradas, no `transition-all`: con `all` entraba en la
       // transición cualquier propiedad que cambiara, incluida la geometría.
       className={`sticky top-0 z-40 w-full border-b transition-[background-color,border-color,box-shadow] duration-200 ${
@@ -230,49 +316,65 @@ export function Nav() {
         </button>
       </div>
       <nav
+        ref={mobileMenuRef}
         id="mobile-menu"
         aria-label="Principal"
         inert={!open}
         aria-hidden={!open}
-        className={`grid overflow-hidden border-hairline bg-background transition-[grid-template-rows] duration-300 ease-out md:hidden ${
-          open ? "grid-rows-[1fr] border-t" : "grid-rows-[0fr]"
+        // Panel FUERA del flujo (`absolute`, anclado bajo el header sticky): al
+        // estar dentro del flujo, abrirlo empujaba la página hacia abajo, el
+        // navegador calculaba el destino del ancla con el menú abierto y, al
+        // plegarse, todo subía ~336 px y el usuario aterrizaba a mitad de la
+        // sección. Encima del contenido, abrir o cerrar no mueve el documento.
+        className={`absolute inset-x-0 top-full grid overflow-hidden border-hairline bg-background transition-[grid-template-rows] duration-300 ease-out md:hidden ${
+          open ? "grid-rows-[1fr] border-y" : "grid-rows-[0fr]"
         }`}
       >
-        <div className="mx-auto min-h-0 flex w-full max-w-[1200px] flex-col px-6 py-4">
-          {NAV_LINKS.map((l) => {
-            const isActive = active === l.id;
-            if (l.id === "soluciones") {
+        {/* El ítem de la grilla no lleva padding: con padding, la fila `0fr` no
+            colapsa del todo y el panel "cerrado" medía 32 px — una franja blanca
+            que antes engordaba el header en móvil (113 px en vez de 80) y que,
+            ya fuera del flujo, tapaba el inicio de cada sección. */}
+        <div className="min-h-0">
+          {/* Tope de alto con scroll interno: con el body bloqueado y el
+              acordeón de servicios abierto, en pantallas bajas (móvil en
+              horizontal) los últimos enlaces quedarían fuera del viewport.
+              `--menu-max-h` se mide al abrir (ver el efecto de `open`). */}
+          <div className="mx-auto flex max-h-[calc(var(--menu-max-h,100dvh)-2px)] w-full max-w-[1200px] flex-col overflow-y-auto overscroll-contain px-6 py-4">
+            {NAV_LINKS.map((l) => {
+              const isActive = active === l.id;
+              if (l.id === "soluciones") {
+                return (
+                  <MobileServicesItem
+                    key={l.id}
+                    href={l.href}
+                    label={l.label}
+                    isActive={isActive}
+                    onNavigate={() => setOpen(false)}
+                  />
+                );
+              }
               return (
-                <MobileServicesItem
+                <a
                   key={l.id}
                   href={l.href}
-                  label={l.label}
-                  isActive={isActive}
-                  onNavigate={() => setOpen(false)}
-                />
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive ? "location" : undefined}
+                  className={`rounded-sm py-3 text-ui transition-colors ${
+                    isActive ? "text-brand" : "text-foreground"
+                  } hover:text-brand ${FOCUS_RING}`}
+                >
+                  {l.label}
+                </a>
               );
-            }
-            return (
-              <a
-                key={l.id}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                aria-current={isActive ? "location" : undefined}
-                className={`rounded-sm py-3 text-ui transition-colors ${
-                  isActive ? "text-brand" : "text-foreground"
-                } hover:text-brand ${FOCUS_RING}`}
-              >
-                {l.label}
-              </a>
-            );
-          })}
-          <a
-            href="/#contacto"
-            onClick={() => setOpen(false)}
-            className={`mt-2 inline-flex h-12 items-center justify-center rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
-          >
-            Cotizar
-          </a>
+            })}
+            <a
+              href="/#contacto"
+              onClick={() => setOpen(false)}
+              className={`mt-2 inline-flex h-12 items-center justify-center rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
+            >
+              Cotizar
+            </a>
+          </div>
         </div>
       </nav>
     </header>
