@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
   Building2,
   CircleEllipsis,
@@ -29,6 +29,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 import {
   BUSINESS_OPTIONS,
   DIAGNOSIS_START_EVENT,
@@ -697,6 +698,39 @@ function SingleSelect<T extends string>({
   onChange: (id: T) => void;
   columns?: "grid" | "one";
 }) {
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Patrón WAI-ARIA de radiogroup: un solo tab-stop (la opción elegida o, si aún
+  // no hay ninguna, la primera) y las flechas mueven la selección entre opciones.
+  const selectedIndex = options.findIndex((o) => o.id === value);
+  const tabStop = selectedIndex === -1 ? 0 : selectedIndex;
+
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = options.length - 1;
+    let next: number;
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        next = index === last ? 0 : index + 1;
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        next = index === 0 ? last : index - 1;
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = last;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    onChange(options[next].id);
+    buttonRefs.current[next]?.focus();
+  };
+
   return (
     <fieldset>
       <legend className="font-display text-xl font-semibold text-brand md:text-2xl">{title}</legend>
@@ -707,15 +741,20 @@ function SingleSelect<T extends string>({
           columns === "one" ? "sm:grid-cols-1" : "sm:grid-cols-2 lg:grid-cols-3"
         }`}
       >
-        {options.map(({ id, label, icon: Icon }) => {
+        {options.map(({ id, label, icon: Icon }, index) => {
           const selected = value === id;
           return (
             <button
               key={id}
+              ref={(el) => {
+                buttonRefs.current[index] = el;
+              }}
               type="button"
               role="radio"
               aria-checked={selected}
+              tabIndex={index === tabStop ? 0 : -1}
               onClick={() => onChange(id)}
+              onKeyDown={(e) => onKeyDown(e, index)}
               className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all duration-150 ${FOCUS_RING} ${
                 selected
                   ? "border-brand bg-brand-soft shadow-sm"
@@ -897,6 +936,7 @@ function Result({ diagnosis: d, onRestart }: { diagnosis: Diagnosis; onRestart: 
         >
           <MessageCircle size={18} />
           Agendar por WhatsApp
+          <NewTabHint />
         </a>
       </div>
 

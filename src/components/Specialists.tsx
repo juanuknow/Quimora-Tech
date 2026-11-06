@@ -81,7 +81,7 @@ function SpecialtyRow({ item, index }: { item: (typeof SPECIALTIES)[number]; ind
           aria-hidden="true"
           className="absolute inset-y-2 left-0 w-0.5 scale-y-0 bg-brand transition-transform duration-300 ease-out-strong group-hover:scale-y-100 group-focus-visible:scale-y-100"
         />
-        <span className="font-display text-2xl font-semibold text-muted-foreground/50 transition-colors duration-300 group-hover:text-brand sm:w-16 sm:shrink-0 sm:text-display-sm">
+        <span className="font-display text-2xl font-semibold text-muted-foreground/75 transition-colors duration-300 group-hover:text-brand sm:w-16 sm:shrink-0 sm:text-display-sm">
           {number}
         </span>
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-primary-foreground">

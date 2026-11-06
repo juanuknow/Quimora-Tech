@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { getVerticalBySlug } from "../lib/verticals-data";
 import { FOCUS_RING, SITE_URL, whatsappHref, trackEvent } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 
 /**
  * Layout de una página de industria (`/para/[slug]`) — mismo chrome que
@@ -115,6 +116,7 @@ export function VerticalDetail({ slug }: { slug: string }) {
                 >
                   Escribir por WhatsApp
                   <ArrowRight size={16} />
+                  <NewTabHint />
                 </a>
                 <a
                   href="/#contacto"

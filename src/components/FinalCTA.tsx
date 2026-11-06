@@ -1,4 +1,5 @@
 import { LIGHT_RING, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, whatsappHref } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 
 /* -------------------- Final CTA -------------------- */
 export function FinalCTA() {
@@ -24,6 +25,7 @@ export function FinalCTA() {
             className={`inline-flex h-14 w-full items-center justify-center rounded-md bg-white px-8 font-display text-ui font-semibold text-brand transition duration-200 hover:bg-white/90 sm:w-auto active:scale-[0.98] ${LIGHT_RING}`}
           >
             Escribir por WhatsApp
+            <NewTabHint />
           </a>
           <a
             href="#showcase"

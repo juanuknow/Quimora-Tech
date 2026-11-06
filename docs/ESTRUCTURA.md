@@ -27,7 +27,7 @@ decisiones de diseño y los estándares de código, ver [`CLAUDE.md`](../CLAUDE.
 │   ├── routeTree.gen.ts      ⚠ Generado automáticamente, no editar a mano
 │   └── styles.css            Tailwind v4: tokens, tipografía, animaciones
 ├── public/                   Estáticos servidos tal cual
-│   ├── _headers              Cabeceras de seguridad y CSP (Cloudflare)
+│   ├── _headers              Cabeceras de los ESTÁTICOS (caché y seguridad); no llegan al HTML SSR (ver §7)
 │   ├── fonts/                Inter y Space Grotesk (variables, autoalojadas)
 │   ├── images/               Capturas del showcase (webp) y logo
 │   ├── videos/               soluciones.mp4 (carga diferida)
@@ -90,7 +90,7 @@ fundan entre sí; al mover una sección, revisar sus vecinas.
 
 | Grupo | Componentes |
 | --- | --- |
-| Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `ReadingProgress` |
+| Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
 | Secciones de la landing | `Hero`, `Problem`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Stats`, `Timeline`, `Specialists`, `Pricing`, `FAQ`, `Contact`, `FinalCTA` |
 | Diagnóstico (lead magnet) | `DigitalDiagnosis` (wizard de 5 pasos), `DiagnosisShortcuts` (chips que lo abren con el negocio ya elegido) |
 | Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
@@ -128,8 +128,22 @@ fundan entre sí; al mover una sección, revisar sus vecinas.
   El nombre del Worker (`juanuknow-conversion-craft-96`) viene del nombre antiguo
   del repositorio; **cambiarlo crea un Worker nuevo**, no renombra el existente.
 - **Dominio:** `quimoratech.com`.
-- **Cabeceras de seguridad y CSP:** `public/_headers`. Al añadir un servicio externo
-  (analítica, fuentes, formularios) hay que permitirlo ahí o el navegador lo bloqueará.
+- **Cabeceras HTTP — `public/_headers` solo cubre los archivos estáticos.** Cloudflare lo
+  aplica únicamente a lo que sirve como *Static Assets* (`/assets/*`, `/fonts/*`,
+  `/images/*`, `/videos/*`, `favicon.ico`, `robots.txt`, etc.). El **HTML de las páginas lo
+  genera el Worker (SSR, `src/server.ts`) y NO recibe esas cabeceras**. Verificado en
+  producción el 6-nov-2026: `GET /` no traía CSP, HSTS, `X-Frame-Options`, `nosniff`,
+  `Referrer-Policy` ni `Permissions-Policy`, mientras `/favicon.ico` y `/robots.txt` sí.
+  Consecuencias:
+  - La CSP y el HSTS de `_headers` **hoy no protegen ni bloquean nada en las páginas**; no
+    hace falta (ni basta) permitir ahí un servicio externo para que funcione.
+  - Para que las cabeceras de seguridad lleguen al HTML hay que añadirlas a la respuesta del
+    Worker (`src/server.ts`) o con una regla de Cloudflare. Está pendiente de una fase
+    aparte; no activar una CSP obligatoria sin pasarla antes por `Content-Security-Policy-Report-Only`.
+  - Los archivos sin hash en el nombre (`/fonts`, `/images`, `/videos`, `favicon.ico`,
+    `og-image.png`) llevan `Cache-Control: max-age=3600, stale-while-revalidate=86400`:
+    si se reemplaza uno conservando el nombre, tarda como máximo ~1 h en verse (más una
+    vista intermedia con la copia vieja, de ≤25 h). Solo `/assets/*` (con hash) es `immutable`.
 - **Dos lockfiles:** `bun.lock` (lo usa Lovable) y `package-lock.json` (npm). No borrar
   ninguno sin comprobar con qué gestor construye Cloudflare.
 
@@ -154,5 +168,6 @@ npm run format     # Prettier
 | Reordenar la landing | `src/routes/index.tsx` |
 | Cambiar colores, tipografía o curvas | `src/styles.css` (`@theme`) |
 | Cambiar meta/SEO global o schema.org | `src/routes/__root.tsx` |
-| Permitir un dominio externo | `public/_headers` |
+| Permitir un dominio externo en la CSP | Hoy no aplica al HTML (ver §7); pendiente de mover las cabeceras de seguridad al Worker |
+| Cambiar la caché de un estático | `public/_headers` |
 | Registrar una página nueva en el buscador | `public/sitemap.xml` |

@@ -1,5 +1,6 @@
 import { Phone, Mail, ArrowUp } from "lucide-react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
+import { NewTabHint, NEW_TAB_NOTICE } from "./NewTabHint";
 import { verticals } from "../lib/verticals-data";
 import {
   LIGHT_RING,
@@ -71,12 +72,13 @@ export function Footer() {
             >
               <WhatsAppIcon size={16} />
               Escribir por WhatsApp
+              <NewTabHint />
             </a>
           </div>
 
           {/* Nav columns */}
           {FOOTER_NAV.map((col) => (
-            <nav key={col.title}>
+            <nav key={col.title} aria-label={`Pie de página: ${col.title}`}>
               <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-white/55">
                 {col.title}
               </h3>
@@ -96,7 +98,7 @@ export function Footer() {
           ))}
 
           {/* Industry column */}
-          <nav>
+          <nav aria-label="Pie de página: Soluciones por industria">
             <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-white/55">
               Soluciones por industria
             </h3>
@@ -123,6 +125,7 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${CONTACT_PHONE}`}
+                  aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
@@ -136,6 +139,7 @@ export function Footer() {
                   href={whatsappHref("Hola, quiero más información", WHATSAPP_NUMBER_2)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
@@ -147,6 +151,7 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${CONTACT_PHONE_2}`}
+                  aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">

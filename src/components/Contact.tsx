@@ -1,6 +1,7 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Phone, Mail, Check } from "lucide-react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
+import { NewTabHint, NEW_TAB_NOTICE } from "./NewTabHint";
 import {
   FOCUS_RING,
   CONTACT_EMAIL,
@@ -26,6 +27,14 @@ export function Contact() {
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // Al confirmarse el envío el formulario desaparece del DOM y con él el foco:
+  // un lector de pantalla se quedaría sin ninguna señal de que salió bien. Se
+  // mueve el foco al mensaje de confirmación para que se anuncie.
+  useEffect(() => {
+    if (sent) successRef.current?.focus();
+  }, [sent]);
 
   const update =
     (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -74,7 +83,7 @@ export function Contact() {
     }
   };
 
-  const fieldBase = `w-full rounded-md border bg-background px-4 py-3 text-ui text-foreground transition-colors placeholder:text-muted-foreground/70 ${FOCUS_RING}`;
+  const fieldBase = `w-full rounded-md border bg-background px-4 py-3 text-ui text-foreground transition-colors placeholder:text-muted-foreground ${FOCUS_RING}`;
 
   return (
     <section id="contacto" className="border-t border-hairline bg-background">
@@ -103,9 +112,11 @@ export function Contact() {
                   <WhatsAppIcon size={18} />
                 </span>
                 Escribir por WhatsApp
+                <NewTabHint />
               </a>
               <a
                 href={`tel:${CONTACT_PHONE}`}
+                aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
@@ -117,6 +128,7 @@ export function Contact() {
                 href={whatsappHref("Hola, quiero una consulta gratis", WHATSAPP_NUMBER_2)}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
@@ -126,6 +138,7 @@ export function Contact() {
               </a>
               <a
                 href={`tel:${CONTACT_PHONE_2}`}
+                aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
@@ -148,7 +161,12 @@ export function Contact() {
           {/* Right: form */}
           <div className="rounded-2xl border border-hairline bg-hairline/40 p-6 md:p-8">
             {sent ? (
-              <div className="flex h-full min-h-[320px] flex-col items-center justify-center text-center">
+              <div
+                ref={successRef}
+                role="status"
+                tabIndex={-1}
+                className="flex h-full min-h-[320px] flex-col items-center justify-center text-center focus:outline-none"
+              >
                 <span className="grid h-14 w-14 place-items-center rounded-full bg-brand text-white">
                   <Check size={28} />
                 </span>
@@ -164,6 +182,8 @@ export function Contact() {
                   onClick={() => {
                     setSent(false);
                     setForm({ name: "", email: "", phone: "", message: "" });
+                    // El botón que se pulsó desaparece: el foco pasa al primer campo.
+                    requestAnimationFrame(() => nameRef.current?.focus());
                   }}
                   className={`mt-6 rounded-md font-display text-sm font-semibold text-brand underline-offset-4 hover:underline ${FOCUS_RING}`}
                 >
@@ -177,21 +197,26 @@ export function Contact() {
                     htmlFor="cf-name"
                     className="font-display text-sm font-medium text-foreground"
                   >
-                    Nombre <span className="text-accent-strong">*</span>
+                    Nombre{" "}
+                    <span aria-hidden="true" className="text-accent-strong">
+                      *
+                    </span>
                   </label>
                   <input
                     id="cf-name"
                     ref={nameRef}
                     type="text"
+                    autoComplete="name"
                     value={form.name}
                     onChange={update("name")}
+                    aria-required="true"
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? "cf-name-err" : undefined}
                     className={`mt-2 ${fieldBase} ${errors.name ? "border-destructive" : "border-input"}`}
                     placeholder="Tu nombre"
                   />
                   {errors.name && (
-                    <p id="cf-name-err" className="mt-1.5 text-xs text-destructive">
+                    <p id="cf-name-err" className="mt-1.5 text-xs text-destructive-strong">
                       {errors.name}
                     </p>
                   )}
@@ -203,21 +228,26 @@ export function Contact() {
                       htmlFor="cf-email"
                       className="font-display text-sm font-medium text-foreground"
                     >
-                      Email <span className="text-accent-strong">*</span>
+                      Email{" "}
+                      <span aria-hidden="true" className="text-accent-strong">
+                        *
+                      </span>
                     </label>
                     <input
                       id="cf-email"
                       ref={emailRef}
                       type="email"
+                      autoComplete="email"
                       value={form.email}
                       onChange={update("email")}
+                      aria-required="true"
                       aria-invalid={!!errors.email}
                       aria-describedby={errors.email ? "cf-email-err" : undefined}
                       className={`mt-2 ${fieldBase} ${errors.email ? "border-destructive" : "border-input"}`}
                       placeholder="tu@correo.com"
                     />
                     {errors.email && (
-                      <p id="cf-email-err" className="mt-1.5 text-xs text-destructive">
+                      <p id="cf-email-err" className="mt-1.5 text-xs text-destructive-strong">
                         {errors.email}
                       </p>
                     )}
@@ -232,6 +262,7 @@ export function Contact() {
                     <input
                       id="cf-phone"
                       type="tel"
+                      autoComplete="tel"
                       value={form.phone}
                       onChange={update("phone")}
                       className={`mt-2 ${fieldBase} border-input`}
@@ -245,7 +276,10 @@ export function Contact() {
                     htmlFor="cf-message"
                     className="font-display text-sm font-medium text-foreground"
                   >
-                    Mensaje <span className="text-accent-strong">*</span>
+                    Mensaje{" "}
+                    <span aria-hidden="true" className="text-accent-strong">
+                      *
+                    </span>
                   </label>
                   <textarea
                     id="cf-message"
@@ -253,13 +287,14 @@ export function Contact() {
                     rows={4}
                     value={form.message}
                     onChange={update("message")}
+                    aria-required="true"
                     aria-invalid={!!errors.message}
                     aria-describedby={errors.message ? "cf-message-err" : undefined}
                     className={`mt-2 resize-y ${fieldBase} ${errors.message ? "border-destructive" : "border-input"}`}
                     placeholder="Cuéntanos qué necesitas para tu negocio…"
                   />
                   {errors.message && (
-                    <p id="cf-message-err" className="mt-1.5 text-xs text-destructive">
+                    <p id="cf-message-err" className="mt-1.5 text-xs text-destructive-strong">
                       {errors.message}
                     </p>
                   )}
@@ -268,7 +303,7 @@ export function Contact() {
                 {submitError && (
                   <p
                     role="alert"
-                    className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+                    className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive-strong"
                   >
                     No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.
                   </p>

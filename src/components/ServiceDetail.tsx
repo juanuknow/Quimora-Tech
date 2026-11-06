@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { getServiceBySlug } from "../lib/services-data";
 import { FOCUS_RING, SITE_URL, whatsappHref, trackEvent } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 
 /**
  * Layout de una página de servicio individual (`/servicios/[slug]`).
@@ -112,6 +113,7 @@ export function ServiceDetail({ slug }: { slug: string }) {
                 >
                   Escribir por WhatsApp
                   <ArrowRight size={16} />
+                  <NewTabHint />
                 </a>
                 <a
                   href="/#contacto"

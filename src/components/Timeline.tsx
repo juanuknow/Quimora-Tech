@@ -110,21 +110,29 @@ function TimelineDesktop() {
 }
 
 function TimelineMobile() {
-  const { ref, inView } = useInView<HTMLOListElement>(0.05);
+  const { ref, inView } = useInView<HTMLDivElement>(0.05);
 
+  // La línea decorativa vive FUERA del <ol>: un <ol> solo admite <li> como hijos
+  // directos (regla `list` de axe/Lighthouse). El wrapper es el que se observa y
+  // el que ancla la posición absoluta de la línea. `bottom-10` (= el `bottom-2` de
+  // antes + los 2 rem del `space-y-8` que recibía como hijo del <ol>) mantiene su
+  // longitud exacta: sin esa compensación la línea quedaría 32 px más larga.
   return (
-    <ol ref={ref} className="relative mt-14 space-y-8 md:hidden">
+    <div ref={ref} className="relative mt-14 md:hidden">
       {/* En vertical la línea se dibuja de arriba abajo. */}
       <div
+        aria-hidden="true"
         style={{ transitionDuration: `${LINE_DRAW_MS}ms` }}
-        className={`absolute bottom-2 left-[27px] top-2 w-[2px] origin-top bg-brand/30 transition-[scale] ease-linear ${
+        className={`absolute bottom-10 left-[27px] top-2 w-[2px] origin-top bg-brand/30 transition-[scale] ease-linear ${
           inView ? "scale-y-100" : "scale-y-0"
         }`}
       />
-      {STEPS.map((step) => (
-        <TimelineMobileStep key={step.title} step={step} />
-      ))}
-    </ol>
+      <ol className="relative space-y-8">
+        {STEPS.map((step) => (
+          <TimelineMobileStep key={step.title} step={step} />
+        ))}
+      </ol>
+    </div>
   );
 }
 

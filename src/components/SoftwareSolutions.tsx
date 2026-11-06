@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { SolutionsCatalog } from "./SolutionsCatalog";
 import { SolutionsVisual } from "./SolutionsVisual";
 import { LIGHT_RING, whatsappHref, trackEvent } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 
 /* ============================ Data ============================ */
 
@@ -103,6 +104,7 @@ export function SoftwareSolutions() {
             >
               Escribir por WhatsApp
               <ArrowRight size={18} />
+              <NewTabHint />
             </a>
             <a
               href="#contacto"

@@ -12,7 +12,7 @@ export function BrowserChrome({ domain }: { domain: string }) {
       <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
       <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
       <span className="aspect-square h-[20%] min-h-[4px] rounded-full bg-zinc-300" />
-      <span className="ml-[2.5%] flex h-[55%] flex-1 items-center gap-[1.5%] truncate rounded-full bg-white px-[2.5%] text-[0.5rem] font-medium text-zinc-400">
+      <span className="ml-[2.5%] flex h-[55%] flex-1 items-center gap-[1.5%] truncate rounded-full bg-white px-[2.5%] text-[0.5rem] font-medium text-zinc-600">
         <span className="aspect-square h-[34%] min-h-[3px] shrink-0 animate-pulse rounded-full bg-success" />
         {domain}
       </span>

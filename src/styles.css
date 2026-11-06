@@ -75,6 +75,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-strong: var(--destructive-strong);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -163,11 +164,17 @@
   --secondary: #f4f4f5;
   --secondary-foreground: #27272a;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a; /* zinc-500 */
+  /* Ajustado desde zinc-500 (#71717a): sobre las superficies tintadas del sitio
+     (`bg-hairline/40-60`) daba 4,2–4,4:1, bajo el 4,5:1 de WCAG AA. Con #63636b
+     da ≥5,2:1 sobre la más oscura y 5,95:1 sobre blanco. */
+  --muted-foreground: #63636b;
   --accent: #f4f4f5;
   --accent-foreground: #27272a;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
+  /* Rojo para TEXTO de error sobre superficies claras/tintadas (≥5,6:1). `--destructive`
+     se conserva para bordes y para fondos oscuros, donde su luminosidad sí contrasta. */
+  --destructive-strong: #b91c1c;
   --border: #e4e4e7;
   --input: #d4d4d8;
   --ring: #18181b;
@@ -603,5 +610,8 @@
   * {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    /* Sin esto, una animación `infinite` (p. ej. `animate-pulse`) se repetiría
+       cada 0,01 ms: un parpadeo en lugar de un estado final. */
+    animation-iteration-count: 1 !important;
   }
 }

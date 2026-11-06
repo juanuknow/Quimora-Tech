@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, Plus } from "lucide-react";
 import { useInView, useTilt } from "../lib/hooks";
 import { FOCUS_RING, whatsappHref } from "../lib/site";
+import { NewTabHint } from "./NewTabHint";
 import { BrowserChrome } from "./BrowserChrome";
 import { ShowcaseGallery, type GalleryView } from "./ShowcaseGallery";
 
@@ -280,6 +281,7 @@ export function Showcase3D() {
                 >
                   <ExternalLink size={17} />
                   Ver en vivo
+                  <NewTabHint />
                 </a>
               )}
               <a
@@ -290,6 +292,7 @@ export function Showcase3D() {
               >
                 <MessageCircle size={17} />
                 Quiero un proyecto así
+                <NewTabHint />
               </a>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { WhatsAppIcon } from "./WhatsAppIcon";
 import { FOCUS_RING, whatsappHref, trackEvent } from "../lib/site";
+import { NEW_TAB_NOTICE } from "./NewTabHint";
 
 /* -------------------- Floating WhatsApp -------------------- */
 export function FloatingWhatsApp() {
@@ -16,7 +17,7 @@ export function FloatingWhatsApp() {
         href={whatsappHref("Hola, quiero más información sobre sus servicios")}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Escribir por WhatsApp"
+        aria-label={`Escribir por WhatsApp ${NEW_TAB_NOTICE}`}
         onClick={() => trackEvent("contact", { method: "whatsapp", location: "floating" })}
         className={`relative grid h-14 w-14 place-items-center rounded-full bg-brand text-white shadow-lg transition-[scale] duration-200 hover:scale-110 active:scale-[0.98] ${FOCUS_RING}`}
       >

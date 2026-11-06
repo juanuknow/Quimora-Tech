@@ -117,6 +117,7 @@ function useActiveIndicator(active: string) {
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const scrolled = useScrolled();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const onHome = pathname === "/";
@@ -132,7 +133,11 @@ export function Nav() {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        // El panel se oculta con `inert`: sin esto el foco se pierde al cerrar.
+        menuButtonRef.current?.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => {
@@ -158,7 +163,11 @@ export function Nav() {
           </span>
           <span className="font-display text-body font-semibold tracking-tight">Quimora Tech</span>
         </a>
-        <nav ref={navRef} className="relative hidden items-center gap-6 text-sm md:flex lg:gap-10">
+        <nav
+          ref={navRef}
+          aria-label="Principal"
+          className="relative hidden items-center gap-6 text-sm md:flex lg:gap-10"
+        >
           {NAV_LINKS.map((l) => {
             const isActive = active === l.id;
             if (l.id === "soluciones") {
@@ -210,15 +219,19 @@ export function Nav() {
           </a>
         </div>
         <button
+          ref={menuButtonRef}
           onClick={() => setOpen((v) => !v)}
           className={`grid h-11 w-11 place-items-center rounded-md text-foreground md:hidden active:scale-[0.98] ${FOCUS_RING}`}
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={open}
+          aria-controls="mobile-menu"
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
       <nav
+        id="mobile-menu"
+        aria-label="Principal"
         inert={!open}
         aria-hidden={!open}
         className={`grid overflow-hidden border-hairline bg-background transition-[grid-template-rows] duration-300 ease-out md:hidden ${
@@ -283,9 +296,43 @@ function ServicesNavItem({
   label: string;
   isActive: boolean;
 }) {
+  // WCAG 1.4.13: el contenido que aparece por hover/foco debe poder descartarse
+  // sin mover el puntero ni el foco. Esc lo oculta; se rearma al salir del
+  // elemento (puntero o foco), de modo que volver a entrar lo abre otra vez.
+  const [dismissed, setDismissed] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+
+  // Listener en `document` y no `onKeyDown` del contenedor: con el menú abierto
+  // solo por hover el foco sigue en <body>, y ahí el evento nunca llegaría al
+  // contenedor.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
+      const focusInside = wrapper.contains(document.activeElement);
+      if (!focusInside && !wrapper.matches(":hover")) return;
+      setDismissed(true);
+      // Si el foco estaba dentro del submenú (ahora oculto), vuelve al enlace.
+      if (focusInside) triggerRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
-    <div className="group relative">
+    <div
+      ref={wrapperRef}
+      className="group relative"
+      data-dismissed={dismissed}
+      onMouseLeave={() => setDismissed(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setDismissed(false);
+      }}
+    >
       <a
+        ref={triggerRef}
         href={href}
         data-nav-section="soluciones"
         aria-current={isActive ? "location" : undefined}
@@ -300,7 +347,7 @@ function ServicesNavItem({
           className="transition-transform duration-200 ease-out-strong group-hover:rotate-180 group-focus-within:rotate-180"
         />
       </a>
-      <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-[opacity,visibility,translate] duration-200 ease-out-strong group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+      <div className="invisible absolute left-1/2 top-full z-50 w-72 group-data-[dismissed=true]:invisible! group-data-[dismissed=true]:opacity-0! -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-[opacity,visibility,translate] duration-200 ease-out-strong group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <div className="rounded-lg border border-hairline bg-background p-2 shadow-xl">
           {servicesWithPage.map((service) => {
             const Icon = service.icon;

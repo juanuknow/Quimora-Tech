@@ -5,3 +5,28 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io
+
+# Caché de recursos estáticos SIN hash en el nombre (a diferencia de /assets/*,
+# que Vite versiona y Cloudflare ya sirve como `immutable`). Como podrían
+# reemplazarse sin cambiar de URL (ya ocurrió: diosas-full.webp se sustituyó dos
+# veces con el mismo nombre), no se les da `immutable` ni plazos largos:
+# 1 hora fresco, y hasta 1 día más sirviendo la copia local mientras se
+# revalida en segundo plano. Quita las revalidaciones dentro de una misma
+# sesión de navegación y acota el peor caso tras un reemplazo: ~1 h hasta
+# verse, más una única vista con la copia vieja (≤25 h) para quien vuelve
+# pasado ese tiempo. Para poder pasar a 1 año `immutable`, primero habría que
+# servirlos con hash (importándolos desde src/).
+/fonts/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/images/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/videos/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/favicon.ico
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/og-image.png
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
