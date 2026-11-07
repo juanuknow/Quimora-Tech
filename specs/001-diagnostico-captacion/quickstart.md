@@ -1,0 +1,174 @@
+# Quickstart: validar el Diagnóstico Digital Gratuito
+
+Guía para comprobar de extremo a extremo que la funcionalidad cumple la spec. No contiene implementación; los detalles están en [data-model.md](./data-model.md) y [contracts/](./contracts/).
+
+## Requisitos previos
+
+- Rama `feat/diagnostico-captacion` con la implementación, árbol limpio.
+- Node 24 (elimina tipos al importar archivos `.ts`).
+- Entorno de pruebas fuera del repositorio: `C:\tmp\pwenv` (Playwright y axe-core ya instalados).
+- **En toda prueba automatizada**: bloquear GA4 (`googletagmanager.com`, `google-analytics.com`, `analytics.google.com`, `doubleclick.net`, `google.*/g/collect`) y Cloudflare Web Analytics (`cloudflareinsights.com`, `/cdn-cgi/rum`), y sustituir `window.gtag` por un registrador con `addInitScript`. Formspree simulado.
+
+## 1. Verificaciones estáticas (constitución, Parte III)
+
+```powershell
+npx tsc --noEmit
+npm run lint
+npx prettier --check <archivos modificados>
+npm run build
+```
+
+Resultado esperado: código de salida 0 en los cuatro; mismo número de avisos de build que la línea base.
+
+## 2. Motor: las 6 300 combinaciones
+
+Script de Node fuera del repositorio que importa `src/lib/diagnosis-engine.ts` y recorre todas las combinaciones (9 × 5 × 7 × 5 × 4).
+
+Para cada combinación comprueba las garantías de [contracts/diagnosis-engine.md](./contracts/diagnosis-engine.md) y [contracts/whatsapp-message.md](./contracts/whatsapp-message.md):
+
+- principal del catálogo y 0–2 complementos válidos (SC-003);
+- resultado idéntico en dos llamadas (FR-014);
+- mensaje con los 11 elementos, y `decodeURIComponent` del enlace igual al texto (SC-004);
+- ningún precio, rango ni presupuesto, y `deliveryTime` nulo (SC-011);
+- enlace de menos de 2 000 caracteres (R13).
+
+Resultado esperado: 0 errores. Además, la distribución de soluciones y complementos coincide con la de la matriz validada en la spec (3 564 sin complementos, 2 124 con uno, 612 con dos).
+
+## 3. Servidor local
+
+Copiar `.output` a una carpeta del scratchpad, fijar `compatibility_date` a `2026-07-21` y servir con `wrangler dev --local` en un puerto libre (procedimiento usado en las fases anteriores). Al terminar, detener solo los procesos de ese puerto, filtrando también por nombre de ejecutable.
+
+## 4. Escenarios de extremo a extremo (Playwright)
+
+| #   | Escenario                                                                                                                            | Esperado                                                                                                                                                                                                                                                                                                                 | Spec                            |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| E1  | Sesión nueva en `/` a 1440 px                                                                                                        | Ventana de invitación entre 2,0 y 3,0 s; foco dentro                                                                                                                                                                                                                                                                     | US3-1, US3-4, SC-001            |
+| E2  | Sesión nueva en `/` a 375 × 812 y 390 × 844                                                                                          | Tarjeta con el contenido de FR-003a; cumple las cinco condiciones de FR-007b (alto ≤ 25 % de `visualViewport.height`, controles ≥ 44 × 44 px, dentro del área visible, sin cruzarse con el header ni con el botón de WhatsApp, sin bloquear el desplazamiento ni mover el foco)                                          | US3-3, FR-003a, FR-007b         |
+| E3  | Cerrar con "Ahora no", con la X y con Escape; recargar y navegar a `/servicios/*` y volver                                           | No reaparece en la sesión; foco en un punto lógico                                                                                                                                                                                                                                                                       | US3-2, FR-004                   |
+| E4  | Contexto nuevo                                                                                                                       | Vuelve a aparecer una vez                                                                                                                                                                                                                                                                                                | SC-001                          |
+| E5  | Completar el diagnóstico desde la sección y recargar                                                                                 | No aparece la invitación                                                                                                                                                                                                                                                                                                 | US3-6                           |
+| E6  | Foco en el formulario de contacto o menú móvil abierto cuando vence el tiempo                                                        | No aparece                                                                                                                                                                                                                                                                                                               | US3-8, FR-005                   |
+| E7  | `/servicios/tiendas-online` durante 5 s                                                                                              | No aparece                                                                                                                                                                                                                                                                                                               | US3-9                           |
+| E8  | `sessionStorage` bloqueado                                                                                                           | Como máximo una invitación por carga; 0 errores                                                                                                                                                                                                                                                                          | Caso límite                     |
+| E9  | Recorrido con teclado: invitación → 5 preguntas → resultado → "Copiar mensaje" → cerrar                                              | Todo operable; foco visible; al cerrar vuelve al disparador                                                                                                                                                                                                                                                              | SC-006, FR-028                  |
+| E10 | Avanzar sin responder                                                                                                                | No avanza; mensaje en texto                                                                                                                                                                                                                                                                                              | US1-2                           |
+| E11 | "Atrás" y cambiar una respuesta                                                                                                      | Se conservan las demás; el resultado cambia                                                                                                                                                                                                                                                                              | US1-3                           |
+| E12 | Atajo "Restaurante"                                                                                                                  | Empieza en la pregunta 2 con el negocio elegido                                                                                                                                                                                                                                                                          | US1-8                           |
+| E13 | Resultado                                                                                                                            | Bloques de FR-016 en orden; sin precio, rango, plazo, puntuación ni porcentaje                                                                                                                                                                                                                                           | US1-4, US1-6                    |
+| E14 | "Continuar por WhatsApp"                                                                                                             | `href` a `wa.me/<número principal>` con el mensaje esperado; nada se envía                                                                                                                                                                                                                                               | US2-1, US2-2                    |
+| E15 | "Copiar mensaje" con permiso y con el portapapeles denegado                                                                          | Texto idéntico al del enlace; aviso anunciado; alternativa seleccionable                                                                                                                                                                                                                                                 | US2-4, US2-5                    |
+| E16 | Registrador de `gtag` en el recorrido completo                                                                                       | Secuencia exacta de SC-007; parámetros solo los permitidos en [analytics-events.md](./contracts/analytics-events.md)                                                                                                                                                                                                     | SC-007                          |
+| E17 | Abrir y cerrar invitación y ventana                                                                                                  | Altura del documento y posición de lectura sin cambios; sin desplazamiento horizontal de 320 a 1440 px                                                                                                                                                                                                                   | SC-005                          |
+| E18 | Movimiento reducido                                                                                                                  | Sin animaciones de desplazamiento                                                                                                                                                                                                                                                                                        | FR-029                          |
+| E19 | Consola                                                                                                                              | 0 errores y 0 avisos de hidratación                                                                                                                                                                                                                                                                                      | Constitución V5                 |
+| E20 | Matriz de pantallas móviles: 320 × 568, 360 × 640, 375 × 667, 375 × 812, 390 × 844, 414 × 896, 430 × 932, y las mismas en horizontal | Para cada una se registra si la tarjeta se mostró. Si se mostró, cumple las cinco condiciones de FR-007b; si no, no hay estado en `sessionStorage` ni `diagnosis_popup_view`, y el botón de la sección y los atajos abren el diagnóstico. Nunca se muestra incumpliendo una condición. En horizontal se espera supresión | FR-007c, SC-010, US3-10         |
+| E21 | Tarjeta visible y cambio a horizontal (o reducción de la altura)                                                                     | La tarjeta se oculta; `sessionStorage` sigue en `shown` (no `dismissed`); no reaparece al volver a vertical en la misma sesión                                                                                                                                                                                           | US3-11, FR-007c                 |
+| E22 | Pregunta 1 abierta desde la sección o la invitación; pregunta 2 abierta desde un atajo                                               | El párrafo de apoyo aparece sobre la pregunta 1, en la misma pantalla y sin pasos extra; no aparece al empezar en la pregunta 2                                                                                                                                                                                          | FR-003b                         |
+| E23 | Clic en "Continuar por WhatsApp" con el registrador de `gtag`                                                                        | Exactamente un `diagnosis_whatsapp_click` y un `generate_lead` (`method: "whatsapp"`, `source: "diagnostico"`); ningún otro evento ni texto indica "enviado"                                                                                                                                                             | FR-025a                         |
+| E24 | Botón de la sección `#diagnostico`                                                                                                   | Se llama «Comenzar diagnóstico gratuito» y abre la misma ventana que la invitación                                                                                                                                                                                                                                       | FR-013a                         |
+| E25 | Zoom del navegador al 200 % (a 1280 px equivale a 640 px CSS) y texto ampliado (tamaño de letra raíz al 130 % y al 200 %)            | En escritorio, la ventana se reorganiza sin perder contenido ni crear desplazamiento horizontal. Con el zoom que pasa a móvil y con texto ampliado, la tarjeta cumple FR-007b o se suprime; nunca se muestra recortada ni con controles de menos de 44 px                                                                | FR-007b, FR-007c, FR-032        |
+| E26 | Tarjeta móvil con teclado y tecnologías de apoyo                                                                                     | Se anuncia una vez al aparecer (`role="status"`); se alcanza con Tab en un orden lógico; tiene nombre accesible; Escape la cierra con el foco dentro; prueba puntual con TalkBack y VoiceOver además de NVDA                                                                                                             | FR-009, FR-028                  |
+| E27 | Registro de red durante el recorrido completo                                                                                        | Ningún origen nuevo respecto a la línea base (solo los ya existentes de GA4, Cloudflare Web Analytics y el propio sitio)                                                                                                                                                                                                 | FR-027                          |
+| E28 | Elementos retirados                                                                                                                  | En la sección y en la ventana no hay puntuación de madurez, pregunta de presupuesto, pregunta de funcionalidades, calculadora de coste, precios, rangos ni plazos                                                                                                                                                        | FR-017, FR-018, FR-018b, FR-020 |
+| E29 | Revisión estática del código nuevo                                                                                                   | Solo tokens existentes (sin colores literales ni clases de color azul); etiquetas «Comenzar diagnóstico gratuito», «Continuar por WhatsApp» y «Copiar mensaje» documentadas en `CLAUDE.md`; sin cambios en `Nav.tsx`, `Footer.tsx`, `server.ts`, cabeceras, `package.json` ni estilos globales                           | FR-030, Plan                    |
+| E30 | Prueba con al menos una persona ajena al proyecto y sin conocimientos técnicos, cronometrada                                         | Completa las cinco preguntas y llega al resultado en menos de 2 minutos sin ayuda                                                                                                                                                                                                                                        | SC-002                          |
+| E31 | Antes de producción, auditoría de GA4 en modo solo lectura (la hace el responsable; no se cambia ninguna configuración)              | Se registra qué eventos son clave hoy, en particular si `generate_lead` lo es, y cómo se distinguirán en los informes los clics de WhatsApp (`method: "whatsapp"`) de los contactos confirmados (`method: "contact_form"`)                                                                                               | D2, FR-025a                     |
+| E32 | Después del despliegue, comprobación en GA4 en tiempo real o DebugView (solo lectura)                                                | Llegan los seis eventos del embudo con los parámetros del contrato y el embudo se puede calcular                                                                                                                                                                                                                         | SC-008                          |
+
+## 4.1. Dispositivos reales (SC-010)
+
+Playwright no simula las áreas seguras ni la barra dinámica del navegador. Revisión manual, en producción preliminar o servidor local accesible en la red, en al menos:
+
+- un iPhone con indicador de inicio (Safari), en vertical y en horizontal;
+- un Android (Chrome), en vertical y en horizontal.
+
+Para cada uno: ¿se muestra la tarjeta?; si se muestra, ¿cabe en el 25 %, sin tapar la barra del navegador, el header ni el botón de WhatsApp, y con los botones fuera de la zona del indicador de inicio? Se registran capturas y el resultado.
+
+## 5. Regresión del sitio
+
+| Suite                              | Esperado                                                                           |
+| ---------------------------------- | ---------------------------------------------------------------------------------- |
+| `nav-verify.cjs`                   | 30/30                                                                              |
+| `nav-diag.cjs`                     | 0 px de desvío en escritorio y móvil                                               |
+| Interacción (50 pruebas)           | 50/50                                                                              |
+| axe, 13 rutas × 2 viewports        | Sin infracciones nuevas respecto a la línea base (22, solo `region`)               |
+| Inventario de contenido de la home | Solo cambia la sección `#diagnostico` (y el texto de su botón); el resto, idéntico |
+| Altura con `LivePerformance`       | Estable antes y después de la primera interacción                                  |
+
+## 6. Accesibilidad manual (Principio VII)
+
+Revisión documentada de los criterios afectados: teclado y orden del foco (2.1.1, 2.4.3), foco visible y no tapado (2.4.7, 2.4.11), contraste (1.4.3, 1.4.11), zoom al 200 % y reflujo a 320 px (1.4.4, 1.4.10), tamaño de objetivo (2.5.8), etiquetas e instrucciones (1.3.1, 3.3.2), movimiento reducido y una prueba puntual con NVDA. Se informa "sin fallos conocidos en los criterios revisados".
+
+## 7. Capturas
+
+Antes y después a 1440, 768, 375 y 320 px: la sección `#diagnostico`, la invitación (ventana y tarjeta), una pregunta, el resultado con 0, 1 y 2 complementos.
+
+## 8. Matriz de trazabilidad
+
+Cada requisito y cada criterio de éxito tiene al menos una verificación. "§2" es la verificación exhaustiva del motor; "§5", la regresión; "§6", la revisión manual de accesibilidad; "§4.1", los dispositivos reales.
+
+| Requisito | Verificación                                                                |
+| --------- | --------------------------------------------------------------------------- |
+| FR-001    | E1, E7                                                                      |
+| FR-002    | E3, E4, E5, E8                                                              |
+| FR-003    | E1                                                                          |
+| FR-003a   | E2                                                                          |
+| FR-003b   | E22                                                                         |
+| FR-004    | E3, E9                                                                      |
+| FR-005    | E6                                                                          |
+| FR-006    | E17                                                                         |
+| FR-007    | E1, E9                                                                      |
+| FR-007a   | E2, E20                                                                     |
+| FR-007b   | E2, E20, E25, §4.1                                                          |
+| FR-007c   | E20, E21, E25                                                               |
+| FR-008    | E9                                                                          |
+| FR-009    | E9, E26, §6                                                                 |
+| FR-010    | E10, E11                                                                    |
+| FR-011    | E12                                                                         |
+| FR-012    | §2, E9                                                                      |
+| FR-013    | E5, E24                                                                     |
+| FR-013a   | E5, E12, E24                                                                |
+| FR-014    | §2                                                                          |
+| FR-015    | §2                                                                          |
+| FR-015a   | §2, E13                                                                     |
+| FR-015b   | §2                                                                          |
+| FR-015c   | §2 (con la necesidad fija, la principal solo varía entre R-P1 y R-P2 en N1) |
+| FR-016    | E13                                                                         |
+| FR-016a   | §2                                                                          |
+| FR-016b   | §2 y revisión de la tabla "Respaldo de cada recomendación"                  |
+| FR-017    | E13, E28                                                                    |
+| FR-018    | §2, E13, E28                                                                |
+| FR-018a   | E13                                                                         |
+| FR-018b   | §2, E28                                                                     |
+| FR-019    | E13                                                                         |
+| FR-020    | E28                                                                         |
+| FR-021    | E14                                                                         |
+| FR-022    | §2, E14                                                                     |
+| FR-022a   | §2                                                                          |
+| FR-023    | §2, E14                                                                     |
+| FR-024    | E15                                                                         |
+| FR-025    | E16                                                                         |
+| FR-025a   | E23, E31                                                                    |
+| FR-026    | E16                                                                         |
+| FR-027    | E16, E27                                                                    |
+| FR-028    | E9, E26, §6                                                                 |
+| FR-029    | E18                                                                         |
+| FR-030    | E29                                                                         |
+| FR-031    | E17                                                                         |
+| FR-032    | E17, E25                                                                    |
+
+| Criterio | Verificación   |
+| -------- | -------------- |
+| SC-001   | E1, E4         |
+| SC-002   | E30            |
+| SC-003   | §2             |
+| SC-004   | §2, E14, E15   |
+| SC-005   | E17            |
+| SC-006   | E9, §6         |
+| SC-007   | E16            |
+| SC-008   | E32            |
+| SC-009   | §5             |
+| SC-010   | E20, E25, §4.1 |
+| SC-011   | §2, E28        |
+
+E19 (consola sin errores ni avisos de hidratación) no corresponde a un requisito de la spec: verifica el Principio V de la constitución.

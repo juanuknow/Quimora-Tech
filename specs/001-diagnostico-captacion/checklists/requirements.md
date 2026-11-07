@@ -53,5 +53,18 @@
   - Textos sin respaldo corregidos: R-C2 decía "mejorar el actual" (optimizar una tienda existente no está publicado) y el supuesto de S3/S4 decía "renuevan la web actual" (rediseñar no está publicado); ahora hablan de una tienda propia y de una web nueva que reemplaza a la actual.
   - Precios, modelo integral y contenido de WhatsApp: sin cambios, se confirman.
   - Revalidación: 0 marcadores; matriz de 6 300 combinaciones con 0 errores (las reglas no cambiaron); ningún requisito afirma mostrar precios ni plazos.
+- **Iteración 5 (2026-11-07), decisiones D1–D4 del plan técnico**:
+  - D1: FR-003 (escritorio, contenido completo), nuevos FR-003a (tarjeta móvil reducida) y FR-003b (párrafo de apoyo sobre la pregunta 1, sin pasos extra); FR-007b con cinco condiciones simultáneas y sin excepciones (25 %, 44 px, áreas seguras, sin tapar navegación ni WhatsApp, sin bloqueo); nuevo FR-007c (supresión si no se cumplen, sin estado ni evento; ocultación al girar sin contar como descarte). Actualizados US3 (relato, prueba independiente, escenarios 3, 10 y 11), casos límite, SC-001 y SC-010 (matriz de pantallas y dispositivos reales).
+  - D2: FR-025 conserva `generate_lead`; nuevo FR-025a (un clic, un evento de cada; intención, nunca envío ni lead recibido). Supuesto nuevo sobre el doble significado actual de `generate_lead` y verificación pendiente en GA4.
+  - D3: FR-013a fija la etiqueta «Comenzar diagnóstico gratuito» en la sección.
+  - D4: diferida; alternativas documentadas en el plan.
+  - Incoherencia previa corregida: FR-026 no permitía el parámetro `format` de `diagnosis_popup_view` que usaba el contrato de analítica; ahora lo incluye.
+  - Revalidación: 47 requisitos, 0 marcadores, todas las referencias FR/SC de los documentos de planificación existen en la spec, parámetros de GA4 coherentes entre spec y contrato; matriz de 6 300 combinaciones sin cambios en sus reglas y con 0 errores.
+- **Iteración 6 (2026-11-07), cierre de la documentación antes de `/speckit-tasks`**:
+  - Matriz de trazabilidad en `quickstart.md` §8: los 47 requisitos y los 11 criterios de éxito tienen al menos una verificación; todas las verificaciones citadas existen.
+  - Escenarios nuevos E25–E32: zoom y texto ampliado, tecnologías de apoyo en la tarjeta, orígenes de red, elementos retirados, revisión estática, prueba cronometrada con una persona real (SC-002), auditoría de GA4 en solo lectura antes de producción y comprobación del embudo tras el despliegue (SC-008).
+  - Garantía "Sin escalado" (FR-015c) añadida al contrato del motor y comprobada en las 6 300 combinaciones: 0 infracciones.
+  - `plan.md`: condiciones del responsable para la lista de tareas (analítica, invitación móvil, restricciones de implementación e integración).
+  - Revalidación: 0 marcadores, 0 referencias a requisitos inexistentes, sin restos de decisiones sustituidas, matriz con 0 errores.
 - La descripción original en "Input" se conserva tal como se recibió; las decisiones posteriores, registradas en "Clarifications", prevalecen sobre ella (incluida la mención a rangos de inversión).
 - Las referencias a `CLAUDE.md` (FR-030) y al "catálogo de servicios publicado" son fuentes documentales del proyecto, no detalles de implementación.

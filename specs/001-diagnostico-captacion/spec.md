@@ -28,6 +28,13 @@
 - Recomendaciones: se mantiene el modelo integral, determinista y basado en necesidades, sin recomendar automáticamente la solución más costosa (FR-014 a FR-015c).
 - WhatsApp: se mantienen las cinco respuestas y la recomendación completa en el mensaje (FR-022).
 
+### Session 2026-11-07 (decisiones D1–D4 del plan técnico)
+
+- D1 — Invitación móvil: contenido reducido («Descubre qué necesita tu negocio», «Gratis · Unos 2 minutos», «Comenzar diagnóstico gratuito», «Ahora no» y cierre accesible). El límite del 25 % se mantiene sin excepciones; si la tarjeta no puede cumplir todas las condiciones en una pantalla, la invitación automática no se muestra en ella. El párrafo de apoyo completo se muestra al inicio del cuestionario, sin pantallas ni preguntas adicionales. Escritorio conserva el contenido completo (FR-003, FR-003a, FR-003b, FR-007b, FR-007c, SC-010).
+- D2 — Analítica: se conserva `generate_lead` junto con `diagnosis_whatsapp_click`; ambos registran un clic (intención de contactar), nunca un mensaje enviado ni un lead recibido (FR-025, FR-025a).
+- D3 — CTA: el botón de la sección #diagnostico pasa a «Comenzar diagnóstico gratuito» (FR-013a).
+- D4 — Integración de Spec Kit en `main`: diferida; se documentan las alternativas en el plan técnico y cualquier integración requiere autorización independiente.
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Obtener una recomendación integral (Priority: P1)
@@ -72,23 +79,25 @@ Tras ver su recomendación, el visitante pulsa "Continuar por WhatsApp". Se abre
 
 ### User Story 3 - Invitación amable al entrar en la página principal (Priority: P3)
 
-Un visitante entra en la página principal. Entre 2 y 3 segundos después aparece una invitación discreta (una ventana centrada en escritorio y tableta; en móvil, una tarjeta en el borde inferior que no bloquea la lectura): "¿Tu negocio está aprovechando todo su potencial digital?", con el texto de apoyo, la indicación de que toma unos 2 minutos, el botón "Comenzar diagnóstico gratuito" y la opción "Ahora no". Si la rechaza o la cierra, no vuelve a verla en esa sesión del navegador. Si acepta, entra directamente a la primera pregunta.
+Un visitante entra en la página principal. Entre 2 y 3 segundos después aparece una invitación discreta. En escritorio y tableta es una ventana centrada con el contenido completo: "¿Tu negocio está aprovechando todo su potencial digital?", el texto de apoyo, la indicación de que toma unos 2 minutos, el botón "Comenzar diagnóstico gratuito" y la opción "Ahora no". En móvil es una tarjeta reducida en el borde inferior ("Descubre qué necesita tu negocio", "Gratis · Unos 2 minutos", los mismos dos botones y un cierre) que no bloquea la lectura; si en esa pantalla la tarjeta no cabe cumpliendo todas sus condiciones, no aparece. Si la rechaza o la cierra, no vuelve a verla en esa sesión del navegador. Si acepta, entra directamente a la primera pregunta.
 
 **Why this priority**: Aumenta el alcance del diagnóstico, pero el diagnóstico (P1) y la conversión (P2) ya aportan valor sin ella. Es además la parte con más riesgo para la experiencia, por lo que debe poder activarse o retirarse sin afectar a P1 y P2.
 
-**Independent Test**: Abrir la página principal en una sesión nueva y medir el momento de aparición; cerrar, recargar y navegar dentro de la sesión para comprobar que no reaparece; abrir una sesión nueva y comprobar que vuelve a aparecer una vez. Repetirlo en escritorio y en móvil.
+**Independent Test**: Abrir la página principal en una sesión nueva y medir el momento de aparición; cerrar, recargar y navegar dentro de la sesión para comprobar que no reaparece; abrir una sesión nueva y comprobar que vuelve a aparecer una vez. Repetirlo en escritorio y en una matriz de pantallas móviles, comprobando que en las pantallas donde la tarjeta no cabe no aparece y el diagnóstico sigue disponible desde la sección y los atajos.
 
 **Acceptance Scenarios**:
 
 1. **Given** una sesión nueva en la página principal, **When** transcurren entre 2 y 3 segundos desde la carga, **Then** aparece la invitación una sola vez.
 2. **Given** la invitación visible, **When** el visitante pulsa "Ahora no", el botón de cierre o la tecla Escape, **Then** la invitación desaparece, el foco queda en un punto lógico de la página y no vuelve a aparecer en esa sesión, aunque recargue o navegue a otras páginas y regrese.
-3. **Given** un visitante en móvil, **When** aparece la invitación, **Then** es una tarjeta en el borde inferior que no tapa la navegación ni el botón flotante de WhatsApp, y el visitante puede seguir desplazándose y leyendo sin cerrarla.
+3. **Given** un visitante en móvil, **When** aparece la invitación, **Then** es una tarjeta en el borde inferior con "Descubre qué necesita tu negocio", "Gratis · Unos 2 minutos", "Comenzar diagnóstico gratuito", "Ahora no" y un botón de cierre; ocupa como máximo el 25 % de la altura visible, respeta las áreas seguras, no tapa la navegación ni el botón flotante de WhatsApp, y el visitante puede seguir desplazándose y leyendo sin cerrarla.
 4. **Given** un visitante en escritorio o tableta, **When** aparece la invitación, **Then** es una ventana centrada y el foco permanece dentro de ella hasta que la cierra o la acepta.
 5. **Given** la invitación visible, **When** el visitante pulsa "Comenzar diagnóstico gratuito", **Then** se abre la ventana del diagnóstico en la primera pregunta.
 6. **Given** un visitante que ya completó el diagnóstico en esta sesión (desde la invitación o desde la sección), **When** vuelve a la página principal, **Then** la invitación no aparece.
 7. **Given** que la invitación ya se descartó en esta sesión, **When** el visitante usa el botón de inicio de la sección #diagnostico, **Then** se abre la misma ventana del diagnóstico y puede hacerlo con normalidad.
 8. **Given** un visitante que ya está interactuando con el diagnóstico, con el formulario de contacto o con el menú móvil cuando se cumple el tiempo, **When** llega el momento de mostrar la invitación, **Then** la invitación no aparece en esa visita.
 9. **Given** un visitante en cualquier página que no sea la principal, **When** pasa el tiempo, **Then** no aparece ninguna invitación.
+10. **Given** una pantalla móvil donde la tarjeta no puede cumplir todas las condiciones de FR-007b (por ejemplo, un teléfono en horizontal), **When** llega el momento de mostrarla, **Then** no aparece, no se registra como mostrada ni descartada, no se envía `diagnosis_popup_view`, y el diagnóstico sigue disponible desde la sección #diagnostico y los atajos.
+11. **Given** la tarjeta visible, **When** el visitante gira el teléfono o cambia el tamaño de la ventana y la tarjeta deja de cumplir las condiciones, **Then** la tarjeta se oculta sin contar como descarte y no vuelve a aparecer en esa sesión.
 
 ---
 
@@ -112,6 +121,9 @@ El responsable de Quimora Tech consulta en su herramienta de analítica cuántas
 
 - **Almacenamiento de sesión no disponible** (navegación privada estricta, almacenamiento bloqueado): la invitación aparece como máximo una vez por carga de página, nunca en bucle, y el sitio no muestra errores.
 - **El visitante sale de la página principal antes de los 2 segundos**: la invitación no aparece.
+- **Pantalla móvil donde la tarjeta no cabe** (pantallas bajas, teléfono en horizontal, tamaño de letra del sistema ampliado, áreas seguras grandes): la invitación automática no aparece (FR-007c); el diagnóstico sigue disponible desde la sección y los atajos.
+- **Giro del teléfono o cambio de tamaño con la tarjeta visible**: si deja de cumplir las condiciones, se oculta sin contar como descarte (FR-007c).
+- **Dispositivos con áreas seguras** (muesca, isla o indicador de inicio): la tarjeta se mantiene dentro del área visible útil y sus controles no quedan bajo esas zonas.
 - **La página llega con un ancla** (por ejemplo, un enlace a #contacto o #precios desde otra página): se respeta la navegación del visitante; la invitación sigue las mismas reglas de aparición y nunca desplaza la posición de lectura.
 - **Recarga o "Atrás" del navegador a mitad del cuestionario**: el cuestionario vuelve a su inicio sin errores; no se conservan respuestas entre visitas.
 - **Cambio de una respuesta anterior**: la recomendación (principal, complementos, explicación y próximo paso) se recalcula con la respuesta nueva.
@@ -136,13 +148,16 @@ El responsable de Quimora Tech consulta en su herramienta de analítica cuántas
 
 - **FR-001**: El sistema MUST mostrar la invitación solo en la página principal, entre 2 y 3 segundos después de cargarla, y nunca de forma inmediata.
 - **FR-002**: El sistema MUST mostrar la invitación como máximo una vez por sesión del navegador, recordándolo durante la sesión, y no mostrarla si el visitante la cerró o completó el diagnóstico en esa sesión.
-- **FR-003**: La invitación MUST incluir el título "¿Tu negocio está aprovechando todo su potencial digital?", el texto "Descubre qué oportunidades tiene tu negocio para crecer con tecnología. Responde unas preguntas y recibe una recomendación personalizada, completamente gratis.", la indicación de que toma unos 2 minutos, el botón principal "Comenzar diagnóstico gratuito" y la acción secundaria "Ahora no".
+- **FR-003**: La invitación de escritorio y tableta MUST incluir el título "¿Tu negocio está aprovechando todo su potencial digital?", el texto "Descubre qué oportunidades tiene tu negocio para crecer con tecnología. Responde unas preguntas y recibe una recomendación personalizada, completamente gratis.", la indicación de que toma unos 2 minutos, el botón principal "Comenzar diagnóstico gratuito", la acción secundaria "Ahora no" y un botón de cierre accesible.
+- **FR-003a**: La tarjeta móvil MUST incluir exactamente: el título "Descubre qué necesita tu negocio", el texto secundario "Gratis · Unos 2 minutos", el botón principal "Comenzar diagnóstico gratuito", la acción secundaria "Ahora no" y un botón de cierre accesible. No incluye el párrafo de apoyo.
+- **FR-003b**: La primera pregunta del cuestionario MUST mostrar sobre ella, como introducción breve, el párrafo de apoyo de FR-003, en la misma pantalla y sin añadir pantallas, pasos ni preguntas. Si el diagnóstico se abre desde un atajo (empieza en la pregunta 2), el párrafo no se muestra.
 - **FR-004**: La invitación MUST poder cerrarse con un botón de cierre visible, con "Ahora no" y con la tecla Escape. Al cerrarse, el foco MUST quedar en el elemento que lo tenía antes de abrirse o, si estaba dentro de la invitación, en un punto lógico de la página, nunca perdido.
 - **FR-005**: La invitación MUST NOT aparecer si el visitante está interactuando con el diagnóstico, con un formulario o con el menú de navegación en el momento previsto.
 - **FR-006**: La invitación MUST NOT desplazar el contenido de la página ni provocar cambios de diseño, y al cerrarse la página debe quedar exactamente como estaba.
 - **FR-007**: En pantallas de escritorio y tableta (768 px de ancho o más), la invitación MUST presentarse como una ventana centrada sobre la página, que mantiene el foco dentro de ella mientras está abierta.
 - **FR-007a**: En móviles (menos de 768 px de ancho), la invitación MUST presentarse como una tarjeta flotante en el borde inferior que no bloquea la página: el visitante puede seguir leyendo, desplazándose y usando la navegación sin cerrarla; la tarjeta no captura el foco ni impide el desplazamiento.
-- **FR-007b**: La tarjeta móvil MUST ocupar como máximo el 25 % de la altura visible de la pantalla y MUST NOT tapar la barra de navegación ni el botón flotante de WhatsApp.
+- **FR-007b**: La tarjeta móvil MUST cumplir a la vez, sin excepciones: (1) ocupar como máximo el 25 % de la altura visible en ese momento; (2) mantener todos sus controles con un objetivo táctil de al menos 44 × 44 px; (3) quedar dentro de las áreas seguras del dispositivo; (4) no tapar la barra de navegación ni el botón flotante de WhatsApp; (5) no bloquear el desplazamiento ni capturar el foco.
+- **FR-007c**: La tarjeta móvil MUST mostrarse solo si, en el momento de mostrarla, cumple todas las condiciones de FR-007b medidas en la pantalla real. Si no las cumple, la invitación automática no se muestra en esa carga de página, no se registra en el estado de la sesión y no se envía `diagnosis_popup_view`. Si deja de cumplirlas mientras está visible (giro o cambio de tamaño), se oculta sin contar como descarte y no vuelve a mostrarse en la sesión. En ningún caso se reduce el tamaño de los controles ni se amplía el límite del 25 % para que quepa.
 
 #### Cuestionario
 
@@ -152,7 +167,7 @@ El responsable de Quimora Tech consulta en su herramienta de analítica cuántas
 - **FR-011**: Las opciones de tipo de negocio MUST ser las mismas que ya usa el sitio (incluidos los atajos "¿Cuál es tu caso?"), que MUST seguir abriendo el diagnóstico con el tipo de negocio preseleccionado.
 - **FR-012**: Las opciones de las preguntas 2 a 5 MUST ser las de la tabla "Opciones de respuesta" (Reglas de recomendación); el plan puede ajustar su redacción sin cambiar su significado.
 - **FR-013**: El diagnóstico MUST poder iniciarse en cualquier momento desde la sección #diagnostico, incluso si la invitación se descartó.
-- **FR-013a**: Existe una única experiencia de diagnóstico: el cuestionario y el resultado se presentan en la misma ventana tanto si se inician desde la invitación (escritorio o tarjeta móvil), desde la sección #diagnostico o desde los atajos "¿Cuál es tu caso?". En móviles, esa ventana ocupa la pantalla completa, porque la abre el propio visitante. La sección #diagnostico conserva su presentación y su botón de inicio.
+- **FR-013a**: Existe una única experiencia de diagnóstico: el cuestionario y el resultado se presentan en la misma ventana tanto si se inician desde la invitación (escritorio o tarjeta móvil), desde la sección #diagnostico o desde los atajos "¿Cuál es tu caso?". En móviles, esa ventana ocupa la pantalla completa, porque la abre el propio visitante. La sección #diagnostico conserva su presentación, y su botón de inicio pasa a llamarse "Comenzar diagnóstico gratuito", igual que en la invitación. Los atajos abren la misma ventana con el mismo mecanismo.
 
 #### Recomendación integral
 
@@ -181,8 +196,9 @@ El responsable de Quimora Tech consulta en su herramienta de analítica cuántas
 
 #### Analítica
 
-- **FR-025**: El sistema MUST registrar los eventos diagnosis_popup_view, diagnosis_start, diagnosis_question_answered, diagnosis_complete, diagnosis_result_view y diagnosis_whatsapp_click, una vez por acción del visitante y sin duplicados por redibujado.
-- **FR-026**: Los eventos MUST NOT contener datos personales, el contenido ni el identificador de respuestas individuales, ni los complementos; solo pueden incluir el origen del inicio (invitación, sección o atajo), el número de pregunta y el identificador de la solución principal recomendada.
+- **FR-025**: El sistema MUST registrar los eventos diagnosis_popup_view, diagnosis_start, diagnosis_question_answered, diagnosis_complete, diagnosis_result_view y diagnosis_whatsapp_click, una vez por acción del visitante y sin duplicados por redibujado. Además MUST conservar el evento existente `generate_lead` (con `method: "whatsapp"` y `source: "diagnostico"`) en el clic de "Continuar por WhatsApp".
+- **FR-025a**: Un clic en "Continuar por WhatsApp" MUST producir exactamente un `diagnosis_whatsapp_click` y un `generate_lead`. Ambos registran la intención de contactar (el clic), nunca un mensaje enviado ni un lead recibido; ningún evento ni texto del sitio afirma que el mensaje se envió.
+- **FR-026**: Los eventos MUST NOT contener datos personales, el contenido ni el identificador de respuestas individuales, ni los complementos; solo pueden incluir el formato de la invitación (ventana o tarjeta), el origen del inicio (invitación, sección o atajo), el número de pregunta y el identificador de la solución principal recomendada; `generate_lead` conserva sus parámetros actuales (`method`, `source`).
 - **FR-027**: Los eventos MUST seguir el mismo mecanismo de envío y la misma configuración de privacidad que el resto del sitio, sin añadir orígenes externos nuevos.
 
 #### Calidad
@@ -303,7 +319,7 @@ Todos los próximos pasos remiten a "Continuar por WhatsApp" e indican que la in
 
 ### Measurable Outcomes
 
-- **SC-001**: En el 100 % de las sesiones nuevas de prueba, la invitación aparece entre 2,0 y 3,0 segundos después de cargar la página principal, y en ninguna aparece más de una vez por sesión.
+- **SC-001**: En el 100 % de las sesiones nuevas de prueba en escritorio, tableta y pantallas móviles donde la tarjeta cumple FR-007b, la invitación aparece entre 2,0 y 3,0 segundos después de cargar la página principal, y en ninguna sesión aparece más de una vez.
 - **SC-002**: Un visitante sin conocimientos técnicos completa las cinco preguntas y llega al resultado en menos de 2 minutos.
 - **SC-003**: En el 100 % de las combinaciones posibles de respuestas (6 300), la recomendación tiene una solución principal del catálogo, como máximo dos complementos publicados y distintos entre sí y de la principal, cada complemento con su motivo, y repetir una combinación produce exactamente el mismo resultado.
 - **SC-004**: El 100 % de los mensajes de WhatsApp generados contiene los once elementos de FR-022, con todos los caracteres especiales intactos, y coincide exactamente con el texto de "Copiar mensaje".
@@ -312,7 +328,7 @@ Todos los próximos pasos remiten a "Continuar por WhatsApp" e indican que la in
 - **SC-007**: En un recorrido completo se registran exactamente los eventos esperados, una vez cada uno por acción, y ninguno contiene datos personales, respuestas individuales ni complementos.
 - **SC-008**: Desde la publicación, el responsable puede calcular con la analítica la conversión de cada paso del embudo (invitación → inicio → finalización → clic en WhatsApp).
 - **SC-009**: Las verificaciones existentes del sitio (navegación, menú móvil, formulario de contacto, rutas secundarias) siguen pasando sin cambios.
-- **SC-010**: En móviles de 320 a 767 px, la tarjeta de invitación ocupa como máximo el 25 % de la altura visible, no tapa la navegación ni el botón flotante de WhatsApp, y el visitante puede desplazarse por la página con la tarjeta visible.
+- **SC-010**: En el 100 % de las pantallas móviles probadas (matriz de anchos de 320 a 767 px, alturas bajas y altas, vertical y horizontal, y al menos un iPhone y un Android reales), la tarjeta o bien cumple las cinco condiciones de FR-007b (25 %, controles de 44 px, áreas seguras, sin tapar navegación ni WhatsApp, sin bloquear el desplazamiento), o bien no se muestra; nunca se muestra incumpliendo alguna.
 - **SC-011**: En el 100 % de las combinaciones de respuestas, ni el resultado ni el mensaje de WhatsApp contienen precios, rangos, valores mínimos, costos o presupuestos, y ningún resultado muestra plazo mientras no exista una correspondencia servicio–plazo aprobada.
 
 ## Assumptions
@@ -338,5 +354,7 @@ Todos los próximos pasos remiten a "Continuar por WhatsApp" e indican que la in
 - El identificador de la solución principal no se considera dato personal y puede enviarse a la analítica (FR-026); los complementos no se envían.
 - El número comercial es el ya configurado en el sitio como número principal de WhatsApp.
 - La pregunta de funcionalidades deseadas se retira definitivamente (confirmado por el responsable).
+- **Significado de `generate_lead`**: hoy se emite en dos lugares con significados distintos: el formulario de contacto la envía tras confirmarse el envío (lead recibido, `method: "contact_form"`) y el diagnóstico al hacer clic en WhatsApp (intención, `method: "whatsapp"`). Se conserva sin cambios (D2); los informes que cuenten leads recibidos deben filtrar `method: "contact_form"`. **Pendiente de verificar por el responsable** (sin acceso desde este entorno): si `generate_lead` está marcado como evento clave en GA4, los clics de WhatsApp ya cuentan hoy como conversiones.
+- **Áreas seguras**: el sitio declara hoy `viewport` sin `viewport-fit=cover`, así que el navegador mantiene el contenido dentro del área segura y las variables de área segura valen 0; la tarjeta se diseña para respetarlas igualmente. Como no se cambia la configuración global del viewport, el comportamiento se comprueba en dispositivos reales (SC-010).
 - Por el Principio IV de la constitución, el cambio es de riesgo alto (toca la captación de leads y la analítica): el plan debe incluir reversión escrita y supervisión tras el despliegue.
 - La política de privacidad no requiere cambios por esta funcionalidad, porque no añade orígenes externos ni datos personales; su actualización pendiente se gestiona aparte.
