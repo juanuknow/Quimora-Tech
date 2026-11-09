@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
+import { AuditOffer } from "../components/AuditOffer";
 import { DiagnosisDialog } from "../components/DiagnosisDialog";
 import { DiagnosisInvite } from "../components/DiagnosisInvite";
 import { DiagnosisShortcuts } from "../components/DiagnosisShortcuts";
@@ -64,6 +65,7 @@ function LandingPage() {
         <Problem />
         <DiagnosisShortcuts />
         <DigitalDiagnosis />
+        <AuditOffer />
         {/* 7–9. Precios, objeciones y cierre */}
         <Pricing />
         <FAQ />
