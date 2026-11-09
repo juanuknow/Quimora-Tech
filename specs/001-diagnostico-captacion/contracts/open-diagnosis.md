@@ -36,6 +36,21 @@ export function requestDiagnosis(detail: DiagnosisStartDetail): void;
 - Ningún otro componente lee ni escribe esta clave.
 - Si la tarjeta móvil se suprime porque no cumple FR-007b (FR-007c), no se escribe ningún valor.
 
+## Acciones de la invitación (U2)
+
+| Control                         | Ventana (≥ 768 × 640 px)                                                          | Tarjeta (resto)                                                                  |
+| ------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| «Comenzar diagnóstico gratuito» | Cierra la invitación y llama a `requestDiagnosis({ source: "invitacion" })`       | Oculta la tarjeta y llama a `requestDiagnosis({ source: "invitacion" })`         |
+| «Ahora no»                      | `markInvite("dismissed")` y cierre; el foco vuelve al elemento previo o a `#main` | `markInvite("dismissed")` y ocultación; si el foco estaba dentro, pasa a `#main` |
+| Botón de cierre (×)             | Igual que «Ahora no»                                                              | Igual que «Ahora no»                                                             |
+| Escape                          | Igual que «Ahora no» (evento `cancel`)                                            | Igual que «Ahora no», solo si el foco está dentro de la tarjeta                  |
+
+En ambos casos el estado ya es `shown` desde que se mostró; «Comenzar…» no escribe `dismissed`.
+
+## Detección de la ventana abierta (U3)
+
+La ventana del diagnóstico es `<dialog id="diagnosis-dialog">`. La invitación no se muestra si `document.getElementById("diagnosis-dialog")?.open` es verdadero (FR-005).
+
 ## Botón de la sección
 
 El botón de la sección `#diagnostico` se llama «Comenzar diagnóstico gratuito» (D3), igual que el de la invitación, y emite `requestDiagnosis({ source: "seccion" })`.

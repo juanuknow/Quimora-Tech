@@ -262,6 +262,9 @@ Cada destino tiene **un** verbo. Cambiar la etiqueta rompe la predictibilidad de
 | WhatsApp | **Escribir por WhatsApp** |
 | WhatsApp con oferta propia | *\<oferta\>* **por WhatsApp** (ej. "Agendar por WhatsApp") |
 | `#showcase` (portafolio; secundario en Hero y FinalCTA) | **Ver Casos de Éxito** |
+| Abre el diagnóstico (sección `#diagnostico` e invitación) | **Comenzar diagnóstico gratuito** |
+| WhatsApp con el contexto del diagnóstico (resultado) | **Continuar por WhatsApp** |
+| Acción local del resultado del diagnóstico | **Copiar mensaje** |
 
 ### Escala tipográfica
 

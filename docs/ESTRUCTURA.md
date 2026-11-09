@@ -102,7 +102,7 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | --- | --- |
 | Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
 | Secciones de la landing | `Hero`, `Problem`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Stats`, `Timeline`, `Specialists`, `Pricing`, `FAQ`, `Contact`, `FinalCTA` |
-| Diagnóstico (lead magnet) | `DigitalDiagnosis` (wizard de 5 pasos), `DiagnosisShortcuts` (chips que lo abren con el negocio ya elegido) |
+| Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido). Todos abren la misma ventana con `requestDiagnosis()` |
 | Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
 | Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador), `LivePerformance` (métricas web reales) |
 | Plantillas de página | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`) |
@@ -113,9 +113,12 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | Archivo | Responsabilidad |
 | --- | --- |
 | `site.ts` | **Fuente única** de contacto (WhatsApp, correo, teléfonos), `SITE_URL`, endpoint de Formspree, ID de Google Analytics, `trackEvent` y los anillos de foco `FOCUS_RING` / `LIGHT_RING`. No hardcodear estos valores en componentes. |
-| `services-data.ts` | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer`) |
+| `services-data.ts` | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara un `id` estable (`ServiceId`) y su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer` y el motor del diagnóstico) |
+| `pricing-data.ts` | **Fuente única** de los planes de la sección Precios (`PLANS`, `PLAN_INCLUDES`); la usan `Pricing` y, sin precios, el motor del diagnóstico (componentes del plan Emprendedor) |
 | `verticals-data.ts` | Contenido de las páginas por rubro `/para/*` (alimenta `VerticalDetail`) |
-| `diagnosis.ts` | Tipos y opciones compartidos del Diagnóstico, y `requestDiagnosis()` para abrirlo desde otra sección |
+| `diagnosis.ts` | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, business? })`, el único punto de apertura de la ventana |
+| `diagnosis-engine.ts` | Motor puro del Diagnóstico (sin React ni DOM): opciones de las preguntas 2–5, `recommend()` (reglas R-P, R-K, R-C y R-N de `specs/001-diagnostico-captacion/spec.md`) y `buildWhatsAppMessage()`. Sin precios ni plazos |
+| `diagnosis-invite.ts` | Estado de la invitación en la sesión (`sessionStorage` `qt:diagnosis-invite`, con respaldo en memoria) |
 | `hooks.ts` | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor) |
 | `use-web-vitals.ts` | Lectura de Core Web Vitals (la usa `LivePerformance`) |
 | `error-capture.ts`, `error-page.ts` | Captura de errores en SSR y página de error genérica |
@@ -176,6 +179,8 @@ npm run format     # Prettier
 | Añadir o editar un servicio | `src/lib/services-data.ts`, eligiendo su `category` (+ una ruta en `src/routes/servicios/` si tiene página) |
 | Añadir una página por rubro | `src/lib/verticals-data.ts` + una ruta en `src/routes/para/` |
 | Reordenar la landing | `src/routes/index.tsx` |
+| Cambiar las preguntas o las reglas del Diagnóstico | `src/lib/diagnosis-engine.ts` (y su spec en `specs/001-diagnostico-captacion/`) |
+| Retirar la invitación automática al Diagnóstico | Quitar `<DiagnosisInvite />` de `src/routes/index.tsx` (el Diagnóstico sigue disponible) |
 | Cambiar colores, tipografía o curvas | `src/styles.css` (`@theme`) |
 | Cambiar meta/SEO global o schema.org | `src/routes/__root.tsx` |
 | Permitir un dominio externo en la CSP | Hoy no aplica al HTML (ver §7); pendiente de mover las cabeceras de seguridad al Worker |

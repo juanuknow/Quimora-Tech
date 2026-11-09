@@ -47,7 +47,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 | XI. Veracidad                               | Recomendaciones limitadas a lo publicado (tabla "Respaldo de cada recomendación"); sin cifras ni plazos                                                                                                       | Cumple           | Cumple                                                                                                               |
 | XII. Ramas y commits                        | Rama `tipo/descripcion`; commits atómicos; diff revisable antes de cada commit                                                                                                                                | Cumple           | Cumple                                                                                                               |
 
-**Resultado del gate**: se puede avanzar a `/speckit-tasks` cuando el responsable revise esta versión del plan.
+**Resultado del gate**: la auditoría `/speckit-analyze` (2026-11-07) encontró 3 hallazgos críticos de alineación con la constitución (C1 MVP sin salida comercial, C2 etiquetas de CTA documentadas fuera de su commit, C3 V5 y V8 sin tarea), todos corregidos en esta versión. Se puede avanzar a `/speckit-implement` cuando el responsable apruebe la versión corregida.
 
 ## Decisiones del responsable (2026-11-07)
 
@@ -58,7 +58,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 | D3  | Botón de la sección: «Comenzar diagnóstico gratuito»                                                                                                                    | Aprobada                    | Spec FR-013a; R11                                                                                                  |
 | D4  | Integración de Spec Kit en `main`                                                                                                                                       | Diferida                    | Sección "Integración en `main` (D4)" de este plan                                                                  |
 
-**Pendiente de verificar por el responsable** (sin acceso desde este entorno): si `generate_lead` está marcado como evento clave en GA4.
+**Bloqueo de publicación (A1, FR-025b)**: el responsable audita GA4 en solo lectura antes de producción. Si `generate_lead` es evento clave, la publicación queda bloqueada hasta que elija por escrito una alternativa de [contracts/analytics-events.md](./contracts/analytics-events.md) (A: evento clave derivado; B: mantener y documentar; C: desmarcar). Ninguna configuración de GA4 se cambia sin autorización expresa. Esto no bloquea la implementación local.
 
 ## Project Structure
 
@@ -117,7 +117,7 @@ Fuera del repositorio (no se versiona): scripts de verificación en `C:\tmp\pwen
 **Analítica**
 
 1. Inventario de los eventos que el sitio envía hoy a GA4 (`trackEvent` en `src/`), antes de cambiar nada.
-2. Conservar `generate_lead` y `diagnosis_whatsapp_click` según [contracts/analytics-events.md](./contracts/analytics-events.md), con una sola emisión de cada por clic (FR-025a).
+2. Conservar `generate_lead` y `diagnosis_whatsapp_click` según [contracts/analytics-events.md](./contracts/analytics-events.md), con una sola emisión de cada por clic (FR-025a). `generate_lead` se emite en la tarea del botón de WhatsApp (US2); `diagnosis_whatsapp_click`, en la de analítica (US4).
 3. Prevenir duplicados por redibujado (efectos protegidos por apertura) y verificarlo (E16, E23).
 4. Mantener diferenciados los clics de WhatsApp (`method: "whatsapp"`) de los contactos confirmados (`method: "contact_form"`).
 5. Auditoría de eventos clave de GA4 en modo solo lectura antes de producción (E31). No se modifica la configuración de GA4 sin autorización.
@@ -137,6 +137,15 @@ Fuera del repositorio (no se versiona): scripts de verificación en `C:\tmp\pwen
 
 Sin dependencias nuevas; reutilizar componentes existentes (`SingleSelect`, `whatsappHref`, `trackEvent`, evento `diagnosis:start`); motor determinista separado de la interfaz; una experiencia compartida; sin precios ni plazos; sin funcionalidades comerciales no publicadas; sin cambios innecesarios en navegación, infraestructura ni estilos globales.
 
+**Verificaciones obligatorias en cada propuesta de commit (C3)**
+
+- **V5**: recorridos críticos a mano en `npm run dev` (formulario de contacto con éxito y error, enlaces de WhatsApp, anclas en escritorio y móvil, páginas legales, 404 y consola sin errores), además de lo que el cambio toque.
+- **V8**: revisión de `git diff --cached`, incluido el contenido completo de los archivos nuevos, sin secretos ni credenciales; si aparece algo, detenerse sin reproducirlo.
+
+**MVP publicable (C1)**
+
+Fase 1, Fase 2, US1 y US2. El diagnóstico nunca pierde su salida comercial: el botón «Continuar por WhatsApp» y su `generate_lead` llegan en la misma tarea (US2). Los commits de US1 y de US2 no se integran por separado en `main`.
+
 **Integración**
 
 La estrategia preferida es la alternativa A de "Integración en `main` (D4)". No autoriza ningún merge, push ni despliegue.
@@ -144,11 +153,25 @@ La estrategia preferida es la alternativa A de "Integración en `main` (D4)". No
 ## Plan de reversión (Principio IV, riesgo alto)
 
 - **Antes de desplegar**: anotar la versión de Cloudflare en producción (hoy `4cde89d3-1dfa-43b4-8513-9956b7a6647e`, commit `feca905`).
-- **Commits atómicos** para revertir por partes: (1) refactor de datos (`id` y `pricing-data.ts`), (2) motor, (3) ventana y sección, (4) invitación, (5) documentación. La invitación (P3) puede revertirse sola sin perder el diagnóstico (P1, P2).
+- **Commits atómicos** (mismo orden que en [tasks.md](./tasks.md); cada uno con V5 y V8 y su autorización):
+
+  | #   | Commit                                                             | Contenido                                                                                                    | ¿Se puede integrar solo?                                 |
+  | --- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+  | 1   | `refactor(data): add stable service ids and extract pricing plans` | Fase 2                                                                                                       | Sí (sin cambio visible)                                  |
+  | 2   | `feat(diagnosis): add deterministic recommendation engine`         | Motor y `shortExplanation` (US1)                                                                             | No: forma parte del MVP                                  |
+  | 3   | `feat(diagnosis): shared diagnosis dialog and section`             | Ventana, sección, atajos y la etiqueta «Comenzar diagnóstico gratuito» en `CLAUDE.md` (US1)                  | No: sin US2 el diagnóstico perdería su salida a WhatsApp |
+  | 4   | `feat(diagnosis): whatsapp handoff with copy fallback`             | Mensaje, «Continuar por WhatsApp» con `generate_lead`, «Copiar mensaje» y sus etiquetas en `CLAUDE.md` (US2) | Solo junto con 2 y 3 (**MVP publicable**)                |
+  | 5   | `feat(diagnosis): home invitation with mobile suppression`         | Invitación completa, incluido `diagnosis_popup_view` (US3)                                                   | Sí, sobre el MVP                                         |
+  | 6   | `feat(analytics): diagnosis funnel events without personal data`   | Resto de eventos del embudo (US4)                                                                            | Sí, sobre el MVP                                         |
+  | 7   | `docs: document diagnosis feature`                                 | `docs/ESTRUCTURA.md`, `baseline*.md`, `validation.md`                                                        | Sí                                                       |
+
+- **Retirar solo la invitación sin perder el diagnóstico ni WhatsApp (I2)**:
+  1. **Retirada rápida** (recomendada ante un fallo de la invitación): un commit que solo quite `<DiagnosisInvite />` de `src/routes/index.tsx`. El componente queda sin montar, no aparece ninguna invitación y la sección, los atajos, la ventana, el resultado, WhatsApp y la analítica siguen intactos. `markInvite("completed")` en la ventana sigue siendo inocuo.
+  2. **Retirada completa**: `git revert` del commit 5. Como `diagnosis_popup_view` vive en ese mismo commit, el commit 6 no toca `DiagnosisInvite.tsx`. Si el revert choca con el commit 6 en `DiagnosisDialog.tsx` (la llamada a `markInvite`), se resuelve conservando los eventos del commit 6.
 - **Señales de fallo en producción**:
-  - la invitación aparece más de una vez por sesión, fuera de la home o antes de 2 s;
-  - la tarjeta móvil supera el 25 %, tapa el header o el botón de WhatsApp, o aparece en un teléfono en horizontal;
-  - el enlace de WhatsApp abre un número distinto o un mensaje incompleto;
+  - la invitación aparece más de una vez por sesión, fuera de la home, antes de 2 s o después de 3 s;
+  - la ventana de escritorio aparece en un teléfono en horizontal, o la tarjeta móvil supera el 25 % o tapa el header o el botón de WhatsApp;
+  - el enlace de WhatsApp abre un número distinto, un mensaje incompleto o de más de 2 000 caracteres;
   - errores de consola o de hidratación en `/`;
   - eventos de analítica con parámetros fuera del contrato;
   - caída de `generate_lead` (`method: "whatsapp"`) respecto a la semana anterior, o más de un `generate_lead` por clic.

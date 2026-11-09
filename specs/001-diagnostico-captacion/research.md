@@ -36,6 +36,14 @@ Cada apartado sigue el formato Decisión / Motivo / Alternativas. Las decisiones
 
 **Alternativas**: tarjeta a la izquierda del botón (a 320 px quedarían unos 216 px de ancho, insuficientes para los dos botones de 44 px); banner superior (taparía el header).
 
+## R4a. Elección de la variante (I1, corrección de la auditoría)
+
+**Decisión**: la ventana centrada solo se usa si, al mostrar la invitación, se cumple `matchMedia("(min-width: 768px) and (min-height: 640px)")`. En cualquier otro caso se sigue el camino de la tarjeta con medición (R4), que en teléfonos en horizontal terminará casi siempre en supresión.
+
+**Motivo**: con solo `min-width: 768px`, cuatro de las siete configuraciones en horizontal de la matriz (812 × 375, 844 × 390, 896 × 414 y 932 × 430) recibirían la ventana de escritorio sobre un teléfono: justo el _interstitial_ móvil que se quería evitar.
+
+**Alternativas**: `(hover: hover) and (pointer: fine)` (excluye portátiles táctiles y tabletas con teclado de forma poco predecible).
+
 ## R4. Invitación móvil: contenido reducido y supresión (D1, resuelto)
 
 **Decisión del responsable (2026-11-07)**: contenido reducido en móvil (FR-003a), el párrafo de apoyo sobre la primera pregunta (FR-003b), límite del 25 % sin excepciones y supresión de la invitación automática cuando la tarjeta no pueda cumplir todas las condiciones (FR-007b, FR-007c). Se descarta la excepción de 160 px propuesta en la primera versión del plan.
@@ -64,7 +72,7 @@ Cada apartado sigue el formato Decisión / Motivo / Alternativas. Las decisiones
 **Decisión**:
 
 - Se monta solo en la ruta `/` (`src/routes/index.tsx`), nunca en rutas secundarias (FR-001).
-- Objetivo de aparición: 2 500 ms desde el inicio de la navegación (`performance.now()`), calculado al montar el componente en el cliente. Si la hidratación termina después de 2 500 ms, la invitación aparece 300 ms después de montar (nunca de inmediato). Así queda dentro de 2–3 s en dispositivos normales (SC-001).
+- Objetivo de aparición: 2 500 ms desde el inicio de la navegación (`performance.now()`), calculado al montar el componente en el cliente: `retardo = 2500 − performance.now()`, con un mínimo de 300 ms. **Si al montar ya han pasado más de 2 700 ms, la invitación no se muestra en esa carga y no se escribe estado** (FR-001, corrección U1 de la auditoría), porque 2 700 + 300 superaría los 3 s.
 - Antes de mostrarla se comprueba que el visitante no esté interactuando (FR-005): el elemento activo no es un campo de formulario (`input`, `textarea`, `select`, `[contenteditable]`), no está dentro de `#contacto` ni de la ventana del diagnóstico, el diagnóstico no está abierto y el menú móvil no está abierto (`[aria-controls="mobile-menu"][aria-expanded="true"]`). Si alguna se cumple, no se muestra en esa visita.
 - No se lee `sessionStorage` durante el render (evita diferencias de hidratación); solo en efectos del cliente.
 
@@ -126,9 +134,11 @@ Cada apartado sigue el formato Decisión / Motivo / Alternativas. Las decisiones
 
 ## R13. Enlace y longitud del mensaje de WhatsApp
 
-**Decisión**: reutilizar `whatsappHref(text)` (número `WHATSAPP_NUMBER`, `encodeURIComponent`, saltos de línea como `%0A`). El mensaje más largo posible (dos complementos y la explicación más extensa) se mide en la verificación exhaustiva; objetivo: URL codificada por debajo de 2 000 caracteres. Si se supera, se acorta la explicación del mensaje (no la de la pantalla).
+**Decisión**: reutilizar `whatsappHref(text)` (número `WHATSAPP_NUMBER`, `encodeURIComponent`, saltos de línea como `%0A`). El mensaje incluye beneficios, motivos de los complementos y próximo paso (U6), con un máximo de 2 000 caracteres de texto (FR-022b). Si el enlace codificado superase los 2 000 caracteres, se limita la lista de beneficios a los tres primeros publicados.
 
-**Motivo**: las tildes ocupan 6 caracteres codificados; un mensaje de unos 800 caracteres puede acercarse a ese límite, a partir del cual algunos clientes truncan.
+**Medición previa** (2026-11-07, textos reales del catálogo y respuestas más largas, explicación de unos 120 caracteres): peor caso 1 353 caracteres de texto y 1 948 codificados (Sitios web corporativos, 6 beneficios); con la reducción, el peor enlace baja a unos 1 781. La verificación exhaustiva (6 300 combinaciones) lo confirma con la implementación real.
+
+**Motivo**: las tildes ocupan 6 caracteres codificados y algunos clientes truncan enlaces muy largos; una regla fija y determinista evita recortes arbitrarios.
 
 ## R14. Analítica
 
@@ -145,7 +155,7 @@ Cada apartado sigue el formato Decisión / Motivo / Alternativas. Las decisiones
 
 Se envían desde manejadores de eventos, salvo `popup_view` y `result_view`, que se envían en un efecto protegido con una referencia por apertura para no duplicarse al volver a renderizar. `diagnosis_popup_view` solo se envía si la invitación llega a mostrarse (no cuando se suprime, R4). `diagnosis_shortcut` (con el tipo de negocio) se sustituye por `diagnosis_start` con `source: "atajo"`, sin el tipo de negocio, que sería una respuesta individual.
 
-**`generate_lead` (D2, aprobado)**: hoy se emite en dos lugares. `Contact.tsx` la envía después de que Formspree confirma el envío (`method: "contact_form"`: lead recibido). `DigitalDiagnosis.tsx` la envía al hacer clic en WhatsApp (`method: "whatsapp"`, `source: "diagnostico"`: solo intención, porque el sitio no puede saber si el mensaje se envió). Se conserva tal cual en el clic de "Continuar por WhatsApp", junto con `diagnosis_whatsapp_click`, en el mismo manejador: un clic produce exactamente uno de cada (FR-025a). No se añade ningún evento ni texto que afirme que el mensaje se envió. Los informes de leads recibidos deben filtrar `method: "contact_form"`. Pendiente de verificar por el responsable en GA4: si `generate_lead` está marcado como evento clave, los clics de WhatsApp ya cuentan hoy como conversiones.
+**`generate_lead` (D2, aprobado)**: hoy se emite en dos lugares. `Contact.tsx` la envía después de que Formspree confirma el envío (`method: "contact_form"`: lead recibido). `DigitalDiagnosis.tsx` la envía al hacer clic en WhatsApp (`method: "whatsapp"`, `source: "diagnostico"`: solo intención, porque el sitio no puede saber si el mensaje se envió). Se conserva tal cual en el clic de "Continuar por WhatsApp", junto con `diagnosis_whatsapp_click`, en el mismo manejador: un clic produce exactamente uno de cada (FR-025a). No se añade ningún evento ni texto que afirme que el mensaje se envió. Los informes de leads recibidos deben filtrar `method: "contact_form"`. Pendiente de verificar por el responsable en GA4: si `generate_lead` está marcado como evento clave, los clics de WhatsApp ya cuentan hoy como conversiones. **Corrección A1 de la auditoría**: en ese caso no se acepta automáticamente; la publicación queda bloqueada hasta elegir una de las alternativas de [contracts/analytics-events.md](./contracts/analytics-events.md) (FR-025b). La emisión de `generate_lead` se hace en la misma tarea que el nuevo botón de WhatsApp (US2), no en la fase de analítica.
 
 **Motivo**: cumple FR-025 a FR-027 y SC-007 sin enviar respuestas ni complementos.
 

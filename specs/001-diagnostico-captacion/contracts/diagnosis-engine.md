@@ -18,6 +18,7 @@ export interface CompleteAnswers {
   priority: PriorityId;
 }
 
+// AnswerOption<T> = { id: T; label: string } — sin iconos (los añade la interfaz)
 export const SITUATION_OPTIONS: readonly AnswerOption<SituationId>[];
 export const NEED_OPTIONS: readonly AnswerOption<NeedId>[];
 export const GOAL_OPTIONS: readonly AnswerOption<GoalId>[];
@@ -27,7 +28,7 @@ export function recommend(answers: CompleteAnswers): Recommendation;
 export function buildWhatsAppMessage(answers: CompleteAnswers, rec: Recommendation): string;
 ```
 
-Los tipos `AnswerOption`, `Recommendation` y `Complement` son los de [data-model.md](../data-model.md). Si los iconos impiden que el módulo sea puro, las opciones con icono viven en `src/lib/diagnosis.ts` y el motor solo exporta códigos y etiquetas.
+Los tipos `AnswerOption`, `Recommendation` (incluido `shortExplanation`) y `Complement` son los de [data-model.md](../data-model.md). El motor no importa iconos: la interfaz los añade (`UiAnswerOption`).
 
 ## Reglas
 
@@ -40,16 +41,16 @@ Los tipos `AnswerOption`, `Recommendation` y `Complement` son los de [data-model
 
 ## Garantías verificables
 
-| Garantía                 | Requisito        | Cómo se verifica                                                                                                                                              |
-| ------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Determinismo             | FR-014           | Dos llamadas con las mismas respuestas devuelven objetos con el mismo contenido                                                                               |
-| Principal del catálogo   | FR-015           | `primary` ∈ los ocho `ServiceId` de R-P                                                                                                                       |
-| 0–2 complementos válidos | FR-015a, FR-015b | Sin duplicados, distintos de la principal, cada uno con `rule` y `reason`                                                                                     |
-| Sin precios              | FR-018, FR-022a  | Ningún texto contiene `$`, `COP`, "precio", "presupuesto" ni "desde" seguido de un importe                                                                    |
-| Sin plazos               | FR-018b          | `deliveryTime === null`                                                                                                                                       |
-| Contenido rastreable     | FR-016a, FR-016b | `howItWorks` y `benefits` salen literalmente de `services-data.ts`; los textos de R-K2, de `pricing-data.ts`                                                  |
-| Mensaje completo         | FR-022           | El mensaje contiene las cinco etiquetas de respuesta, la principal, los complementos (o "ninguno adicional") y la solicitud de asesoría                       |
-| Longitud del enlace      | R13              | `whatsappHref(mensaje).length < 2000` en la combinación más larga                                                                                             |
-| Sin escalado             | FR-015c          | Con la necesidad fija, cambiar la situación, el objetivo, la prioridad o el negocio no cambia la principal, salvo entre R-P1 y R-P2 cuando la necesidad es N1 |
+| Garantía                 | Requisito        | Cómo se verifica                                                                                                                                                                                                                              |
+| ------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Determinismo             | FR-014           | Dos llamadas con las mismas respuestas devuelven objetos con el mismo contenido                                                                                                                                                               |
+| Principal del catálogo   | FR-015           | `primary` ∈ los ocho `ServiceId` de R-P                                                                                                                                                                                                       |
+| 0–2 complementos válidos | FR-015a, FR-015b | Sin duplicados, distintos de la principal, cada uno con `rule` y `reason`                                                                                                                                                                     |
+| Sin precios              | FR-018, FR-022a  | Ningún texto contiene `$`, `COP`, "precio", "presupuesto" ni "desde" seguido de un importe                                                                                                                                                    |
+| Sin plazos               | FR-018b          | `deliveryTime === null`                                                                                                                                                                                                                       |
+| Contenido rastreable     | FR-016a, FR-016b | `howItWorks` y `benefits` salen literalmente de `services-data.ts`; los textos de R-K2, de `pricing-data.ts`                                                                                                                                  |
+| Mensaje completo         | FR-022           | El mensaje contiene, en orden, las cinco etiquetas de respuesta, la principal, sus beneficios publicados (si los hay), cada complemento con su motivo (o "ninguno adicional"), `shortExplanation`, el próximo paso y la solicitud de asesoría |
+| Longitud                 | FR-022b          | Texto ≤ 2 000 caracteres en todas las combinaciones; si `whatsappHref(texto).length > 2000`, beneficios limitados a los tres primeros y `reduced = true`; se informa del caso más largo                                                       |
+| Sin escalado             | FR-015c          | Con la necesidad fija, cambiar la situación, el objetivo, la prioridad o el negocio no cambia la principal, salvo entre R-P1 y R-P2 cuando la necesidad es N1                                                                                 |
 
 Todas se comprueban recorriendo las 6 300 combinaciones (ver [quickstart.md](../quickstart.md)).

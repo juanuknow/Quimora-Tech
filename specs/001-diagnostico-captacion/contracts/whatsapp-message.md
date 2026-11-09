@@ -4,7 +4,7 @@ Lo produce `buildWhatsAppMessage` y lo consumen el enlace "Continuar por WhatsAp
 
 ## Plantilla
 
-Las líneas entre `[ ]` se sustituyen; los saltos de línea forman parte del contrato.
+Las líneas entre `[ ]` se sustituyen; los saltos de línea forman parte del contrato. Los bloques marcados "solo si" se omiten enteros cuando no aplican.
 
 ```text
 Hola, Quimora Tech. Acabo de completar el Diagnóstico Digital Gratuito en su página web.
@@ -16,19 +16,27 @@ Objetivo: [etiqueta de la pregunta 4].
 Prioridad: [etiqueta de la pregunta 5].
 
 Solución recomendada: [título del servicio principal].
-Complementos: [títulos de los complementos, separados por " y "] | ninguno adicional.
-Por qué: [explicación breve de la recomendación].
+Beneficios:                         ← solo si el servicio publica beneficios
+- [beneficio publicado 1]
+- [beneficio publicado N]
+Complementos:
+- [título del complemento]: [motivo].   ← uno por complemento (0–2)
+- ninguno adicional                      ← solo si no hay complementos
+Por qué: [shortExplanation].
+Próximo paso: [próximo paso de R-N].
 
 Me gustaría recibir asesoría personalizada para implementar esta solución en mi negocio. ¡Gracias!
 ```
 
-Corresponde a los 11 elementos de FR-022: (1) saludo y (2) mención del diagnóstico en la primera línea; (3)–(7) las cinco respuestas; (8) solución; (9) complementos; (10) explicación; (11) solicitud de asesoría.
+Corresponde a los 13 elementos de FR-022: (1) saludo y (2) mención del diagnóstico en la primera línea; (3)–(7) las cinco respuestas; (8) solución; (9) beneficios; (10) complementos con su motivo; (11) explicación breve; (12) próximo paso; (13) solicitud de asesoría.
 
 ## Reglas
 
-- Las etiquetas son las mismas que ve el visitante en pantalla, sin modificar.
+- Las etiquetas, títulos, beneficios y motivos son los mismos que ve el visitante en pantalla, sin modificar.
+- Los beneficios son los publicados del servicio principal (`benefits` del catálogo). Si el servicio no los publica, el bloque "Beneficios" se omite: nunca se inventan (FR-016a, FR-016b).
 - Los complementos de tipo componente de plan (R-K2) se nombran "Catálogo de productos o servicios con enlace directo a WhatsApp".
-- La explicación del mensaje es la versión breve (una frase). Si la URL codificada llegara a 2 000 caracteres, se acorta la explicación, nunca las respuestas.
+- **Longitud (FR-022b)**: el texto no supera los 2 000 caracteres. Si el enlace codificado superase los 2 000 caracteres, se limita la lista de beneficios a los tres primeros publicados; nada más se recorta.
+- El próximo paso no contiene cifras: dice que la inversión se define con el asesor (FR-018a).
 - Prohibido: precios, rangos, presupuestos, plazos, datos personales y cualquier texto que no salga de las respuestas o de la recomendación (FR-022a).
 - El mensaje nunca se envía solo: el enlace abre WhatsApp con el texto prellenado y el visitante decide (FR-021).
 
