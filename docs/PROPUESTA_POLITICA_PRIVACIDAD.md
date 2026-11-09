@@ -31,8 +31,7 @@ Origen: hallazgo PRIV-01 de la auditoría técnica (6-nov-2026).
 | **WhatsApp / Meta** | Número y mensaje que la persona decide enviar; en el Diagnóstico, un resumen de sus respuestas pregenerado | Solo si la persona pulsa un enlace de WhatsApp y envía el mensaje | `whatsappHref` en `site.ts`; [`DigitalDiagnosis.tsx`](../src/components/DigitalDiagnosis.tsx) |
 | **Cloudflare** (alojamiento y red) | Dirección IP y metadatos técnicos de cada solicitud; registros del Worker (`observability` activa y persistente en [`wrangler.jsonc`](../wrangler.jsonc)) | En cada visita | `wrangler.jsonc` |
 | Almacenamiento de sesión del navegador | Posición de scroll (clave técnica `tsr-scroll-restoration-v1_3`); no es un dato personal | Durante la sesión | Script de restauración de TanStack Router |
-| Diagnóstico Digital | Las respuestas **no salen del navegador** salvo que la persona las envíe por WhatsApp | — | No hay `fetch`, `localStorage` ni cookies en el componente |
-| Medición de Core Web Vitals en pantalla | Solo se muestra al propio visitante; no se envía a ningún servidor | — | [`use-web-vitals.ts`](../src/lib/use-web-vitals.ts) |
+| Diagnóstico Digital | Las respuestas **no salen del navegador** salvo que la persona las envíe por WhatsApp; las del último diagnóstico terminado se conservan en el almacenamiento de sesión para poder volver a verlo | Hasta cerrar la pestaña | `diagnosis-result.ts`; no hay `fetch`, `localStorage` ni cookies |
 
 No hay fuentes de Google ni otros recursos de terceros: las tipografías están autoalojadas.
 

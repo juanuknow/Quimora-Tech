@@ -61,6 +61,7 @@ import {
   type SituationId,
 } from "../lib/diagnosis-engine";
 import { markInvite } from "../lib/diagnosis-invite";
+import { getLastAnswers, saveLastAnswers } from "../lib/diagnosis-result";
 import { getService } from "../lib/services-data";
 import { FOCUS_RING, LIGHT_RING, trackEvent } from "../lib/site";
 import { NewTabHint } from "./NewTabHint";
@@ -129,7 +130,7 @@ function isComplete(d: Draft): d is CompleteAnswers {
 
 /**
  * Ventana única del Diagnóstico Digital Gratuito (FR-013a). La abren la sección
- * `#diagnostico`, los atajos y la invitación con `requestDiagnosis`.
+ * `#diagnostico`, los atajos, la invitación y el botón flotante con `requestDiagnosis`.
  *
  * `<dialog>` nativo con `showModal()`: capa superior, fondo inerte y Escape
  * gratis (evento `cancel`). En escritorio no se bloquea el desplazamiento del
@@ -158,16 +159,18 @@ export function DiagnosisDialog() {
       const dialog = dialogRef.current;
       if (!detail || !dialog || dialog.open) return;
       const first = detail.business ? 1 : 0;
+      const lastAnswers = detail.showLastResult ? getLastAnswers() : null;
       openerRef.current =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      setAnswers({ ...EMPTY, business: detail.business ?? null });
+      setAnswers(lastAnswers ?? { ...EMPTY, business: detail.business ?? null });
       setStep(first);
       setStartStep(first);
-      setPhase("questions");
+      setPhase(lastAnswers ? "result" : "questions");
       setShowError(false);
       setOpen(true);
       resultViewedRef.current = false;
-      trackEvent("diagnosis_start", { source: detail.source });
+      // Volver a ver un resultado no es empezar un diagnóstico.
+      if (!lastAnswers) trackEvent("diagnosis_start", { source: detail.source });
       if (window.matchMedia("(max-width: 767.98px)").matches) {
         restoreOverflowRef.current = document.body.style.overflow;
         document.body.style.overflow = "hidden";
@@ -235,6 +238,7 @@ export function DiagnosisDialog() {
     }
     if (isComplete(answers)) {
       trackEvent("diagnosis_complete", { solution_id: recommend(answers).primary });
+      saveLastAnswers(answers);
     }
     setPhase("result");
   };

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useInView } from "../lib/hooks";
-import { LivePerformance } from "./LivePerformance";
 
 /* -------------------- Stats -------------------- */
 // Compromisos y estándares del servicio (verificables), no métricas de
@@ -44,8 +43,7 @@ export function Stats() {
   return (
     <section aria-labelledby="stats-title" className="bg-brand text-white">
       {/* La franja no lleva título visible (las cifras se explican solas), pero
-          necesita un h2: va justo después del h1 del Hero y contiene el h3 de
-          LivePerformance, que sin él saltaría un nivel de encabezado. */}
+          el h2 le da nombre a la región para los lectores de pantalla. */}
       <h2 id="stats-title" className="sr-only">
         Estándares con los que trabajamos cada proyecto
       </h2>
@@ -57,7 +55,6 @@ export function Stats() {
           <StatItem key={stat.label} stat={stat} active={inView} />
         ))}
       </div>
-      <LivePerformance />
     </section>
   );
 }

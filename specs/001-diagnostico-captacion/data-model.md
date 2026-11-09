@@ -2,7 +2,7 @@
 
 **Fecha**: 2026-11-07 · **Spec**: [spec.md](./spec.md) · **Research**: [research.md](./research.md)
 
-No hay persistencia en servidor ni base de datos. Todos los datos viven en el navegador durante la visita, salvo el estado de la invitación, que vive en `sessionStorage` (R6).
+No hay persistencia en servidor ni base de datos. Todos los datos viven en el navegador durante la visita, salvo el estado de la invitación (R6) y las respuestas del último diagnóstico terminado (para el botón flotante), que viven en `sessionStorage` y desaparecen al cerrar la pestaña.
 
 ## Respuestas (`DiagnosisAnswers`)
 

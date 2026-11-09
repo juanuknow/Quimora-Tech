@@ -13,7 +13,7 @@ import {
 
 /**
  * Modelo compartido entre la ventana del Diagnóstico y quienes la abren desde
- * otra parte de la página (la sección, los atajos y la invitación).
+ * otra parte de la página (la sección, los atajos, la invitación y el botón flotante).
  */
 
 export type BusinessId =
@@ -55,12 +55,14 @@ export const DIAGNOSIS_INTRO =
 export const DIAGNOSIS_START_EVENT = "diagnosis:start";
 
 /** Desde dónde se abre el diagnóstico; viaja a la analítica como `source`. */
-export type DiagnosisSource = "invitacion" | "seccion" | "atajo";
+export type DiagnosisSource = "invitacion" | "seccion" | "atajo" | "flotante";
 
 export interface DiagnosisStartDetail {
   source: DiagnosisSource;
   /** Solo desde un atajo: el diagnóstico empieza en la pregunta 2 con este negocio. */
   business?: BusinessId;
+  /** Solo desde el botón flotante: muestra el último resultado de la visita. */
+  showLastResult?: boolean;
 }
 
 /**

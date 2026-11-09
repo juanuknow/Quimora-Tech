@@ -7,6 +7,7 @@ import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
 import { SoftwareSolutions } from "../components/SoftwareSolutions";
 import { Specialists } from "../components/Specialists";
+import { FloatingDiagnosis } from "../components/FloatingDiagnosis";
 import { FloatingWhatsApp } from "../components/FloatingWhatsApp";
 import { TopBar } from "../components/TopBar";
 import { Nav } from "../components/Nav";
@@ -70,6 +71,7 @@ function LandingPage() {
         <FinalCTA />
       </main>
       <Footer />
+      <FloatingDiagnosis />
       <FloatingWhatsApp />
       {/* Superposición, no sección: la ventana única del diagnóstico (FR-013a). */}
       <DiagnosisDialog />

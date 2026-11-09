@@ -2,15 +2,15 @@
 
 Todos se envían con `trackEvent(name, params)` de `src/lib/site.ts`, el mismo mecanismo y la misma configuración que el resto del sitio (FR-027). No se añaden orígenes externos.
 
-| Evento                                   | Se envía                                 | Parámetros permitidos                                |
-| ---------------------------------------- | ---------------------------------------- | ---------------------------------------------------- |
-| `diagnosis_popup_view`                   | Una vez, al mostrarse la invitación      | `format`: `"dialog"` \| `"card"`                     |
-| `diagnosis_start`                        | Al abrirse la ventana del diagnóstico    | `source`: `"invitacion"` \| `"seccion"` \| `"atajo"` |
-| `diagnosis_question_answered`            | Al avanzar desde una pregunta respondida | `step`: `1`–`5`                                      |
-| `diagnosis_complete`                     | Al confirmar la quinta respuesta         | `solution_id`: `ServiceId` de la principal           |
-| `diagnosis_result_view`                  | Al mostrarse el resultado                | `solution_id`                                        |
-| `diagnosis_whatsapp_click`               | Al pulsar "Continuar por WhatsApp"       | `solution_id`                                        |
-| `generate_lead` (existente, se conserva) | Al pulsar "Continuar por WhatsApp"       | `method: "whatsapp"`, `source: "diagnostico"`        |
+| Evento                                   | Se envía                                                                                 | Parámetros permitidos                                                |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `diagnosis_popup_view`                   | Una vez, al mostrarse la invitación                                                      | `format`: `"dialog"` \| `"card"`                                     |
+| `diagnosis_start`                        | Al abrirse la ventana del diagnóstico para responderlo (no al volver a ver un resultado) | `source`: `"invitacion"` \| `"seccion"` \| `"atajo"` \| `"flotante"` |
+| `diagnosis_question_answered`            | Al avanzar desde una pregunta respondida                                                 | `step`: `1`–`5`                                                      |
+| `diagnosis_complete`                     | Al confirmar la quinta respuesta                                                         | `solution_id`: `ServiceId` de la principal                           |
+| `diagnosis_result_view`                  | Al mostrarse el resultado                                                                | `solution_id`                                                        |
+| `diagnosis_whatsapp_click`               | Al pulsar "Continuar por WhatsApp"                                                       | `solution_id`                                                        |
+| `generate_lead` (existente, se conserva) | Al pulsar "Continuar por WhatsApp"                                                       | `method: "whatsapp"`, `source: "diagnostico"`                        |
 
 ## Prohibido en cualquier evento (FR-026)
 

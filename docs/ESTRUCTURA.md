@@ -102,9 +102,9 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | --- | --- |
 | Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
 | Secciones de la landing | `Hero`, `Problem`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Stats`, `Timeline`, `Specialists`, `Pricing`, `FAQ`, `Contact`, `FinalCTA` |
-| Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido). Todos abren la misma ventana con `requestDiagnosis()` |
+| Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido), `FloatingDiagnosis` (botón flotante de la home: comenzar o, tras terminar, ver el resultado y volver a empezar). Todos abren la misma ventana con `requestDiagnosis()` |
 | Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
-| Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador), `LivePerformance` (métricas web reales) |
+| Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador) |
 | Plantillas de página | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`) |
 | Movimiento reutilizable | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones) |
 
@@ -119,8 +119,8 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | `diagnosis.ts` | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, business? })`, el único punto de apertura de la ventana |
 | `diagnosis-engine.ts` | Motor puro del Diagnóstico (sin React ni DOM): opciones de las preguntas 2–5, `recommend()` (reglas R-P, R-K, R-C y R-N de `specs/001-diagnostico-captacion/spec.md`) y `buildWhatsAppMessage()`. Sin precios ni plazos |
 | `diagnosis-invite.ts` | Estado de la invitación en la sesión (`sessionStorage` `qt:diagnosis-invite`, con respaldo en memoria) |
+| `diagnosis-result.ts` | Últimas respuestas terminadas en la visita (`sessionStorage` `qt:diagnosis-last-answers`, con respaldo en memoria); alimenta `FloatingDiagnosis` y `DiagnosisDialog` |
 | `hooks.ts` | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor) |
-| `use-web-vitals.ts` | Lectura de Core Web Vitals (la usa `LivePerformance`) |
 | `error-capture.ts`, `error-page.ts` | Captura de errores en SSR y página de error genérica |
 | `lovable-error-reporting.ts` | Integración de reporte de errores de Lovable |
 

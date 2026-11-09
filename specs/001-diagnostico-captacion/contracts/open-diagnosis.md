@@ -6,8 +6,9 @@ Mecanismo existente en `src/lib/diagnosis.ts` (`DIAGNOSIS_START_EVENT`), ampliad
 
 ```ts
 export interface DiagnosisStartDetail {
-  source: "invitacion" | "seccion" | "atajo";
+  source: "invitacion" | "seccion" | "atajo" | "flotante";
   business?: BusinessId; // solo desde un atajo
+  showLastResult?: boolean; // solo desde el botón flotante
 }
 
 export function requestDiagnosis(detail: DiagnosisStartDetail): void;
@@ -50,6 +51,16 @@ En ambos casos el estado ya es `shown` desde que se mostró; «Comenzar…» no 
 ## Detección de la ventana abierta (U3)
 
 La ventana del diagnóstico es `<dialog id="diagnosis-dialog">`. La invitación no se muestra si `document.getElementById("diagnosis-dialog")?.open` es verdadero (FR-005).
+
+## Botón flotante (`FloatingDiagnosis`)
+
+| Estado de la visita       | Control              | Emite                                                            |
+| ------------------------- | -------------------- | ---------------------------------------------------------------- |
+| Sin diagnóstico terminado | Comenzar             | `requestDiagnosis({ source: "flotante" })`                       |
+| Con diagnóstico terminado | «Ver mi diagnóstico» | `requestDiagnosis({ source: "flotante", showLastResult: true })` |
+| Con diagnóstico terminado | «Volver a empezar»   | `requestDiagnosis({ source: "flotante" })`                       |
+
+Las respuestas del último diagnóstico terminado se conservan en `sessionStorage` (clave `qt:diagnosis-last-answers`, `diagnosis-result.ts`), con respaldo en memoria: no salen del navegador y desaparecen al cerrar la pestaña. Empezar uno nuevo no las reemplaza hasta que ese termine. Lo leído se valida contra las opciones vigentes antes de usarlo.
 
 ## Botón de la sección
 

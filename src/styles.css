@@ -202,6 +202,8 @@
     scroll-behavior: smooth;
     /* Keeps anchor jumps (#servicios, etc.) from landing under the sticky header. */
     scroll-padding-top: 5rem;
+    /* WCAG 2.4.11: keeps focused elements from ending up under the floating buttons. */
+    scroll-padding-bottom: 6rem;
   }
 
   body {

@@ -14,7 +14,7 @@ Convertir el diagnóstico de la home en una herramienta de captación: invitaci�
 
 **Primary Dependencies**: TanStack Start 1.168 (SSR), Vite 8, Tailwind CSS 4.2, lucide-react 0.575. Sin dependencias nuevas.
 
-**Storage**: `sessionStorage` (clave `qt:diagnosis-invite`) solo para el estado de la invitación; nada en servidor
+**Storage**: `sessionStorage` para el estado de la invitación (`qt:diagnosis-invite`) y las respuestas del último diagnóstico terminado (`qt:diagnosis-last-answers`); nada en servidor
 
 **Testing**: Sin ejecutor en el repositorio (P5 pendiente). Script de Node fuera del repositorio para el motor (6 300 combinaciones); Playwright + axe-core en `C:\tmp\pwenv` para extremo a extremo y regresión ([quickstart.md](./quickstart.md))
 
