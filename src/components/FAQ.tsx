@@ -5,7 +5,7 @@ import { FOCUS_RING } from "../lib/site";
 const FAQS = [
   {
     q: "¿Cuánto tiempo tarda en estar lista mi web?",
-    a: "Típicamente entre 2 y 4 semanas dependiendo de la complejidad. La mayoría de negocios ven avances significativos en las primeras 4 semanas.",
+    a: "Típicamente entre 2 y 4 semanas dependiendo de la complejidad. El plazo exacto se confirma en la cotización.",
   },
   {
     q: "¿Puedo editar la web después?",
@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "¿Qué pasa si necesito cambios después?",
-    a: "Tenemos planes de mantenimiento flexible. Un email, una llamada, y resolvemos en máximo 24 horas.",
+    a: "Tenemos planes de mantenimiento flexible. Respondemos en menos de 24 horas y acordamos contigo el plazo según el cambio.",
   },
   {
     q: "¿De quién es la web cuando terminamos?",

@@ -104,6 +104,7 @@ export function Contact() {
             <div className="mt-8 flex flex-col gap-4">
               <a
                 href={whatsappHref("Hola, quiero una consulta gratis")}
+                onClick={() => trackEvent("contact", { method: "whatsapp", location: "contacto" })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
@@ -116,16 +117,20 @@ export function Contact() {
               </a>
               <a
                 href={`tel:${CONTACT_PHONE}`}
+                onClick={() => trackEvent("contact", { method: "phone", location: "contacto" })}
                 aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <Phone size={18} />
                 </span>
-                {CONTACT_PHONE_DISPLAY}
+                Llamar al {CONTACT_PHONE_DISPLAY}
               </a>
               <a
                 href={whatsappHref("Hola, quiero una consulta gratis", WHATSAPP_NUMBER_2)}
+                onClick={() =>
+                  trackEvent("contact", { method: "whatsapp", location: "contacto-linea-2" })
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
@@ -134,17 +139,20 @@ export function Contact() {
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <WhatsAppIcon size={18} />
                 </span>
-                {CONTACT_PHONE_2_DISPLAY}
+                WhatsApp al {CONTACT_PHONE_2_DISPLAY}
               </a>
               <a
                 href={`tel:${CONTACT_PHONE_2}`}
+                onClick={() =>
+                  trackEvent("contact", { method: "phone", location: "contacto-linea-2" })
+                }
                 aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <Phone size={18} />
                 </span>
-                {CONTACT_PHONE_2_DISPLAY}
+                Llamar al {CONTACT_PHONE_2_DISPLAY}
               </a>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}

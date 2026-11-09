@@ -80,18 +80,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Quimora Tech · Páginas Web que Convierten Visitantes en Clientes" },
+      { title: "Diseño de Páginas Web en Cali que Convierten · Quimora Tech" },
       {
         name: "description",
         content:
-          "Desarrollamos sitios web ultra-rápidos, optimizados para móviles y diseñados a medida para hacer crecer tu negocio sin dolores de cabeza técnicos.",
+          "Diseño y desarrollo de páginas web en Cali, rápidas y optimizadas para celulares, hechas a medida para convertir tus visitas en clientes reales.",
       },
       { name: "author", content: "Quimora Tech" },
-      { property: "og:title", content: "Quimora Tech · Páginas Web que Convierten" },
+      { property: "og:title", content: "Diseño de Páginas Web en Cali · Quimora Tech" },
       {
         property: "og:description",
         content:
-          "Sitios web ultra-rápidos, mobile-first y diseñados para convertir visitantes en clientes reales.",
+          "Páginas web en Cali, rápidas, pensadas para celular y diseñadas para convertir visitantes en clientes reales.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "es_CO" },

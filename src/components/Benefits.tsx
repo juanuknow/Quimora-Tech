@@ -8,8 +8,8 @@ const BENEFITS = [
     icon: Smartphone,
     iconColor: "brand",
     title: "Diseño Mobile-First que Convierte",
-    body: "Más del 62% del tráfico web viene de móviles. Tu página se ve perfecta en celulares y guía sin distracciones hacia la compra o el contacto.",
-    metric: "62% de usuarios",
+    body: "Tus clientes también te buscan desde el celular. Tu página se ve perfecta en celulares y guía sin distracciones hacia la compra o el contacto.",
+    metric: "Primero el celular",
   },
   {
     icon: Zap,

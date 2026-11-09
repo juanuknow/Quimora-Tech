@@ -10,7 +10,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useInView, useTilt } from "../lib/hooks";
-import { FOCUS_RING, whatsappHref } from "../lib/site";
+import { FOCUS_RING, trackEvent, whatsappHref } from "../lib/site";
 import { NewTabHint } from "./NewTabHint";
 import { BrowserChrome } from "./BrowserChrome";
 import { DesktopAppChrome } from "./DesktopAppChrome";
@@ -45,15 +45,16 @@ interface FeaturedProject {
 // Proyecto real construido por Quimora Tech. Sin métricas de resultados
 // inventadas: se muestra el sitio de verdad y lo que hace. Las cifras de
 // `facts` son conteos reales del catálogo y de las funciones del sitio.
-// liveUrl se activará cuando el sitio esté desplegado en un dominio estable.
+// La tienda aún no tiene dominio público: no se muestra ninguna dirección y
+// liveUrl se activará cuando esté desplegada en un dominio estable.
 const FEATURED: FeaturedProject = {
   name: "Diosa's Make up",
-  category: "Tienda online · Cosméticos",
-  domain: "diosascali.com",
+  category: "Tienda online · Cosméticos · Aún sin publicar",
+  domain: "Vista previa de la tienda",
   fullImage: "/images/diosas-full.webp",
   fallbackImage: "/images/diosas-cosmeticos.webp",
   description:
-    "Tienda online de maquillaje y cuidado capilar: catálogo con menú por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp, compra al por mayor y reseñas moderadas. La dueña administra precios, stock, fotos y reseñas desde su propio panel.",
+    "Tienda online de maquillaje y cuidado capilar: catálogo con menú por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp, compra al por mayor y reseñas moderadas. La dueña administra precios, stock, fotos y reseñas desde su propio panel. La tienda aún no está publicada; estas capturas son de la versión en desarrollo.",
   facts: [
     { value: "+850", label: "productos en el catálogo" },
     { value: "5", label: "grupos de categorías, con subcategorías y tipos" },
@@ -209,7 +210,8 @@ const CASES = [
     project: FEATURED,
     views: GALLERY_VIEWS,
     galleryHeading: "Recorre el sitio por dentro",
-    galleryIntro: "Capturas reales de la tienda, de la portada al pedido por WhatsApp.",
+    galleryIntro:
+      "Capturas reales de la versión en desarrollo, de la portada al pedido por WhatsApp.",
   },
   {
     project: ENTRE_HILOS,
@@ -328,8 +330,8 @@ export function Showcase3D() {
             No te contamos que sabemos hacerlo. Te lo mostramos.
           </h2>
           <p className="mt-4 text-base leading-[1.6] text-foreground/80 md:text-body">
-            Explora una tienda online y una aplicación de escritorio en pruebas en el local, con
-            capturas reales de lo que construimos.
+            Explora una tienda online que aún no se ha publicado y una aplicación de escritorio en
+            pruebas en el local, con capturas reales de lo que construimos.
           </p>
           <div
             className="mt-8 flex items-center justify-center gap-4"
@@ -441,6 +443,11 @@ export function Showcase3D() {
                 href={project.kind === "desktop" ? "#contacto" : waHref}
                 target={project.kind === "desktop" ? undefined : "_blank"}
                 rel={project.kind === "desktop" ? undefined : "noopener noreferrer"}
+                onClick={
+                  project.kind === "desktop"
+                    ? undefined
+                    : () => trackEvent("contact", { method: "whatsapp", location: "showcase" })
+                }
                 className={`inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
               >
                 {project.kind !== "desktop" && <MessageCircle size={17} />}

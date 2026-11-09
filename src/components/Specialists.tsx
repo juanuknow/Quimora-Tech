@@ -35,7 +35,7 @@ export function Specialists() {
             Especialidades
           </span>
           <h2 className="mt-6 font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-display">
-            Especialistas en
+            En qué nos especializamos
           </h2>
           <p className="mt-4 text-base text-foreground/80 md:text-body">
             Construimos soluciones digitales enfocadas en las operaciones reales de tu negocio.

@@ -12,7 +12,7 @@ const PAINS = [
   {
     icon: Clock,
     title: "Una web lenta espanta clientes",
-    body: "El 53% de los usuarios abandona un sitio que tarda más de 3 segundos en cargar. Cada segundo cuenta.",
+    body: "Si tu sitio tarda en cargar, muchos visitantes se van antes de verlo. Cada segundo cuenta.",
   },
   {
     icon: UserX,

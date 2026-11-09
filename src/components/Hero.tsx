@@ -11,8 +11,8 @@ export function Hero() {
             <br className="hidden md:block" /> tus Visitantes en Clientes Reales
           </h1>
           <p className="animate-rise-in mt-6 max-w-xl text-base leading-[1.6] text-foreground [--delay:120ms] md:text-body">
-            Desarrollamos sitios web ultra-rápidos, optimizados para móviles y diseñados para hacer
-            crecer tu negocio en internet sin dolores de cabeza técnicos.
+            Diseñamos y desarrollamos páginas web en Cali, rápidas y optimizadas para celulares,
+            para hacer crecer tu negocio en internet sin dolores de cabeza técnicos.
           </p>
           <div className="animate-rise-in mt-10 flex flex-col gap-3 [--delay:240ms] sm:flex-row">
             <a

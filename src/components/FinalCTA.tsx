@@ -1,4 +1,10 @@
-import { LIGHT_RING, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, whatsappHref } from "../lib/site";
+import {
+  LIGHT_RING,
+  CONTACT_PHONE,
+  CONTACT_PHONE_DISPLAY,
+  trackEvent,
+  whatsappHref,
+} from "../lib/site";
 import { NewTabHint } from "./NewTabHint";
 
 /* -------------------- Final CTA -------------------- */
@@ -20,6 +26,7 @@ export function FinalCTA() {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={whatsappHref("Hola, quiero una consulta gratis sobre mi página web")}
+            onClick={() => trackEvent("contact", { method: "whatsapp", location: "cierre" })}
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex h-14 w-full items-center justify-center rounded-md bg-white px-8 font-display text-ui font-semibold text-brand transition duration-200 hover:bg-white/90 sm:w-auto active:scale-[0.98] ${LIGHT_RING}`}
@@ -38,6 +45,7 @@ export function FinalCTA() {
           O llámanos:{" "}
           <a
             href={`tel:${CONTACT_PHONE}`}
+            onClick={() => trackEvent("contact", { method: "phone", location: "cierre" })}
             className={`rounded-sm font-display font-semibold text-white hover:text-white/80 ${LIGHT_RING}`}
           >
             {CONTACT_PHONE_DISPLAY}

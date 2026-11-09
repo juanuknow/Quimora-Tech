@@ -246,6 +246,7 @@ export function DiagnosisInvite() {
     return (
       <aside
         ref={cardRef}
+        id="diagnosis-invite-card"
         aria-label="Invitación al diagnóstico gratuito"
         onKeyDown={(e) => {
           if (e.key === "Escape") hideCard(true);

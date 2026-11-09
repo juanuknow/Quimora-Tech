@@ -58,6 +58,7 @@ Nos enfocamos especialmente en los negocios locales de Cali y del Valle del Cauc
 Tienda online de maquillaje y cuidado capilar con **más de 850 productos** en su catálogo, menú
 por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp y compra al detal
 o al por mayor. La dueña administra precios, existencias, fotos y reseñas desde su propio panel.
+La tienda aún no está publicada.
 
 Mostramos solo trabajo real: aquí no encontrarás testimonios ni cifras inventadas.
 

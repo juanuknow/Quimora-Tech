@@ -10,6 +10,7 @@ import {
   WHATSAPP_NUMBER_2,
   CONTACT_PHONE_2,
   CONTACT_PHONE_2_DISPLAY,
+  trackEvent,
   whatsappHref,
 } from "../lib/site";
 
@@ -67,6 +68,7 @@ export function Footer() {
             </p>
             <a
               href={whatsappHref("Hola, quiero más información")}
+              onClick={() => trackEvent("contact", { method: "whatsapp", location: "footer" })}
               target="_blank"
               rel="noopener noreferrer"
               className={`tilt-card mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 font-display text-sm font-semibold text-brand-dark transition-colors hover:bg-white/90 ${LIGHT_RING}`}
@@ -126,18 +128,22 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${CONTACT_PHONE}`}
+                  onClick={() => trackEvent("contact", { method: "phone", location: "footer" })}
                   aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <Phone size={15} />
                   </span>
-                  {CONTACT_PHONE_DISPLAY}
+                  Llamar al {CONTACT_PHONE_DISPLAY}
                 </a>
               </li>
               <li>
                 <a
                   href={whatsappHref("Hola, quiero más información", WHATSAPP_NUMBER_2)}
+                  onClick={() =>
+                    trackEvent("contact", { method: "whatsapp", location: "footer-linea-2" })
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
@@ -146,19 +152,22 @@ export function Footer() {
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <WhatsAppIcon size={15} />
                   </span>
-                  {CONTACT_PHONE_2_DISPLAY}
+                  WhatsApp al {CONTACT_PHONE_2_DISPLAY}
                 </a>
               </li>
               <li>
                 <a
                   href={`tel:${CONTACT_PHONE_2}`}
+                  onClick={() =>
+                    trackEvent("contact", { method: "phone", location: "footer-linea-2" })
+                  }
                   aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <Phone size={15} />
                   </span>
-                  {CONTACT_PHONE_2_DISPLAY}
+                  Llamar al {CONTACT_PHONE_2_DISPLAY}
                 </a>
               </li>
               <li>
