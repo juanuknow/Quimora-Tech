@@ -20,13 +20,13 @@ npm run build
 
 Resultado esperado: código de salida 0 en los cuatro; mismo número de avisos de build que la línea base.
 
-## 2. Motor: las 6 300 combinaciones
+## 2. Motor: las 3 962 700 combinaciones
 
 Script de Node fuera del repositorio que importa `src/lib/diagnosis-engine.ts` y recorre todas las combinaciones (9 × 5 × 7 × 5 × 4).
 
 Para cada combinación comprueba las garantías de [contracts/diagnosis-engine.md](./contracts/diagnosis-engine.md) y [contracts/whatsapp-message.md](./contracts/whatsapp-message.md):
 
-- principal del catálogo y 0–2 complementos válidos (SC-003);
+- principal del catálogo y 0–3 complementos válidos (SC-003);
 - resultado idéntico en dos llamadas (FR-014);
 - mensaje con los elementos de FR-022 en orden (13, o 12 si el servicio no publica beneficios), y `decodeURIComponent` del enlace igual al texto (SC-004);
 - ningún precio, rango ni presupuesto, y `deliveryTime` nulo (SC-011);

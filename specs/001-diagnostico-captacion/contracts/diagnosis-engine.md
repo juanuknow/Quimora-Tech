@@ -13,8 +13,8 @@ export type PriorityId = "P1" | "P2" | "P3" | "P4";
 export interface CompleteAnswers {
   business: BusinessId;
   situation: SituationId;
-  need: NeedId;
-  goal: GoalId;
+  needs: readonly NeedId[]; // de 1 a MAX_SELECTIONS, en orden de elección
+  goals: readonly GoalId[]; // de 1 a MAX_SELECTIONS, en orden de elección
   priority: PriorityId;
 }
 
@@ -34,8 +34,8 @@ Los tipos `AnswerOption`, `Recommendation` (incluido `shortExplanation`) y `Comp
 
 `recommend` aplica, en este orden y sin excepciones, las tablas de la spec:
 
-1. **R-P** (solución principal), con el ajuste R-P1/R-P2 para N1.
-2. **R-K1 → R-K4** (complementos), recorridas en orden, descartando duplicados y la principal, hasta un máximo de dos (R-C4).
+1. **R-P** (solución de cada necesidad marcada), con el ajuste R-P1/R-P2 para N1, y **R-C6** (cuál es la principal).
+2. **R-KN, R-K1 → R-K4** (complementos), recorridas en orden, descartando duplicados y la principal, hasta un máximo de tres (R-C4).
 3. **R-C2, R-C3, R-C5** (texto de la explicación y del resumen).
 4. **R-N** (próximo paso según la prioridad).
 
@@ -45,12 +45,13 @@ Los tipos `AnswerOption`, `Recommendation` (incluido `shortExplanation`) y `Comp
 | ------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Determinismo             | FR-014           | Dos llamadas con las mismas respuestas devuelven objetos con el mismo contenido                                                                                                                                                               |
 | Principal del catálogo   | FR-015           | `primary` ∈ los ocho `ServiceId` de R-P                                                                                                                                                                                                       |
-| 0–2 complementos válidos | FR-015a, FR-015b | Sin duplicados, distintos de la principal, cada uno con `rule` y `reason`                                                                                                                                                                     |
+| 0–3 complementos válidos | FR-015a, FR-015b | Sin duplicados, distintos de la principal, cada uno con `rule` y `reason`; toda necesidad marcada queda atendida                                                                                                                              |
 | Sin precios              | FR-018, FR-022a  | Ningún texto contiene `$`, `COP`, "precio", "presupuesto" ni "desde" seguido de un importe                                                                                                                                                    |
 | Sin plazos               | FR-018b          | `deliveryTime === null`                                                                                                                                                                                                                       |
 | Contenido rastreable     | FR-016a, FR-016b | `howItWorks` y `benefits` salen literalmente de `services-data.ts`; los textos de R-K2, de `pricing-data.ts`                                                                                                                                  |
 | Mensaje completo         | FR-022           | El mensaje contiene, en orden, las cinco etiquetas de respuesta, la principal, sus beneficios publicados (si los hay), cada complemento con su motivo (o "ninguno adicional"), `shortExplanation`, el próximo paso y la solicitud de asesoría |
 | Longitud                 | FR-022b          | Texto ≤ 2 000 caracteres en todas las combinaciones; si `whatsappHref(texto).length > 2000`, beneficios limitados a los tres primeros y `reduced = true`; se informa del caso más largo                                                       |
-| Sin escalado             | FR-015c          | Con la necesidad fija, cambiar la situación, el objetivo, la prioridad o el negocio no cambia la principal, salvo entre R-P1 y R-P2 cuando la necesidad es N1                                                                                 |
+| Sin escalado             | FR-015c          | La principal siempre es la solución de una necesidad marcada; con una sola necesidad, cambiar la situación, el objetivo, la prioridad o el negocio no la cambia, salvo entre R-P1 y R-P2 cuando la necesidad es N1                            |
+| Compatibilidad           | FR-014           | Con una necesidad y un objetivo, el resultado y el mensaje coinciden con los de la selección única                                                                                                                                            |
 
-Todas se comprueban recorriendo las 6 300 combinaciones (ver [quickstart.md](../quickstart.md)).
+Todas se comprueban recorriendo las 3 962 700 combinaciones (ver [quickstart.md](../quickstart.md)).

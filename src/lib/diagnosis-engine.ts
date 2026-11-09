@@ -29,11 +29,16 @@ export interface AnswerOption<T extends string> {
   label: string;
 }
 
+/** Máximo de opciones elegibles en las preguntas de necesidades y objetivos. */
+export const MAX_SELECTIONS = 3;
+
 export interface CompleteAnswers {
   business: BusinessId;
   situation: SituationId;
-  need: NeedId;
-  goal: GoalId;
+  /** De 1 a `MAX_SELECTIONS`, sin repetir y en el orden en que se eligieron. */
+  needs: readonly NeedId[];
+  /** De 1 a `MAX_SELECTIONS`, sin repetir y en el orden en que se eligieron. */
+  goals: readonly GoalId[];
   priority: PriorityId;
 }
 
@@ -73,7 +78,7 @@ export const PRIORITY_OPTIONS: readonly AnswerOption<PriorityId>[] = [
 /* ============================ Recomendación ============================ */
 
 export type PrimaryRule = "R-P1" | "R-P2" | "R-P3" | "R-P4" | "R-P5" | "R-P6" | "R-P7" | "R-P8";
-export type ComplementRule = "R-K1" | "R-K2" | "R-K3" | "R-K4";
+export type ComplementRule = "R-KN" | "R-K1" | "R-K2" | "R-K3" | "R-K4";
 export type NextStepRule = "R-N1" | "R-N2" | "R-N3" | "R-N4";
 
 export interface Complement {
@@ -87,12 +92,20 @@ export interface Complement {
   reason: string;
 }
 
+/** Qué atiende cada opción marcada; `solution` es `null` si se revisa en la asesoría (R-C3). */
+export interface CoverageItem {
+  kind: "need" | "goal";
+  label: string;
+  solution: string | null;
+}
+
 export interface Recommendation {
   primaryRule: PrimaryRule;
   primary: ServiceId;
   complements: readonly Complement[];
   situationSummary: string;
-  needLabel: string;
+  needLabels: readonly string[];
+  coverage: readonly CoverageItem[];
   howItWorks: string;
   benefits: readonly string[];
   explanation: string;
@@ -115,15 +128,26 @@ export const PRIMARY_SERVICES: readonly ServiceId[] = [
   "automatizacion",
 ];
 
-/** Servicios internos o de agenda: necesitan una web si el negocio aún no la tiene (R-K1). */
-const NEEDS_WEB_FOR_REACH: readonly ServiceId[] = [
-  "reservas-citas",
-  "inventario",
-  "ventas-caja",
-  "automatizacion",
+/** Servicios que dan presencia web propia: sin ninguno de ellos aplica R-K1. */
+const WEB_SERVICES: readonly ServiceId[] = [
+  "landing-pages",
+  "sitios-corporativos",
+  "tiendas-online",
 ];
 
 const SALES_SYSTEMS: readonly ServiceId[] = ["tiendas-online", "inventario", "ventas-caja"];
+
+/** Servicios que hacen avanzar cada objetivo; deciden la principal (R-C6) y la cobertura. */
+const GOAL_SERVICES: Record<GoalId, readonly ServiceId[]> = {
+  O1: WEB_SERVICES,
+  O2: ["tiendas-online"],
+  O3: ["reservas-citas"],
+  O4: ["inventario", "ventas-caja", "automatizacion"],
+  O5: ["sitios-corporativos"],
+};
+
+/** R-C4: las necesidades secundarias (hasta dos) siempre caben, y queda un lugar más. */
+const MAX_COMPLEMENTS = 3;
 
 /* ---------- Redacción según el tipo de negocio (R-C5) ---------- */
 
@@ -150,6 +174,12 @@ function bookingWord(business: BusinessId): string {
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
+/** "a", "a y b", "a, b y c". */
+function joinList(items: readonly string[]): string {
+  if (items.length < 2) return items.join("");
+  return `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}`;
+}
+
 function labelOf<T extends string>(options: readonly AnswerOption<T>[], id: T): string {
   const option = options.find((o) => o.id === id);
   if (!option) throw new Error(`Opción desconocida: ${id}`);
@@ -164,11 +194,21 @@ export function businessLabel(id: BusinessId): string {
 
 /* ---------- R-P: solución principal ---------- */
 
-function pickPrimary(a: CompleteAnswers): { rule: PrimaryRule; id: ServiceId } {
-  switch (a.need) {
+interface SolvedNeed {
+  need: NeedId;
+  rule: PrimaryRule;
+  id: ServiceId;
+}
+
+function solveNeed(need: NeedId, a: CompleteAnswers): { rule: PrimaryRule; id: ServiceId } {
+  switch (need) {
     case "N1":
-      return a.situation === "S4" || a.goal === "O5"
-        ? { rule: "R-P1", id: "sitios-corporativos" }
+      if (a.situation === "S4" || a.goals.includes("O5")) {
+        return { rule: "R-P1", id: "sitios-corporativos" };
+      }
+      // Con N7 ya se propone un sitio corporativo, que también atiende N1: no se suman dos webs.
+      return a.needs.includes("N7")
+        ? { rule: "R-P8", id: "sitios-corporativos" }
         : { rule: "R-P2", id: "landing-pages" };
     case "N2":
       return { rule: "R-P3", id: "tiendas-online" };
@@ -183,6 +223,16 @@ function pickPrimary(a: CompleteAnswers): { rule: PrimaryRule; id: ServiceId } {
     case "N7":
       return { rule: "R-P8", id: "sitios-corporativos" };
   }
+}
+
+/**
+ * R-C6: entre las soluciones de las necesidades marcadas, la que atiende más
+ * objetivos; a igualdad, la que se marcó primero. Solo reordena lo que el
+ * visitante pidió: nunca introduce como principal otra solución (FR-015c).
+ */
+function pickPrimary(solved: readonly SolvedNeed[], goals: readonly GoalId[]): SolvedNeed {
+  const score = (id: ServiceId) => goals.filter((g) => GOAL_SERVICES[g].includes(id)).length;
+  return solved.reduce((best, s) => (score(s.id) > score(best.id) ? s : best));
 }
 
 /* ---------- R-K: complementos ---------- */
@@ -200,12 +250,24 @@ function emprendedorComponents(): readonly string[] {
   return [CATALOG_FEATURE, WHATSAPP_FEATURE];
 }
 
-function pickComplements(a: CompleteAnswers, primary: ServiceId): Complement[] {
-  const candidates: Complement[] = [];
+function pickComplements(
+  a: CompleteAnswers,
+  primary: ServiceId,
+  solved: readonly SolvedNeed[],
+): Complement[] {
+  const solutions = solved.map((s) => s.id);
+  const candidates: Complement[] = solved
+    .filter((s) => s.id !== primary)
+    .map((s) => ({
+      rule: "R-KN",
+      kind: "service",
+      serviceId: s.id,
+      reason: `También marcaste como necesidad: ${lowerFirst(labelOf(NEED_OPTIONS, s.need))}`,
+    }));
   if (
-    NEEDS_WEB_FOR_REACH.includes(primary) &&
+    !solutions.some((id) => WEB_SERVICES.includes(id)) &&
     (a.situation === "S1" || a.situation === "S2") &&
-    (a.goal === "O1" || a.goal === "O2" || a.goal === "O3")
+    a.goals.some((g) => g === "O1" || g === "O2" || g === "O3")
   ) {
     candidates.push({
       rule: "R-K1",
@@ -214,7 +276,7 @@ function pickComplements(a: CompleteAnswers, primary: ServiceId): Complement[] {
       reason: "Aún no tienes web y tu objetivo exige que los clientes te encuentren y te escriban",
     });
   }
-  if (a.goal === "O2" && primary !== "tiendas-online" && a.situation !== "S5") {
+  if (a.goals.includes("O2") && !solutions.includes("tiendas-online") && a.situation !== "S5") {
     candidates.push({
       rule: "R-K2",
       kind: "plan-component",
@@ -223,7 +285,7 @@ function pickComplements(a: CompleteAnswers, primary: ServiceId): Complement[] {
         "Quieres vender en línea; el catálogo con pedidos por WhatsApp es el primer paso sin montar una tienda completa",
     });
   }
-  if (a.goal === "O3" && primary !== "reservas-citas") {
+  if (a.goals.includes("O3") && !solutions.includes("reservas-citas")) {
     candidates.push({
       rule: "R-K3",
       kind: "service",
@@ -231,7 +293,7 @@ function pickComplements(a: CompleteAnswers, primary: ServiceId): Complement[] {
       reason: `Tu objetivo es llenar tu agenda de ${bookingWord(a.business)}`,
     });
   }
-  if (a.situation === "S5" && SALES_SYSTEMS.includes(primary)) {
+  if (a.situation === "S5" && solutions.some((id) => SALES_SYSTEMS.includes(id))) {
     candidates.push({
       rule: "R-K4",
       kind: "service",
@@ -240,10 +302,10 @@ function pickComplements(a: CompleteAnswers, primary: ServiceId): Complement[] {
         "Ya vendes por internet: conectar lo que ya usas (pagos, envíos o tu sistema) evita duplicar trabajo",
     });
   }
-  // R-C4: como máximo dos, sin repetir la principal ni repetirse entre sí.
+  // R-C4: como máximo tres, sin repetir la principal ni repetirse entre sí.
   const chosen: Complement[] = [];
   for (const c of candidates) {
-    if (chosen.length === 2) break;
+    if (chosen.length === MAX_COMPLEMENTS) break;
     if (c.kind === "service" && c.serviceId === primary) continue;
     if (chosen.some((x) => complementKey(x) === complementKey(c))) continue;
     chosen.push(c);
@@ -354,28 +416,52 @@ function explain(
   }
 }
 
-/** ¿Cubren la principal o los complementos el objetivo declarado? Si no, aplica R-C3. */
-function goalCovered(
+/** Solución que atiende un objetivo, o `null` si queda para la asesoría (R-C3). */
+function goalSolution(
   goal: GoalId,
   primary: ServiceId,
   complements: readonly Complement[],
-): boolean {
-  const rules = complements.map((c) => c.rule);
-  switch (goal) {
-    case "O1":
-      return (
-        ["landing-pages", "sitios-corporativos", "tiendas-online"].includes(primary) ||
-        rules.includes("R-K1")
-      );
-    case "O2":
-      return primary === "tiendas-online" || rules.includes("R-K2");
-    case "O3":
-      return primary === "reservas-citas" || rules.includes("R-K3");
-    case "O4":
-      return ["inventario", "ventas-caja", "automatizacion"].includes(primary);
-    case "O5":
-      return primary === "sitios-corporativos";
-  }
+): string | null {
+  const services = [
+    primary,
+    ...complements.flatMap((c) => (c.kind === "service" && c.serviceId ? [c.serviceId] : [])),
+  ];
+  const match = services.find((id) => GOAL_SERVICES[goal].includes(id));
+  if (match) return getService(match).title;
+  const catalog = goal === "O2" ? complements.find((c) => c.rule === "R-K2") : undefined;
+  return catalog ? complementTitle(catalog) : null;
+}
+
+function buildCoverage(
+  a: CompleteAnswers,
+  solved: readonly SolvedNeed[],
+  primary: ServiceId,
+  complements: readonly Complement[],
+): CoverageItem[] {
+  return [
+    ...solved.map(
+      (s): CoverageItem => ({
+        kind: "need",
+        label: labelOf(NEED_OPTIONS, s.need),
+        solution: getService(s.id).title,
+      }),
+    ),
+    ...a.goals.map(
+      (goal): CoverageItem => ({
+        kind: "goal",
+        label: labelOf(GOAL_OPTIONS, goal),
+        solution: goalSolution(goal, primary, complements),
+      }),
+    ),
+  ];
+}
+
+/** Con varias soluciones, dice por qué esta va primero (R-C6). */
+function orderNote(solved: readonly SolvedNeed[], primary: ServiceId): string {
+  if (new Set(solved.map((s) => s.id)).size < 2) return "";
+  return primary === solved[0].id
+    ? " La ponemos primero porque es lo que marcaste como más importante."
+    : " La ponemos primero porque es la que más te acerca a tus objetivos.";
 }
 
 const NEXT_STEP: Record<PriorityId, { rule: NextStepRule; text: string }> = {
@@ -405,29 +491,36 @@ const INVESTMENT_NOTE =
 
 /** Recomendación integral determinista (FR-014 a FR-018b). */
 export function recommend(a: CompleteAnswers): Recommendation {
-  const { rule, id: primary } = pickPrimary(a);
-  const complements = pickComplements(a, primary);
+  const solved = a.needs.map((need): SolvedNeed => ({ need, ...solveNeed(need, a) }));
+  const { rule, id: primary } = pickPrimary(solved, a.goals);
+  const complements = pickComplements(a, primary, solved);
   const service = getService(primary);
   const neg = BUSINESS_PHRASE[a.business];
-  const goalLabel = labelOf(GOAL_OPTIONS, a.goal);
+  const goalLabels = a.goals.map((g) => lowerFirst(labelOf(GOAL_OPTIONS, g)));
   const { explanation, shortExplanation } = explain(a, rule);
   const step = NEXT_STEP[a.priority];
-  const pendingGoal = goalCovered(a.goal, primary, complements)
-    ? ""
-    : ` En la asesoría revisaremos también tu objetivo: ${lowerFirst(goalLabel)}.`;
+  const coverage = buildCoverage(a, solved, primary, complements);
+  const pending = coverage
+    .filter((item) => item.kind === "goal" && item.solution === null)
+    .map((item) => lowerFirst(item.label));
+  const pendingGoals =
+    pending.length > 0
+      ? ` En la asesoría revisaremos también ${pending.length > 1 ? "tus objetivos" : "tu objetivo"}: ${joinList(pending)}.`
+      : "";
 
   return {
     primaryRule: rule,
     primary,
     complements,
-    situationSummary: `${SITUATION_SENTENCE[a.situation](neg)} Tu objetivo: ${lowerFirst(goalLabel)}.`,
-    needLabel: labelOf(NEED_OPTIONS, a.need),
+    situationSummary: `${SITUATION_SENTENCE[a.situation](neg)} ${goalLabels.length > 1 ? "Tus objetivos" : "Tu objetivo"}: ${joinList(goalLabels)}.`,
+    needLabels: a.needs.map((n) => labelOf(NEED_OPTIONS, n)),
+    coverage,
     howItWorks: service.longDescription ?? service.body,
     benefits: service.benefits ?? [],
-    explanation,
+    explanation: `${explanation}${orderNote(solved, primary)}`,
     shortExplanation,
     nextStepRule: step.rule,
-    nextStep: `${step.text}${pendingGoal} ${INVESTMENT_NOTE}`,
+    nextStep: `${step.text}${pendingGoals} ${INVESTMENT_NOTE}`,
     deliveryTime: null,
   };
 }
@@ -436,15 +529,15 @@ export function recommend(a: CompleteAnswers): Recommendation {
 export function answerLabels(a: CompleteAnswers): {
   business: string;
   situation: string;
-  need: string;
-  goal: string;
+  needs: readonly string[];
+  goals: readonly string[];
   priority: string;
 } {
   return {
     business: businessLabel(a.business),
     situation: labelOf(SITUATION_OPTIONS, a.situation),
-    need: labelOf(NEED_OPTIONS, a.need),
-    goal: labelOf(GOAL_OPTIONS, a.goal),
+    needs: a.needs.map((n) => labelOf(NEED_OPTIONS, n)),
+    goals: a.goals.map((g) => labelOf(GOAL_OPTIONS, g)),
     priority: labelOf(PRIORITY_OPTIONS, a.priority),
   };
 }
@@ -457,7 +550,7 @@ export const MESSAGE_MAX_CHARS = 2000;
 export interface WhatsAppMessage {
   text: string;
   href: string;
-  /** `true` si se limitaron los beneficios a los tres primeros (FR-022b). */
+  /** `true` si se limitaron o retiraron los beneficios para respetar el límite (FR-022b). */
   reduced: boolean;
 }
 
@@ -480,15 +573,20 @@ export function buildWhatsAppMessage(
       "",
       `Tipo de negocio: ${labels.business}.`,
       `Situación digital actual: ${labels.situation}.`,
-      `Principal necesidad: ${labels.need}.`,
-      `Objetivo: ${labels.goal}.`,
+      `${labels.needs.length > 1 ? "Necesidades, en orden" : "Principal necesidad"}: ${labels.needs.join("; ")}.`,
+      `${labels.goals.length > 1 ? "Objetivos" : "Objetivo"}: ${labels.goals.join("; ")}.`,
       `Prioridad: ${labels.priority}.`,
       "",
       `Solución recomendada: ${getService(rec.primary).title}.`,
       ...(benefits.length > 0 ? ["Beneficios:", ...benefits.map((b) => `- ${b}`)] : []),
       "Complementos:",
       ...(rec.complements.length > 0
-        ? rec.complements.map((c) => `- ${complementTitle(c)}: ${c.reason}.`)
+        ? rec.complements.map((c) =>
+            // El motivo de R-KN solo repetiría la línea de necesidades.
+            c.rule === "R-KN"
+              ? `- ${complementTitle(c)}.`
+              : `- ${complementTitle(c)}: ${c.reason}.`,
+          )
         : ["- ninguno adicional"]),
       `Por qué: ${rec.shortExplanation}`,
       `Próximo paso: ${rec.nextStep}`,
@@ -498,8 +596,10 @@ export function buildWhatsAppMessage(
 
   let text = compose(rec.benefits);
   let reduced = false;
-  if (!opts.forceFull && whatsappHref(text).length > MESSAGE_MAX_CHARS) {
-    text = compose(rec.benefits.slice(0, 3));
+  // Lo marcado por el visitante y las soluciones valen más que los beneficios: estos ceden primero.
+  for (const count of [3, 0]) {
+    if (opts.forceFull || whatsappHref(text).length <= MESSAGE_MAX_CHARS) break;
+    text = compose(rec.benefits.slice(0, count));
     reduced = true;
   }
   return { text, href: whatsappHref(text), reduced };

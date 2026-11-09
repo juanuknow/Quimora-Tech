@@ -10,11 +10,11 @@ No hay persistencia en servidor ni base de datos. Todos los datos viven en el na
 | ----------- | --------------------- | -------------------------------------------- | ------------------ |
 | `business`  | `BusinessId \| null`  | Las nueve opciones de `src/lib/diagnosis.ts` | Pregunta 1 o atajo |
 | `situation` | `SituationId \| null` | `S1`…`S5`                                    | Pregunta 2         |
-| `need`      | `NeedId \| null`      | `N1`…`N7`                                    | Pregunta 3         |
-| `goal`      | `GoalId \| null`      | `O1`…`O5`                                    | Pregunta 4         |
+| `needs`     | `readonly NeedId[]`   | De 1 a 3 de `N1`…`N7`, en orden de elección  | Pregunta 3         |
+| `goals`     | `readonly GoalId[]`   | De 1 a 3 de `O1`…`O5`, en orden de elección  | Pregunta 4         |
 | `priority`  | `PriorityId \| null`  | `P1`…`P4`                                    | Pregunta 5         |
 
-**Validación**: no se puede avanzar desde una pregunta con su campo en `null` (FR-010). Solo se puede calcular la recomendación con los cinco campos completos; el tipo `CompleteAnswers` lo garantiza en compilación.
+**Validación**: no se puede avanzar desde una pregunta con su campo en `null` o su lista vacía (FR-010). Solo se puede calcular la recomendación con los cinco campos completos; el tipo `CompleteAnswers` lo garantiza en compilación.
 
 **Ciclo de vida**: se crean vacías al abrir la ventana (o con `business` precargado desde un atajo); se descartan al cerrar la ventana, recargar o salir. Nunca se guardan ni se envían a la analítica.
 
@@ -56,7 +56,7 @@ Los otros seis servicios reciben su `id`, pero el motor no los recomienda.
 | `planComponents` | `readonly string[]`                    | Solo si `kind = "plan-component"`: textos leídos de `pricing-data.ts` (R9) |
 | `reason`         | `string`                               | Motivo visible, redactado a partir de las respuestas (FR-015a)             |
 
-**Validación**: como máximo dos por recomendación; distintos de la principal y entre sí (FR-015b, R-C4).
+**Validación**: como máximo tres por recomendación; distintos de la principal y entre sí (FR-015b, R-C4).
 
 ## Recomendación (`Recommendation`)
 
@@ -64,9 +64,10 @@ Los otros seis servicios reciben su `id`, pero el motor no los recomienda.
 | ------------------ | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `primaryRule`      | `"R-P1"`…`"R-P8"`             | Regla R-P aplicada                                                                                                       |
 | `primary`          | `ServiceId`                   | Tabla R-P (FR-015)                                                                                                       |
-| `complements`      | `readonly Complement[]` (0–2) | Tabla R-K                                                                                                                |
+| `complements`      | `readonly Complement[]` (0–3) | Tabla R-K                                                                                                                |
 | `situationSummary` | `string`                      | Plantilla por situación (S1–S5), con el nombre del negocio según R-C5                                                    |
-| `needLabel`        | `string`                      | Etiqueta de la necesidad                                                                                                 |
+| `needLabels`       | `readonly string[]`           | Etiquetas de las necesidades marcadas, en orden                                                                          |
+| `coverage`         | `readonly CoverageItem[]`     | Solución que atiende cada necesidad y objetivo marcados; `null` si se revisa en la asesoría (R-C3)                       |
 | `howItWorks`       | `string`                      | `longDescription` o, si no existe, `body` del servicio principal (FR-016a)                                               |
 | `benefits`         | `readonly string[]`           | `benefits` del servicio principal; vacío si no publica (FR-016a, FR-016b)                                                |
 | `explanation`      | `string`                      | Por qué se recomienda: necesidad + ajuste aplicado (R-P1, R-C2, R-C3); se muestra en pantalla                            |
@@ -75,7 +76,7 @@ Los otros seis servicios reciben su `id`, pero el motor no los recomienda.
 | `nextStep`         | `string`                      | Texto de R-N; siempre indica que la inversión se define con el asesor (FR-018a)                                          |
 | `deliveryTime`     | `null`                        | Siempre `null` mientras no haya una correspondencia servicio–plazo aprobada (FR-018b)                                    |
 
-**Invariantes** (verificadas en las 6 300 combinaciones):
+**Invariantes** (verificadas en las 3 962 700 combinaciones):
 
 1. `recommend` es una función pura: misma entrada, misma salida (FR-014).
 2. `primary` pertenece a los ocho servicios de la tabla R-P.

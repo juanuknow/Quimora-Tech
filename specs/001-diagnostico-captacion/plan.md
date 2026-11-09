@@ -16,7 +16,7 @@ Convertir el diagnóstico de la home en una herramienta de captación: invitaci�
 
 **Storage**: `sessionStorage` para el estado de la invitación (`qt:diagnosis-invite`) y las respuestas del último diagnóstico terminado (`qt:diagnosis-last-answers`); nada en servidor
 
-**Testing**: Sin ejecutor en el repositorio (P5 pendiente). Script de Node fuera del repositorio para el motor (6 300 combinaciones); Playwright + axe-core en `C:\tmp\pwenv` para extremo a extremo y regresión ([quickstart.md](./quickstart.md))
+**Testing**: Sin ejecutor en el repositorio (P5 pendiente). Script de Node fuera del repositorio para el motor (3 962 700 combinaciones); Playwright + axe-core en `C:\tmp\pwenv` para extremo a extremo y regresión ([quickstart.md](./quickstart.md))
 
 **Target Platform**: Navegadores actuales, de 320 a 1440 px; Cloudflare Workers con renderizado en servidor
 
@@ -26,7 +26,7 @@ Convertir el diagnóstico de la home en una herramienta de captación: invitaci�
 
 **Constraints**: sin precios ni plazos (FR-018, FR-018b); textos rastreables al catálogo (FR-016b); sin datos personales en GA4 (FR-026); identidad monocroma zinc; WCAG 2.2 AA; sin cambios en navbar, orden de secciones, cabeceras, Cloudflare ni dependencias
 
-**Scale/Scope**: 1 ruta (`/`); 5 preguntas; 6 300 combinaciones de respuestas; 8 soluciones principales y 4 reglas de complementos; 6 eventos de analítica
+**Scale/Scope**: 1 ruta (`/`); 5 preguntas; 3 962 700 combinaciones de respuestas; 8 soluciones principales y 5 reglas de complementos; 6 eventos de analítica
 
 ## Constitution Check
 

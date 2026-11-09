@@ -45,6 +45,7 @@ import {
 } from "../lib/diagnosis";
 import {
   GOAL_OPTIONS,
+  MAX_SELECTIONS,
   NEED_OPTIONS,
   PRIORITY_OPTIONS,
   SITUATION_OPTIONS,
@@ -115,15 +116,20 @@ const TITLE_ID = "diagnosis-dialog-title";
 interface Draft {
   business: BusinessId | null;
   situation: SituationId | null;
-  need: NeedId | null;
-  goal: GoalId | null;
+  needs: readonly NeedId[];
+  goals: readonly GoalId[];
   priority: PriorityId | null;
 }
-const EMPTY: Draft = { business: null, situation: null, need: null, goal: null, priority: null };
-const STEP_KEYS = ["business", "situation", "need", "goal", "priority"] as const;
+const EMPTY: Draft = { business: null, situation: null, needs: [], goals: [], priority: null };
+const STEP_KEYS = ["business", "situation", "needs", "goals", "priority"] as const;
+
+function isAnswered(d: Draft, key: (typeof STEP_KEYS)[number]): boolean {
+  const value = d[key];
+  return Array.isArray(value) ? value.length > 0 : value !== null;
+}
 
 function isComplete(d: Draft): d is CompleteAnswers {
-  return STEP_KEYS.every((k) => d[k] !== null);
+  return STEP_KEYS.every((k) => isAnswered(d, k));
 }
 
 /* ============================ Ventana ============================ */
@@ -221,8 +227,7 @@ export function DiagnosisDialog() {
     }
   }, [open, recommendation]);
 
-  const key = STEP_KEYS[step];
-  const answered = answers[key] !== null;
+  const answered = isAnswered(answers, STEP_KEYS[step]);
 
   const next = () => {
     if (!answered) {
@@ -390,24 +395,22 @@ function Questions({
           />
         )}
         {step === 2 && (
-          <SingleSelect
+          <MultiSelect
             title="¿Qué es lo que más necesitas resolver?"
             headingRef={headingRef}
             options={NEED_UI}
-            value={answers.need}
-            onChange={(id) => setAnswers({ ...answers, need: id })}
-            columns="one"
+            value={answers.needs}
+            onChange={(ids) => setAnswers({ ...answers, needs: ids })}
             describedBy={showError ? errorId : undefined}
           />
         )}
         {step === 3 && (
-          <SingleSelect
+          <MultiSelect
             title="¿Qué objetivo comercial quieres alcanzar?"
             headingRef={headingRef}
             options={GOAL_UI}
-            value={answers.goal}
-            onChange={(id) => setAnswers({ ...answers, goal: id })}
-            columns="one"
+            value={answers.goals}
+            onChange={(ids) => setAnswers({ ...answers, goals: ids })}
             describedBy={showError ? errorId : undefined}
           />
         )}
@@ -451,7 +454,138 @@ function Questions({
   );
 }
 
-/* ============================ Selector (radiogroup) ============================ */
+/* ============================ Selectores ============================ */
+
+type SelectOption<T extends string> = AnswerOption<T> & { icon: LucideIcon };
+
+function optionClass(selected: boolean, blocked = false): string {
+  const state = selected
+    ? "border-brand bg-brand-soft shadow-sm active:scale-[0.98]"
+    : blocked
+      ? "cursor-not-allowed border-hairline bg-background opacity-60"
+      : "border-hairline bg-background hover:border-brand/40 hover:bg-brand-soft/40 active:scale-[0.98]";
+  return `flex min-h-14 items-center gap-3 rounded-xl border p-4 text-left transition-[border-color,background-color,box-shadow] duration-150 ${FOCUS_RING} ${state}`;
+}
+
+function OptionContent({
+  icon: Icon,
+  label,
+  selected,
+}: {
+  icon: LucideIcon;
+  label: string;
+  selected: boolean;
+}) {
+  return (
+    <>
+      <span
+        className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${
+          selected ? "bg-brand text-white" : "bg-brand-soft text-brand"
+        }`}
+      >
+        <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+      </span>
+      <span className="font-display text-ui font-medium text-foreground">{label}</span>
+    </>
+  );
+}
+
+function StepHeading({
+  id,
+  title,
+  headingRef,
+}: {
+  id: string;
+  title: string;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+}) {
+  return (
+    <h2
+      id={id}
+      ref={headingRef}
+      tabIndex={-1}
+      className="font-display text-xl font-semibold text-brand outline-none md:text-2xl"
+    >
+      {title}
+    </h2>
+  );
+}
+
+/**
+ * Grupo de casillas con límite: el orden de elección es la prioridad y se ve en
+ * cada opción. Al llegar al límite las demás quedan `aria-disabled`, sin salir
+ * del orden de tabulación, para que sigan siendo legibles con lector de pantalla.
+ */
+function MultiSelect<T extends string>({
+  title,
+  headingRef,
+  options,
+  value,
+  onChange,
+  describedBy,
+}: {
+  title: string;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+  options: readonly SelectOption<T>[];
+  value: readonly T[];
+  onChange: (ids: readonly T[]) => void;
+  describedBy?: string;
+}) {
+  const headingId = useId();
+  const hintId = useId();
+  const atLimit = value.length >= MAX_SELECTIONS;
+
+  const toggle = (id: T) => {
+    if (value.includes(id)) onChange(value.filter((v) => v !== id));
+    else if (!atLimit) onChange([...value, id]);
+  };
+
+  return (
+    <div>
+      <StepHeading id={headingId} title={title} headingRef={headingRef} />
+      <p id={hintId} className="mt-2 text-ui text-muted-foreground">
+        Elige hasta {MAX_SELECTIONS}, empezando por la más importante.
+      </p>
+      <div
+        role="group"
+        aria-labelledby={headingId}
+        aria-describedby={describedBy ? `${hintId} ${describedBy}` : hintId}
+        className="mt-6 grid gap-3"
+      >
+        {options.map(({ id, label, icon }) => {
+          const rank = value.indexOf(id) + 1;
+          const selected = rank > 0;
+          const blocked = !selected && atLimit;
+          return (
+            <button
+              key={id}
+              type="button"
+              role="checkbox"
+              aria-checked={selected}
+              aria-disabled={blocked || undefined}
+              onClick={() => toggle(id)}
+              className={optionClass(selected, blocked)}
+            >
+              <OptionContent icon={icon} label={label} selected={selected} />
+              {selected && (
+                <span className="ml-auto grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand font-display text-caption font-semibold text-white">
+                  <span className="sr-only">Prioridad </span>
+                  {rank}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      <p role="status" className="mt-3 text-caption text-muted-foreground">
+        {value.length} de {MAX_SELECTIONS} elegidas
+        {atLimit ? ". Para cambiar una, quítala primero." : ""}
+      </p>
+    </div>
+  );
+}
+
+/* Selección única (radiogroup) */
 
 /**
  * Patrón WAI-ARIA de radiogroup: un solo tab-stop (la opción elegida o, si aún
@@ -468,7 +602,7 @@ function SingleSelect<T extends string>({
 }: {
   title: string;
   headingRef: RefObject<HTMLHeadingElement | null>;
-  options: readonly (AnswerOption<T> & { icon: LucideIcon })[];
+  options: readonly SelectOption<T>[];
   value: T | null;
   onChange: (id: T) => void;
   columns?: "grid" | "one";
@@ -507,14 +641,7 @@ function SingleSelect<T extends string>({
 
   return (
     <div>
-      <h2
-        id={headingId}
-        ref={headingRef}
-        tabIndex={-1}
-        className="font-display text-xl font-semibold text-brand outline-none md:text-2xl"
-      >
-        {title}
-      </h2>
+      <StepHeading id={headingId} title={title} headingRef={headingRef} />
       <div
         role="radiogroup"
         aria-labelledby={headingId}
@@ -523,7 +650,7 @@ function SingleSelect<T extends string>({
           columns === "one" ? "sm:grid-cols-1" : "sm:grid-cols-2 lg:grid-cols-3"
         }`}
       >
-        {options.map(({ id, label, icon: Icon }, index) => {
+        {options.map(({ id, label, icon }, index) => {
           const selected = value === id;
           return (
             <button
@@ -537,20 +664,9 @@ function SingleSelect<T extends string>({
               tabIndex={index === tabStop ? 0 : -1}
               onClick={() => onChange(id)}
               onKeyDown={(e) => onKeyDown(e, index)}
-              className={`flex min-h-14 items-center gap-3 rounded-xl border p-4 text-left transition-[border-color,background-color,box-shadow] duration-150 active:scale-[0.98] ${FOCUS_RING} ${
-                selected
-                  ? "border-brand bg-brand-soft shadow-sm"
-                  : "border-hairline bg-background hover:border-brand/40 hover:bg-brand-soft/40"
-              }`}
+              className={optionClass(selected)}
             >
-              <span
-                className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${
-                  selected ? "bg-brand text-white" : "bg-brand-soft text-brand"
-                }`}
-              >
-                <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
-              </span>
-              <span className="font-display text-ui font-medium text-foreground">{label}</span>
+              <OptionContent icon={icon} label={label} selected={selected} />
               {selected && (
                 <Check size={18} className="ml-auto shrink-0 text-brand" aria-hidden="true" />
               )}
@@ -602,8 +718,16 @@ function Result({
           <p className="mt-2 text-ui leading-[1.6] text-foreground">{rec.situationSummary}</p>
         </div>
         <div className="rounded-xl border border-hairline bg-background p-5">
-          <p className={sectionTitle}>Necesidad principal</p>
-          <p className="mt-2 font-display text-ui font-semibold text-brand">{rec.needLabel}</p>
+          <p className={sectionTitle}>
+            {rec.needLabels.length > 1 ? "Lo que necesitas resolver" : "Necesidad principal"}
+          </p>
+          <ul className="mt-2 grid gap-1">
+            {rec.needLabels.map((label) => (
+              <li key={label} className="font-display text-ui font-semibold text-brand">
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -627,7 +751,10 @@ function Result({
             <p className={sectionTitle}>Complementos recomendados</p>
             <ul className="mt-3 grid gap-3">
               {rec.complements.map((c) => (
-                <li key={c.rule} className="rounded-lg border border-hairline bg-background p-4">
+                <li
+                  key={complementTitle(c)}
+                  className="rounded-lg border border-hairline bg-background p-4"
+                >
                   <p className="font-display text-ui font-semibold text-foreground">
                     {complementTitle(c)}
                   </p>
@@ -640,6 +767,36 @@ function Result({
           </div>
         )}
       </section>
+
+      {/* Con varias opciones marcadas: qué atiende cada una (R-C3, R-C6). */}
+      {rec.coverage.length > 2 && (
+        <section aria-labelledby="diagnosis-coverage" className="mt-6">
+          <h3 id="diagnosis-coverage" className="font-display text-lg font-semibold text-brand">
+            Cómo cubre esto lo que marcaste
+          </h3>
+          <ul className="mt-3 grid gap-3">
+            {rec.coverage.map((item) => (
+              <li key={item.label} className="flex items-start gap-2 text-ui">
+                {item.solution ? (
+                  <Check size={16} className="mt-1 shrink-0 text-success" aria-hidden="true" />
+                ) : (
+                  <MessageCircle
+                    size={16}
+                    className="mt-1 shrink-0 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>
+                  <span className="block font-medium text-foreground">{item.label}</span>
+                  <span className="block text-caption text-muted-foreground">
+                    {item.solution ?? "Lo revisamos contigo en la asesoría"}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* 6. Cómo trabajaría · 7. Beneficios */}
       <section aria-labelledby="diagnosis-how" className="mt-6">

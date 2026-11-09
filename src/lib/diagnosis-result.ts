@@ -1,6 +1,7 @@
 import { BUSINESS_OPTIONS } from "./diagnosis";
 import {
   GOAL_OPTIONS,
+  MAX_SELECTIONS,
   NEED_OPTIONS,
   PRIORITY_OPTIONS,
   SITUATION_OPTIONS,
@@ -27,6 +28,16 @@ function includesId(options: readonly { id: string }[], value: unknown): boolean
   return options.some((option) => option.id === value);
 }
 
+function isSelection(options: readonly { id: string }[], value: unknown): boolean {
+  return (
+    Array.isArray(value) &&
+    value.length >= 1 &&
+    value.length <= MAX_SELECTIONS &&
+    new Set(value).size === value.length &&
+    value.every((item) => includesId(options, item))
+  );
+}
+
 /** Un valor manipulado o de una versión anterior no debe llegar al motor de recomendación. */
 function isCompleteAnswers(value: unknown): value is CompleteAnswers {
   if (typeof value !== "object" || value === null) return false;
@@ -34,8 +45,8 @@ function isCompleteAnswers(value: unknown): value is CompleteAnswers {
   return (
     includesId(BUSINESS_OPTIONS, answers.business) &&
     includesId(SITUATION_OPTIONS, answers.situation) &&
-    includesId(NEED_OPTIONS, answers.need) &&
-    includesId(GOAL_OPTIONS, answers.goal) &&
+    isSelection(NEED_OPTIONS, answers.needs) &&
+    isSelection(GOAL_OPTIONS, answers.goals) &&
     includesId(PRIORITY_OPTIONS, answers.priority)
   );
 }

@@ -11,8 +11,8 @@ Hola, Quimora Tech. Acabo de completar el Diagnóstico Digital Gratuito en su p�
 
 Tipo de negocio: [etiqueta de la pregunta 1].
 Situación digital actual: [etiqueta de la pregunta 2].
-Principal necesidad: [etiqueta de la pregunta 3].
-Objetivo: [etiqueta de la pregunta 4].
+Principal necesidad: [etiqueta de la pregunta 3].      ← con varias: «Necesidades, en orden: a; b; c.»
+Objetivo: [etiqueta de la pregunta 4].                 ← con varias: «Objetivos: a; b; c.»
 Prioridad: [etiqueta de la pregunta 5].
 
 Solución recomendada: [título del servicio principal].
@@ -20,7 +20,7 @@ Beneficios:                         ← solo si el servicio publica beneficios
 - [beneficio publicado 1]
 - [beneficio publicado N]
 Complementos:
-- [título del complemento]: [motivo].   ← uno por complemento (0–2)
+- [título del complemento]: [motivo].   ← uno por complemento (0–3); en R-KN, sin motivo
 - ninguno adicional                      ← solo si no hay complementos
 Por qué: [shortExplanation].
 Próximo paso: [próximo paso de R-N].
@@ -35,7 +35,7 @@ Corresponde a los 13 elementos de FR-022: (1) saludo y (2) mención del diagnós
 - Las etiquetas, títulos, beneficios y motivos son los mismos que ve el visitante en pantalla, sin modificar.
 - Los beneficios son los publicados del servicio principal (`benefits` del catálogo). Si el servicio no los publica, el bloque "Beneficios" se omite: nunca se inventan (FR-016a, FR-016b).
 - Los complementos de tipo componente de plan (R-K2) se nombran "Catálogo de productos o servicios con enlace directo a WhatsApp".
-- **Longitud (FR-022b)**: el texto no supera los 2 000 caracteres. Si el enlace codificado superase los 2 000 caracteres, se limita la lista de beneficios a los tres primeros publicados; nada más se recorta.
+- **Longitud (FR-022b)**: ni el texto ni el enlace codificado superan los 2 000 caracteres. Si el enlace los superase, se limita la lista de beneficios a los tres primeros publicados y, si aún no cabe, se retira; nada más se recorta. El motivo de R-KN no se escribe porque repetiría la línea de necesidades.
 - El próximo paso no contiene cifras: dice que la inversión se define con el asesor (FR-018a).
 - Prohibido: precios, rangos, presupuestos, plazos, datos personales y cualquier texto que no salga de las respuestas o de la recomendación (FR-022a).
 - El mensaje nunca se envía solo: el enlace abre WhatsApp con el texto prellenado y el visitante decide (FR-021).
