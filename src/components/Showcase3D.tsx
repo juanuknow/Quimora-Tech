@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
-import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useInView, useTilt } from "../lib/hooks";
 import { FOCUS_RING, whatsappHref } from "../lib/site";
 import { NewTabHint } from "./NewTabHint";
 import { BrowserChrome } from "./BrowserChrome";
+import { DesktopAppChrome } from "./DesktopAppChrome";
 import { ShowcaseGallery, type GalleryView } from "./ShowcaseGallery";
 
 /* ============================ Data ============================ */
@@ -29,6 +30,7 @@ interface FeaturedProject {
   /** Real capabilities of the site (no invented metrics). */
   highlights: string[];
   technologies: string[];
+  kind?: "website" | "desktop";
 }
 
 // Proyecto real construido por Quimora Tech. Sin métricas de resultados
@@ -62,6 +64,68 @@ const FEATURED: FeaturedProject = {
   ],
   technologies: ["React", "Vite", "Tailwind CSS", "Supabase", "Netlify"],
 };
+
+// La versión 0.5.6 está en pruebas en el local. Las capturas provienen de la
+// versión 0.5.4 en modo demo; no muestran información de la operación real.
+const ENTRE_HILOS: FeaturedProject = {
+  name: "Entre Hilos",
+  category: "Aplicación de escritorio · En pruebas en el local",
+  domain: "Entre Hilos · Gestión del local",
+  kind: "desktop",
+  fullImage: "/images/entre-hilos-inicio.png",
+  fallbackImage: "/images/entre-hilos-inicio.png",
+  description:
+    "Desarrollamos una aplicación Windows para organizar la recepción de prendas, los pedidos, el trabajo de taller, los abonos y la caja de un local. Funciona sin internet y genera comprobantes internos. La versión 0.5.6 ya está en pruebas con el personal del local; el despliegue definitivo está previsto después de esta etapa.",
+  facts: [],
+  highlights: [
+    "Pedidos identificados por prenda",
+    "Seguimiento del trabajo de taller",
+    "Abonos y saldos por pedido",
+    "Caja con cierre diario",
+    "Historial de cambios",
+    "Respaldos locales",
+  ],
+  technologies: ["Electron", "React", "TypeScript", "SQLite"],
+};
+
+const ENTRE_HILOS_VIEWS: readonly GalleryView[] = [
+  {
+    id: "inicio",
+    label: "Inicio",
+    title: "Las tareas del local, a la vista",
+    caption: "Accesos directos para recibir prendas, buscar pedidos, revisar el taller y registrar abonos. Captura del modo demostración con datos ficticios.",
+    image: "/images/entre-hilos-inicio.png",
+    alt: "Inicio de Entre Hilos en modo demostración con accesos a recepción, pedidos y taller",
+    device: "browser",
+  },
+  {
+    id: "pedidos",
+    label: "Pedidos",
+    title: "Buscar un pedido sin recorrer papeles",
+    caption: "Búsqueda por cliente, número o código, y filtros para entregas, atrasos, saldos y borradores.",
+    image: "/images/entre-hilos-pedidos.png",
+    alt: "Pantalla de pedidos con búsqueda por código y filtros de estado",
+    device: "browser",
+  },
+  {
+    id: "detalle",
+    label: "Detalle",
+    title: "Trabajo, entrega y dinero por separado",
+    caption: "Cada pedido muestra el estado de sus prendas, los pagos y las acciones disponibles sin confundir una etapa con otra.",
+    image: "/images/entre-hilos-detalle.png",
+    alt: "Detalle de un pedido ficticio con acciones de pago, taller y entrega",
+    device: "browser",
+  },
+  {
+    id: "caja",
+    label: "Caja",
+    title: "El efectivo del día, explicado",
+    caption: "La vista distingue efectivo inicial, cobros, egresos y el importe esperado en caja.",
+    image: "/images/entre-hilos-caja.png",
+    alt: "Caja de demostración con desglose de efectivo esperado",
+    device: "browser",
+  },
+];
 
 // Capturas reales del mismo proyecto (public/images/). Cada una explica una
 // parte del sitio; solo se describen funciones que existen.
@@ -128,13 +192,18 @@ const GALLERY_VIEWS: readonly GalleryView[] = [
   },
 ];
 
+const CASES = [
+  { project: FEATURED, views: GALLERY_VIEWS, galleryHeading: "Recorre el sitio por dentro", galleryIntro: "Capturas reales de la tienda, de la portada al pedido por WhatsApp." },
+  { project: ENTRE_HILOS, views: ENTRE_HILOS_VIEWS, galleryHeading: "Conoce la aplicación por dentro", galleryIntro: "Pantallas reales de la versión de demostración. Los clientes y pedidos que aparecen son ficticios." },
+] as const;
+
 /* ============================ Live device ============================ */
 
 /** The real full-page screenshot, scrolling inside browser chrome. */
 function LiveScreenshot({ project }: { project: FeaturedProject }) {
   return (
     <div className="flex h-full w-full flex-col bg-white">
-      <BrowserChrome domain={project.domain} />
+      {project.kind === "desktop" ? <DesktopAppChrome title={project.domain} /> : <BrowserChrome domain={project.domain} />}
       {/* Scrolling screenshot */}
       <div className="relative flex-1 overflow-hidden">
         <img
@@ -144,9 +213,9 @@ function LiveScreenshot({ project }: { project: FeaturedProject }) {
               e.currentTarget.src = project.fallbackImage;
             }
           }}
-          alt={`Captura del sitio ${project.name}`}
+          alt={`Captura ${project.kind === "desktop" ? "de la aplicación" : "del sitio"} ${project.name}`}
           loading="lazy"
-          className="live-scroll absolute inset-x-0 top-0 w-full"
+          className={project.kind === "desktop" ? "absolute inset-0 h-full w-full object-contain object-top" : "live-scroll absolute inset-x-0 top-0 w-full"}
         />
       </div>
     </div>
@@ -179,12 +248,16 @@ function LaptopDevice({ project }: { project: FeaturedProject }) {
         aria-hidden="true"
         className="pointer-events-none mx-auto -mt-1 h-5 w-[62%] rounded-[50%] bg-black/25 blur-xl transition-all duration-500 group-hover:w-[72%] group-hover:bg-black/30 motion-reduce:transition-none"
       />
-      <p className="mt-6 text-center text-xs text-muted-foreground md:hidden">
-        La captura se desplaza sola para que la explores
-      </p>
-      <p className="mt-6 hidden text-center text-xs text-muted-foreground md:block">
-        Pasa el cursor para recorrer el sitio
-      </p>
+      {project.kind !== "desktop" && (
+        <>
+          <p className="mt-6 text-center text-xs text-muted-foreground md:hidden">
+            La captura se desplaza sola para que la explores
+          </p>
+          <p className="mt-6 hidden text-center text-xs text-muted-foreground md:block">
+            Pasa el cursor para recorrer el sitio
+          </p>
+        </>
+      )}
     </div>
   );
 }
@@ -193,8 +266,13 @@ function LaptopDevice({ project }: { project: FeaturedProject }) {
 
 export function Showcase3D() {
   const { ref, inView } = useInView<HTMLDivElement>(0.15);
+  const [caseIndex, setCaseIndex] = useState(0);
+  const currentCase = CASES[caseIndex];
+  const project = currentCase.project;
+  const previousIndex = (caseIndex - 1 + CASES.length) % CASES.length;
+  const nextIndex = (caseIndex + 1) % CASES.length;
   const waHref = whatsappHref(
-    `Hola, vi el proyecto "${FEATURED.name}" en su portafolio y quiero algo así para mi negocio.`,
+    `Hola, vi el proyecto "${project.name}" en su portafolio y quiero algo así para mi negocio.`,
   );
 
   return (
@@ -208,15 +286,38 @@ export function Showcase3D() {
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand/15 bg-background px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-widest text-brand">
             <Sparkles size={14} />
-            Un proyecto real, por dentro
+            Proyectos reales, por dentro
           </span>
           <h2 className="mt-6 font-display text-3xl font-semibold leading-[1.15] tracking-tight text-brand md:text-display">
             No te contamos que sabemos hacerlo. Te lo mostramos.
           </h2>
           <p className="mt-4 text-base leading-[1.6] text-foreground/80 md:text-body">
-            Explora un sitio que construimos —de verdad, no una imagen— y descubre cómo se ve por
-            dentro.
+            Explora una tienda online y una aplicación de escritorio en pruebas en el local, con capturas
+            reales de lo que construimos.
           </p>
+          <div className="mt-8 flex items-center justify-center gap-4" role="group" aria-label="Navegar entre casos de éxito">
+            <button
+              type="button"
+              onClick={() => setCaseIndex(previousIndex)}
+              aria-label={`Ver caso anterior: ${CASES[previousIndex].project.name}`}
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors hover:bg-brand-soft ${FOCUS_RING}`}
+            >
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+            <p className="min-w-0 text-sm font-semibold text-brand" aria-live="polite" aria-atomic="true">
+              <span className="text-muted-foreground">{caseIndex + 1} / {CASES.length}</span>
+              <span className="mx-2" aria-hidden="true">·</span>
+              {project.name}
+            </p>
+            <button
+              type="button"
+              onClick={() => setCaseIndex(nextIndex)}
+              aria-label={`Ver caso siguiente: ${CASES[nextIndex].project.name}`}
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors hover:bg-brand-soft ${FOCUS_RING}`}
+            >
+              <ChevronRight size={20} aria-hidden="true" />
+            </button>
+          </div>
         </div>
 
         {/* Featured case */}
@@ -226,21 +327,21 @@ export function Showcase3D() {
             inView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <LaptopDevice project={FEATURED} />
+          <LaptopDevice project={project} />
 
           <div>
             <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 font-display text-xs font-semibold text-brand">
-              {FEATURED.category}
+              {project.category}
             </span>
             <h3 className="mt-4 font-display text-2xl font-semibold text-brand md:text-3xl">
-              {FEATURED.name}
+              {project.name}
             </h3>
             <p className="mt-3 text-ui leading-[1.6] text-foreground/80 md:text-base">
-              {FEATURED.description}
+              {project.description}
             </p>
 
-            <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-hairline py-5">
-              {FEATURED.facts.map((fact) => (
+            {project.facts.length > 0 && <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-hairline py-5">
+              {project.facts.map((fact) => (
                 // dt/dd van en orden de lectura (etiqueta → valor); flex-col-reverse deja el número arriba.
                 <div key={fact.label} className="flex flex-col-reverse justify-end gap-2">
                   <dt className="text-caption leading-[1.4] text-muted-foreground">{fact.label}</dt>
@@ -249,10 +350,10 @@ export function Showcase3D() {
                   </dd>
                 </div>
               ))}
-            </dl>
+            </dl>}
 
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
-              {FEATURED.highlights.map((h) => (
+              {project.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2 text-ui text-foreground">
                   <Check size={16} className="shrink-0 text-success" />
                   {h}
@@ -261,7 +362,7 @@ export function Showcase3D() {
             </ul>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {FEATURED.technologies.map((t) => (
+              {project.technologies.map((t) => (
                 <span
                   key={t}
                   className="rounded-full border border-hairline bg-background px-3 py-1.5 font-display text-xs font-medium text-foreground"
@@ -272,9 +373,9 @@ export function Showcase3D() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {FEATURED.liveUrl && (
+              {project.liveUrl && (
                 <a
-                  href={FEATURED.liveUrl}
+                  href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`inline-flex h-12 items-center justify-center gap-2 rounded-md border-2 border-brand px-6 font-display text-sm font-semibold text-brand transition duration-200 hover:bg-brand-soft active:scale-[0.98] ${FOCUS_RING}`}
@@ -285,21 +386,28 @@ export function Showcase3D() {
                 </a>
               )}
               <a
-                href={waHref}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={project.kind === "desktop" ? "#contacto" : waHref}
+                target={project.kind === "desktop" ? undefined : "_blank"}
+                rel={project.kind === "desktop" ? undefined : "noopener noreferrer"}
                 className={`inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
               >
                 <MessageCircle size={17} />
-                Quiero un proyecto así
-                <NewTabHint />
+                {project.kind === "desktop" ? "Consultar un proyecto similar" : "Quiero un proyecto así"}
+                {project.kind !== "desktop" && <NewTabHint />}
               </a>
             </div>
           </div>
         </div>
 
-        {/* The same project, part by part */}
-        <ShowcaseGallery domain={FEATURED.domain} views={GALLERY_VIEWS} />
+        <ShowcaseGallery
+          key={project.name}
+          domain={project.domain}
+          kind={project.kind}
+          idPrefix={project.kind === "desktop" ? "entre-hilos" : "showcase"}
+          heading={currentCase.galleryHeading}
+          intro={currentCase.galleryIntro}
+          views={currentCase.views}
+        />
 
         {/* Next project invitation */}
         <NextProjectCard />
@@ -324,7 +432,7 @@ function NextProjectCard() {
             ¿Y si el próximo caso fuera el tuyo?
           </p>
           <p className="mt-1 text-sm text-foreground/70">
-            Cuéntanos tu idea y la convertimos en un sitio que vende.
+            Cuéntanos tu idea y la convertimos en una solución a medida.
           </p>
         </div>
       </div>

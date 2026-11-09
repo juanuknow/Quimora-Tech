@@ -2,6 +2,7 @@ import { useRef, useState, type KeyboardEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FOCUS_RING } from "../lib/site";
 import { BrowserChrome } from "./BrowserChrome";
+import { DesktopAppChrome } from "./DesktopAppChrome";
 
 /* ============================ Data ============================ */
 
@@ -21,14 +22,18 @@ export interface GalleryView {
 interface ShowcaseGalleryProps {
   domain: string;
   views: readonly GalleryView[];
+  kind?: "website" | "desktop";
+  idPrefix?: string;
+  heading?: string;
+  intro?: string;
 }
 
 /* ============================ Devices ============================ */
 
-function BrowserShot({ domain, view }: { domain: string; view: GalleryView }) {
+function BrowserShot({ domain, view, kind }: { domain: string; view: GalleryView; kind: "website" | "desktop" }) {
   return (
     <div className="absolute inset-0 flex flex-col overflow-hidden rounded-lg bg-white shadow-xl shadow-black/15 ring-1 ring-black/10">
-      <BrowserChrome domain={domain} />
+      {kind === "desktop" ? <DesktopAppChrome title={domain} /> : <BrowserChrome domain={domain} />}
       <div className="relative flex-1">
         <img
           src={view.image}
@@ -37,7 +42,7 @@ function BrowserShot({ domain, view }: { domain: string; view: GalleryView }) {
           height={900}
           loading="lazy"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className={`absolute inset-0 h-full w-full object-top ${kind === "desktop" ? "object-contain" : "object-cover"}`}
         />
       </div>
     </div>
@@ -72,7 +77,7 @@ function PhoneShot({ view }: { view: GalleryView }) {
  * Todas las capturas viven apiladas y se funden entre sí, así que cambiar de
  * pestaña no mueve el layout ni vuelve a pedir imágenes.
  */
-export function ShowcaseGallery({ domain, views }: ShowcaseGalleryProps) {
+export function ShowcaseGallery({ domain, views, kind = "website", idPrefix = "showcase", heading = "Recorre el sitio por dentro", intro = "Capturas reales de la tienda, de la portada al pedido por WhatsApp." }: ShowcaseGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const active = views[activeIndex];
@@ -97,17 +102,17 @@ export function ShowcaseGallery({ domain, views }: ShowcaseGalleryProps) {
     <div className="mt-24">
       <div className="mx-auto max-w-2xl text-center">
         <h3 className="font-display text-2xl font-semibold leading-[1.2] tracking-tight text-brand md:text-3xl">
-          Recorre el sitio por dentro
+          {heading}
         </h3>
         <p className="mt-3 text-ui leading-[1.6] text-foreground/80 md:text-base">
-          Capturas reales de la tienda, de la portada al pedido por WhatsApp.
+          {intro}
         </p>
       </div>
 
       {/* Pestañas */}
       <div
         role="tablist"
-        aria-label="Partes del sitio"
+        aria-label={kind === "desktop" ? "Pantallas de la aplicación" : "Partes del sitio"}
         className="mt-8 flex flex-wrap items-center justify-center gap-2"
       >
         {views.map((view, index) => {
@@ -118,11 +123,11 @@ export function ShowcaseGallery({ domain, views }: ShowcaseGalleryProps) {
               ref={(el) => {
                 tabRefs.current[index] = el;
               }}
-              id={`showcase-tab-${view.id}`}
+              id={`${idPrefix}-tab-${view.id}`}
               role="tab"
               type="button"
               aria-selected={selected}
-              aria-controls="showcase-panel"
+              aria-controls={`${idPrefix}-panel`}
               tabIndex={selected ? 0 : -1}
               onClick={() => select(index)}
               onKeyDown={(event) => onTabKeyDown(event, index)}
@@ -140,13 +145,13 @@ export function ShowcaseGallery({ domain, views }: ShowcaseGalleryProps) {
 
       {/* Escenario: todas las capturas apiladas, solo la activa es visible */}
       <div
-        id="showcase-panel"
+        id={`${idPrefix}-panel`}
         role="tabpanel"
-        aria-labelledby={`showcase-tab-${active.id}`}
+        aria-labelledby={`${idPrefix}-tab-${active.id}`}
         className="mx-auto mt-8 max-w-4xl rounded-2xl border border-hairline bg-brand-soft/60 p-4 md:p-8"
       >
         {/* Proporción = ventana 16:10 + barra de navegador (8 %) para que la captura no se recorte */}
-        <div className="relative w-full" style={{ aspectRatio: "16 / 10.87" }}>
+        <div className="relative w-full" style={{ aspectRatio: kind === "desktop" ? "1693 / 1000" : "16 / 10.87" }}>
           {views.map((view, index) => {
             const isActive = index === activeIndex;
             return (
@@ -161,7 +166,7 @@ export function ShowcaseGallery({ domain, views }: ShowcaseGalleryProps) {
                 {view.device === "phone" ? (
                   <PhoneShot view={view} />
                 ) : (
-                  <BrowserShot domain={domain} view={view} />
+                  <BrowserShot domain={domain} view={view} kind={kind} />
                 )}
               </div>
             );
