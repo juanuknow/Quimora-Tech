@@ -10,7 +10,11 @@ const reviewAreas = [
 
 export function AuditOffer() {
   return (
-    <section id="auditoria" aria-labelledby="auditoria-title" className="border-t border-hairline bg-brand-dark text-white">
+    <section
+      id="auditoria"
+      aria-labelledby="auditoria-title"
+      className="border-t border-hairline bg-brand-dark text-white"
+    >
       <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.06fr_0.94fr] lg:gap-20">
         <div>
           <h2
@@ -54,7 +58,9 @@ export function AuditOffer() {
                 <Play size={19} aria-hidden="true" />
               </span>
               <div>
-                <h3 className="font-display text-base font-semibold text-brand">Video de 15 a 20 minutos</h3>
+                <h3 className="font-display text-base font-semibold text-brand">
+                  Video de 15 a 20 minutos
+                </h3>
                 <p className="mt-1 text-sm leading-[1.55] text-foreground/75">
                   Te mostramos los hallazgos directamente sobre tu sitio.
                 </p>
@@ -65,7 +71,9 @@ export function AuditOffer() {
                 <FileText size={19} aria-hidden="true" />
               </span>
               <div>
-                <h3 className="font-display text-base font-semibold text-brand">PDF con acciones priorizadas</h3>
+                <h3 className="font-display text-base font-semibold text-brand">
+                  PDF con acciones priorizadas
+                </h3>
                 <p className="mt-1 text-sm leading-[1.55] text-foreground/75">
                   Hasta cinco mejoras concretas, con evidencia y siguiente paso.
                 </p>

@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, Check, ExternalLink, MessageCircle, ArrowRight, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import {
+  Sparkles,
+  Check,
+  ExternalLink,
+  MessageCircle,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+} from "lucide-react";
 import { useInView, useTilt } from "../lib/hooks";
 import { FOCUS_RING, whatsappHref } from "../lib/site";
 import { NewTabHint } from "./NewTabHint";
@@ -72,10 +81,10 @@ const ENTRE_HILOS: FeaturedProject = {
   category: "Aplicación de escritorio · En pruebas en el local",
   domain: "Entre Hilos · Gestión del local",
   kind: "desktop",
-  fullImage: "/images/entre-hilos-inicio.png",
-  fallbackImage: "/images/entre-hilos-inicio.png",
+  fullImage: "/images/entre-hilos-inicio.webp",
+  fallbackImage: "/images/entre-hilos-pedidos.webp",
   description:
-    "Desarrollamos una aplicación Windows para organizar la recepción de prendas, los pedidos, el trabajo de taller, los abonos y la caja de un local. Funciona sin internet y genera comprobantes internos. La versión 0.5.6 ya está en pruebas con el personal del local; el despliegue definitivo está previsto después de esta etapa.",
+    "Desarrollamos una aplicación Windows para organizar la recepción de prendas, los pedidos, el trabajo de taller, los abonos y la caja de un local. Funciona sin internet y genera comprobantes internos. Ya está en pruebas con el personal del local; el despliegue definitivo está previsto después de esta etapa.",
   facts: [],
   highlights: [
     "Pedidos identificados por prenda",
@@ -93,8 +102,9 @@ const ENTRE_HILOS_VIEWS: readonly GalleryView[] = [
     id: "inicio",
     label: "Inicio",
     title: "Las tareas del local, a la vista",
-    caption: "Accesos directos para recibir prendas, buscar pedidos, revisar el taller y registrar abonos. Captura del modo demostración con datos ficticios.",
-    image: "/images/entre-hilos-inicio.png",
+    caption:
+      "Accesos directos para recibir prendas, buscar pedidos, revisar el taller y registrar abonos. Captura del modo demostración con datos ficticios.",
+    image: "/images/entre-hilos-inicio.webp",
     alt: "Inicio de Entre Hilos en modo demostración con accesos a recepción, pedidos y taller",
     device: "browser",
   },
@@ -102,8 +112,9 @@ const ENTRE_HILOS_VIEWS: readonly GalleryView[] = [
     id: "pedidos",
     label: "Pedidos",
     title: "Buscar un pedido sin recorrer papeles",
-    caption: "Búsqueda por cliente, número o código, y filtros para entregas, atrasos, saldos y borradores.",
-    image: "/images/entre-hilos-pedidos.png",
+    caption:
+      "Búsqueda por cliente, número o código, y filtros para entregas, atrasos, saldos y borradores.",
+    image: "/images/entre-hilos-pedidos.webp",
     alt: "Pantalla de pedidos con búsqueda por código y filtros de estado",
     device: "browser",
   },
@@ -111,8 +122,9 @@ const ENTRE_HILOS_VIEWS: readonly GalleryView[] = [
     id: "detalle",
     label: "Detalle",
     title: "Trabajo, entrega y dinero por separado",
-    caption: "Cada pedido muestra el estado de sus prendas, los pagos y las acciones disponibles sin confundir una etapa con otra.",
-    image: "/images/entre-hilos-detalle.png",
+    caption:
+      "Cada pedido muestra el estado de sus prendas, los pagos y las acciones disponibles sin confundir una etapa con otra.",
+    image: "/images/entre-hilos-detalle.webp",
     alt: "Detalle de un pedido ficticio con acciones de pago, taller y entrega",
     device: "browser",
   },
@@ -121,7 +133,7 @@ const ENTRE_HILOS_VIEWS: readonly GalleryView[] = [
     label: "Caja",
     title: "El efectivo del día, explicado",
     caption: "La vista distingue efectivo inicial, cobros, egresos y el importe esperado en caja.",
-    image: "/images/entre-hilos-caja.png",
+    image: "/images/entre-hilos-caja.webp",
     alt: "Caja de demostración con desglose de efectivo esperado",
     device: "browser",
   },
@@ -193,8 +205,19 @@ const GALLERY_VIEWS: readonly GalleryView[] = [
 ];
 
 const CASES = [
-  { project: FEATURED, views: GALLERY_VIEWS, galleryHeading: "Recorre el sitio por dentro", galleryIntro: "Capturas reales de la tienda, de la portada al pedido por WhatsApp." },
-  { project: ENTRE_HILOS, views: ENTRE_HILOS_VIEWS, galleryHeading: "Conoce la aplicación por dentro", galleryIntro: "Pantallas reales de la versión de demostración. Los clientes y pedidos que aparecen son ficticios." },
+  {
+    project: FEATURED,
+    views: GALLERY_VIEWS,
+    galleryHeading: "Recorre el sitio por dentro",
+    galleryIntro: "Capturas reales de la tienda, de la portada al pedido por WhatsApp.",
+  },
+  {
+    project: ENTRE_HILOS,
+    views: ENTRE_HILOS_VIEWS,
+    galleryHeading: "Conoce la aplicación por dentro",
+    galleryIntro:
+      "Pantallas reales de la versión de demostración. Los clientes y pedidos que aparecen son ficticios.",
+  },
 ] as const;
 
 /* ============================ Live device ============================ */
@@ -203,19 +226,32 @@ const CASES = [
 function LiveScreenshot({ project }: { project: FeaturedProject }) {
   return (
     <div className="flex h-full w-full flex-col bg-white">
-      {project.kind === "desktop" ? <DesktopAppChrome title={project.domain} /> : <BrowserChrome domain={project.domain} />}
+      {project.kind === "desktop" ? (
+        <DesktopAppChrome title={project.domain} />
+      ) : (
+        <BrowserChrome domain={project.domain} />
+      )}
       {/* Scrolling screenshot */}
       <div className="relative flex-1 overflow-hidden">
+        {/* La key evita ver la captura del caso anterior mientras carga la nueva. */}
         <img
+          key={project.name}
           src={project.fullImage}
           onError={(e) => {
-            if (e.currentTarget.src !== project.fallbackImage) {
-              e.currentTarget.src = project.fallbackImage;
+            // `getAttribute` conserva la ruta relativa; `src` la devuelve absoluta y la
+            // comparación nunca coincidiría, lo que reintentaría la carga sin fin.
+            const image = e.currentTarget;
+            if (image.getAttribute("src") !== project.fallbackImage) {
+              image.src = project.fallbackImage;
             }
           }}
           alt={`Captura ${project.kind === "desktop" ? "de la aplicación" : "del sitio"} ${project.name}`}
           loading="lazy"
-          className={project.kind === "desktop" ? "absolute inset-0 h-full w-full object-contain object-top" : "live-scroll absolute inset-x-0 top-0 w-full"}
+          className={
+            project.kind === "desktop"
+              ? "absolute inset-0 h-full w-full object-contain object-top"
+              : "live-scroll absolute inset-x-0 top-0 w-full"
+          }
         />
       </div>
     </div>
@@ -292,28 +328,40 @@ export function Showcase3D() {
             No te contamos que sabemos hacerlo. Te lo mostramos.
           </h2>
           <p className="mt-4 text-base leading-[1.6] text-foreground/80 md:text-body">
-            Explora una tienda online y una aplicación de escritorio en pruebas en el local, con capturas
-            reales de lo que construimos.
+            Explora una tienda online y una aplicación de escritorio en pruebas en el local, con
+            capturas reales de lo que construimos.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-4" role="group" aria-label="Navegar entre casos de éxito">
+          <div
+            className="mt-8 flex items-center justify-center gap-4"
+            role="group"
+            aria-label="Navegar entre proyectos"
+          >
             <button
               type="button"
               onClick={() => setCaseIndex(previousIndex)}
-              aria-label={`Ver caso anterior: ${CASES[previousIndex].project.name}`}
-              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors hover:bg-brand-soft ${FOCUS_RING}`}
+              aria-label={`Ver proyecto anterior: ${CASES[previousIndex].project.name}`}
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors duration-200 hover:bg-brand-soft active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING}`}
             >
               <ChevronLeft size={20} aria-hidden="true" />
             </button>
-            <p className="min-w-0 text-sm font-semibold text-brand" aria-live="polite" aria-atomic="true">
-              <span className="text-muted-foreground">{caseIndex + 1} / {CASES.length}</span>
-              <span className="mx-2" aria-hidden="true">·</span>
+            <p
+              className="min-w-0 text-sm font-semibold text-brand"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <span className="text-muted-foreground">
+                {caseIndex + 1} / {CASES.length}
+              </span>
+              <span className="mx-2" aria-hidden="true">
+                ·
+              </span>
               {project.name}
             </p>
             <button
               type="button"
               onClick={() => setCaseIndex(nextIndex)}
-              aria-label={`Ver caso siguiente: ${CASES[nextIndex].project.name}`}
-              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors hover:bg-brand-soft ${FOCUS_RING}`}
+              aria-label={`Ver proyecto siguiente: ${CASES[nextIndex].project.name}`}
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-background text-brand transition-colors duration-200 hover:bg-brand-soft active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING}`}
             >
               <ChevronRight size={20} aria-hidden="true" />
             </button>
@@ -340,17 +388,21 @@ export function Showcase3D() {
               {project.description}
             </p>
 
-            {project.facts.length > 0 && <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-hairline py-5">
-              {project.facts.map((fact) => (
-                // dt/dd van en orden de lectura (etiqueta → valor); flex-col-reverse deja el número arriba.
-                <div key={fact.label} className="flex flex-col-reverse justify-end gap-2">
-                  <dt className="text-caption leading-[1.4] text-muted-foreground">{fact.label}</dt>
-                  <dd className="font-display text-display-sm font-semibold leading-none text-brand">
-                    {fact.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>}
+            {project.facts.length > 0 && (
+              <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-hairline py-5">
+                {project.facts.map((fact) => (
+                  // dt/dd van en orden de lectura (etiqueta → valor); flex-col-reverse deja el número arriba.
+                  <div key={fact.label} className="flex flex-col-reverse justify-end gap-2">
+                    <dt className="text-caption leading-[1.4] text-muted-foreground">
+                      {fact.label}
+                    </dt>
+                    <dd className="font-display text-display-sm font-semibold leading-none text-brand">
+                      {fact.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
 
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
               {project.highlights.map((h) => (
@@ -391,8 +443,8 @@ export function Showcase3D() {
                 rel={project.kind === "desktop" ? undefined : "noopener noreferrer"}
                 className={`inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cta px-6 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`}
               >
-                <MessageCircle size={17} />
-                {project.kind === "desktop" ? "Consultar un proyecto similar" : "Quiero un proyecto así"}
+                {project.kind !== "desktop" && <MessageCircle size={17} />}
+                {project.kind === "desktop" ? "Solicitar cotización" : "Quiero un proyecto así"}
                 {project.kind !== "desktop" && <NewTabHint />}
               </a>
             </div>

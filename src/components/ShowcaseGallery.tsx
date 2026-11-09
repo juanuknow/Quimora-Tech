@@ -30,7 +30,15 @@ interface ShowcaseGalleryProps {
 
 /* ============================ Devices ============================ */
 
-function BrowserShot({ domain, view, kind }: { domain: string; view: GalleryView; kind: "website" | "desktop" }) {
+function BrowserShot({
+  domain,
+  view,
+  kind,
+}: {
+  domain: string;
+  view: GalleryView;
+  kind: "website" | "desktop";
+}) {
   return (
     <div className="absolute inset-0 flex flex-col overflow-hidden rounded-lg bg-white shadow-xl shadow-black/15 ring-1 ring-black/10">
       {kind === "desktop" ? <DesktopAppChrome title={domain} /> : <BrowserChrome domain={domain} />}
@@ -77,7 +85,14 @@ function PhoneShot({ view }: { view: GalleryView }) {
  * Todas las capturas viven apiladas y se funden entre sí, así que cambiar de
  * pestaña no mueve el layout ni vuelve a pedir imágenes.
  */
-export function ShowcaseGallery({ domain, views, kind = "website", idPrefix = "showcase", heading = "Recorre el sitio por dentro", intro = "Capturas reales de la tienda, de la portada al pedido por WhatsApp." }: ShowcaseGalleryProps) {
+export function ShowcaseGallery({
+  domain,
+  views,
+  kind = "website",
+  idPrefix = "showcase",
+  heading = "Recorre el sitio por dentro",
+  intro = "Capturas reales de la tienda, de la portada al pedido por WhatsApp.",
+}: ShowcaseGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const active = views[activeIndex];
@@ -104,9 +119,7 @@ export function ShowcaseGallery({ domain, views, kind = "website", idPrefix = "s
         <h3 className="font-display text-2xl font-semibold leading-[1.2] tracking-tight text-brand md:text-3xl">
           {heading}
         </h3>
-        <p className="mt-3 text-ui leading-[1.6] text-foreground/80 md:text-base">
-          {intro}
-        </p>
+        <p className="mt-3 text-ui leading-[1.6] text-foreground/80 md:text-base">{intro}</p>
       </div>
 
       {/* Pestañas */}
@@ -151,7 +164,10 @@ export function ShowcaseGallery({ domain, views, kind = "website", idPrefix = "s
         className="mx-auto mt-8 max-w-4xl rounded-2xl border border-hairline bg-brand-soft/60 p-4 md:p-8"
       >
         {/* Proporción = ventana 16:10 + barra de navegador (8 %) para que la captura no se recorte */}
-        <div className="relative w-full" style={{ aspectRatio: kind === "desktop" ? "1693 / 1000" : "16 / 10.87" }}>
+        <div
+          className="relative w-full"
+          style={{ aspectRatio: kind === "desktop" ? "1693 / 1000" : "16 / 10.87" }}
+        >
           {views.map((view, index) => {
             const isActive = index === activeIndex;
             return (

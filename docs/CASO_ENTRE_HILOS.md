@@ -10,15 +10,12 @@ El local registra pedidos, prendas, trabajos, abonos y entregas. La aplicación 
 
 ## Evidencia visual
 
-Las cuatro imágenes `public/images/entre-hilos-*.png` se tomaron del checkout disponible de la versión 0.5.4 en modo demostración con personas y pedidos ficticios. Muestran inicio, búsqueda de pedidos, detalle y caja; no son capturas de la versión 0.5.6 que se está probando en el local. El modo demo usa una carpeta de datos separada de la operación real. Las fotografías originales del cliente permanecen privadas y no se incorporaron al sitio.
+Las cuatro imágenes `public/images/entre-hilos-*.webp` se tomaron del checkout disponible de la versión 0.5.4 en modo demostración con personas y pedidos ficticios. Muestran inicio, búsqueda de pedidos, detalle y caja; no son capturas de la versión 0.5.6 que se está probando en el local. El modo demo usa una carpeta de datos separada de la operación real. Las fotografías originales del cliente permanecen privadas y no se incorporaron al sitio.
 
 El responsable del proyecto confirmó en la conversación que Entre Hilos otorgó permiso escrito para mostrar nombre, logo y capturas. Conservar esa autorización fuera del repositorio público.
 
 ## Límites de las afirmaciones
 
 - La versión 0.5.6 se está probando en el local; el despliegue definitivo aún no se ha completado.
-- La validación con impresora, escáner y caja física sigue en curso.
 - No hay métricas verificadas de ahorro, ventas ni adopción.
 - La facturación electrónica no forma parte de esta versión.
-
-Fuentes internas de verificación: actualización del responsable del 9 de noviembre de 2026 sobre el despliegue de prueba de la versión 0.5.6; checkout privado disponible de Entre Hilos, `app/package.json` (versión 0.5.4), `app/src/main/demo.ts`, `app/README.md`, `docs/ESTADO_IMPLEMENTACION.md` y `docs/AUDITORIA_FINAL_0.5.4.md`.
