@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
+import { DiagnosisDialog } from "../components/DiagnosisDialog";
+import { DiagnosisInvite } from "../components/DiagnosisInvite";
 import { DiagnosisShortcuts } from "../components/DiagnosisShortcuts";
 import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
@@ -42,7 +44,9 @@ function LandingPage() {
       {/* Recorrido comercial por bloques. Las seis secciones enlazadas en el
           navbar (top, soluciones, showcase, nosotros, precios, contacto) DEBEN
           conservar este orden relativo: el scroll-spy de Nav depende de él. */}
-      <main id="main">
+      {/* tabIndex -1: destino de foco del enlace "Saltar al contenido" y de las
+          ventanas del diagnóstico cuando el elemento anterior ya no existe. */}
+      <main id="main" tabIndex={-1} className="outline-none">
         {/* 1. Presentación */}
         <Hero />
         {/* 2. Respaldo técnico y beneficios */}
@@ -67,6 +71,10 @@ function LandingPage() {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      {/* Superposición, no sección: la ventana única del diagnóstico (FR-013a). */}
+      <DiagnosisDialog />
+      {/* Invitación (US3): retirarla solo exige borrar esta línea. */}
+      <DiagnosisInvite />
     </div>
   );
 }

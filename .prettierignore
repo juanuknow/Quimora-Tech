@@ -6,3 +6,16 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# Configuración del Worker: sus comentarios documentan decisiones de despliegue
+# y cualquier cambio de forma debe revisarse a mano, nunca por reformateo masivo.
+wrangler.jsonc
+
+# Bloque gestionado por Lovable (<!-- LOVABLE:BEGIN/END -->); no se reescribe.
+AGENTS.md
+
+# Spec Kit: lo gestiona el Specify CLI, que verifica cada archivo por su hash
+# (.specify/integrations/*.manifest.json); reformatearlo lo marcaría como
+# editado a mano. Incluye la constitución, cuyo formato lo fija su plantilla.
+.specify/
+.claude/skills/speckit-*/

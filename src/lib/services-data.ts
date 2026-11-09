@@ -48,6 +48,27 @@ export const SERVICE_CATEGORIES: readonly ServiceCategory[] = [
 ] as const;
 
 /**
+ * Identificador estable de cada servicio. Lo usan el motor del diagnóstico
+ * (`diagnosis-engine.ts`) y cualquier referencia que no deba romperse si cambia
+ * un título o si el servicio aún no tiene `slug`.
+ */
+export type ServiceId =
+  | "sitios-corporativos"
+  | "landing-pages"
+  | "tiendas-online"
+  | "sistemas-administrativos"
+  | "paneles-gestion"
+  | "inventario"
+  | "ventas-caja"
+  | "plataformas-personalizadas"
+  | "reservas-citas"
+  | "automatizacion"
+  | "integraciones-api"
+  | "portales-clientes"
+  | "inteligencia-artificial"
+  | "aplicaciones-escalables";
+
+/**
  * Fuente única del catálogo de "Soluciones de software" — usada por la
  * sección `SoftwareSolutions` en la home y por las páginas individuales en
  * `/servicios/[slug]`. Un mismo dato, dos vistas: cambiar un texto aquí
@@ -58,6 +79,8 @@ export const SERVICE_CATEGORIES: readonly ServiceCategory[] = [
  * home sin ruta dedicada todavía.
  */
 export interface Service {
+  /** Identificador estable (ver `ServiceId`). */
+  id: ServiceId;
   slug?: string;
   icon: LucideIcon;
   /** Grupo del catálogo al que pertenece (ver `SERVICE_CATEGORIES`). */
@@ -79,6 +102,7 @@ export interface Service {
 
 export const services: readonly Service[] = [
   {
+    id: "sitios-corporativos",
     icon: Globe,
     title: "Sitios web corporativos",
     category: "web-ventas",
@@ -98,6 +122,7 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "landing-pages",
     icon: MousePointerClick,
     title: "Landing pages",
     category: "web-ventas",
@@ -116,6 +141,7 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "tiendas-online",
     icon: ShoppingCart,
     title: "Tiendas online (eCommerce)",
     category: "web-ventas",
@@ -134,18 +160,21 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "sistemas-administrativos",
     icon: ClipboardList,
     title: "Sistemas administrativos",
     category: "gestion",
     body: "Centraliza pedidos, inventario y clientes en un solo lugar y deja atrás las hojas de cálculo sueltas.",
   },
   {
+    id: "paneles-gestion",
     icon: LayoutDashboard,
     title: "Paneles de gestión",
     category: "gestion",
     body: "Mira los números de tu negocio en tiempo real y toma decisiones con datos, no con intuición.",
   },
   {
+    id: "inventario",
     icon: Boxes,
     title: "Sistemas de inventario",
     category: "gestion",
@@ -163,6 +192,7 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "ventas-caja",
     icon: Receipt,
     title: "Control de ventas, caja y cotizaciones",
     category: "gestion",
@@ -180,18 +210,21 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "plataformas-personalizadas",
     icon: Layers,
     title: "Plataformas web personalizadas",
     category: "a-medida",
     body: "Software hecho a la medida de tu operación, no un molde genérico al que tengas que adaptarte.",
   },
   {
+    id: "reservas-citas",
     icon: CalendarCheck,
     title: "Reservas y citas",
     category: "web-ventas",
     body: "Tus clientes agendan solos a cualquier hora: menos llamadas, menos cruces de horario.",
   },
   {
+    id: "automatizacion",
     icon: Workflow,
     title: "Automatización de procesos",
     category: "a-medida",
@@ -209,24 +242,28 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    id: "integraciones-api",
     icon: Plug,
     title: "Integraciones con APIs",
     category: "a-medida",
     body: "Conectamos tu web con pagos, envíos, WhatsApp o el sistema que ya usas a diario.",
   },
   {
+    id: "portales-clientes",
     icon: Users,
     title: "Portales para clientes",
     category: "gestion",
     body: "Un espacio privado donde cada cliente consulta su información sin escribirte por cada dato.",
   },
   {
+    id: "inteligencia-artificial",
     icon: BrainCircuit,
     title: "Soluciones con inteligencia artificial",
     category: "a-medida",
     body: "Asistentes, búsqueda inteligente y clasificación automática que responden por ti.",
   },
   {
+    id: "aplicaciones-escalables",
     icon: Server,
     title: "Aplicaciones web escalables",
     category: "a-medida",
@@ -241,6 +278,15 @@ export function getServiceBySlug(slug: string): Service {
   const service = services.find((s) => s.slug === slug);
   if (!service) {
     throw new Error(`No existe un servicio con slug "${slug}" en services-data.ts`);
+  }
+  return service;
+}
+
+/** Servicio por identificador estable; lanza si no existe (error de programación). */
+export function getService(id: ServiceId): Service {
+  const service = services.find((s) => s.id === id);
+  if (!service) {
+    throw new Error(`No existe un servicio con id "${id}" en services-data.ts`);
   }
   return service;
 }

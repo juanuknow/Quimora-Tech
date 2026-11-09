@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 
 /**
- * Modelo compartido entre el wizard del Diagnóstico y quienes lo abren desde
- * otra parte de la página (los atajos entre secciones).
+ * Modelo compartido entre la ventana del Diagnóstico y quienes la abren desde
+ * otra parte de la página (la sección, los atajos y la invitación).
  */
 
 export type BusinessId =
@@ -45,14 +45,29 @@ export const BUSINESS_OPTIONS: Option<BusinessId>[] = [
   { id: "otro", label: "Otro", icon: CircleEllipsis },
 ];
 
+/**
+ * Texto de apoyo aprobado en la spec (FR-003). Lo usan la sección
+ * `#diagnostico`, la pregunta 1 de la ventana (FR-003b) y la invitación de escritorio.
+ */
+export const DIAGNOSIS_INTRO =
+  "Descubre qué oportunidades tiene tu negocio para crecer con tecnología. Responde unas preguntas y recibe una recomendación personalizada, completamente gratis.";
+
 export const DIAGNOSIS_START_EVENT = "diagnosis:start";
 
+/** Desde dónde se abre el diagnóstico; viaja a la analítica como `source`. */
+export type DiagnosisSource = "invitacion" | "seccion" | "atajo";
+
+export interface DiagnosisStartDetail {
+  source: DiagnosisSource;
+  /** Solo desde un atajo: el diagnóstico empieza en la pregunta 2 con este negocio. */
+  business?: BusinessId;
+}
+
 /**
- * Abre el diagnóstico con el tipo de negocio ya elegido y lleva al visitante
- * hasta él. Es un evento del `window` y no props: quien lo dispara y el wizard
- * viven en ramas distintas de la página.
+ * Abre la ventana única del diagnóstico (`DiagnosisDialog`). Es un evento del
+ * `window` y no props: quien lo dispara (sección, atajos, invitación) y la
+ * ventana viven en ramas distintas de la página. No desplaza la página.
  */
-export function requestDiagnosis(business: BusinessId): void {
-  window.dispatchEvent(new CustomEvent<BusinessId>(DIAGNOSIS_START_EVENT, { detail: business }));
-  document.getElementById("diagnostico")?.scrollIntoView({ block: "start" });
+export function requestDiagnosis(detail: DiagnosisStartDetail): void {
+  window.dispatchEvent(new CustomEvent<DiagnosisStartDetail>(DIAGNOSIS_START_EVENT, { detail }));
 }
