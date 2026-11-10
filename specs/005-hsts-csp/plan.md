@@ -1,12 +1,12 @@
-# Plan: HSTS y CSP Report-Only en el Worker
+# Plan: HSTS y CSP en el Worker
 
 **Fecha:** 2026-11-10. **Base:** `aefd56b`. **Rama:** `security/hsts-csp-report-only`.
-**Autorización:** el responsable permitió plan e implementación juntos sin spec separada (regla de conflicto 3) y ahora autoriza un commit local de los tres archivos. No autoriza integración ni publicación.
+**Autorización inicial:** el responsable permitió plan e implementación juntos sin spec separada (regla de conflicto 3). Para la Fase 2, autoriza un commit local y su integración fast-forward con push a `main`.
 
 ## Problema y alcance
 
-El Director verificó cuatro cabeceras en el HTML del Worker y HSTS/CSP solo en estáticos. `public/_headers:6-7` define la política; `src/server.ts:68-70` mantiene el wrapper solo con `import.meta.env.PROD` y no se modifica. Falta cubrir SSR, 404 y errores con HSTS y una primera CSP observacional.
-Cambios: `src/lib/security-headers.ts`, este plan y solo sección 7 de `docs/ESTRUCTURA.md` para retirar su descripción obsoleta. Sin dependencias, orígenes nuevos de la aplicación ni cambios en `public/_headers`, servidor, Worker o DNS.
+El Director verificó originalmente cuatro cabeceras ausentes en el HTML del Worker; HSTS y CSP ya estaban definidos para estáticos en `public/_headers:6-7`. `src/server.ts:68-70` activa el wrapper solo con `import.meta.env.PROD` y no se modifica. Las fases 1 y 1b añadieron las cabeceras al SSR, 404 y errores y sincronizaron la política estática. La fase 2 cambia solo el modo de entrega de la CSP.
+Alcance de esta fase: `src/lib/security-headers.ts`, este registro y solo sección 7 de `docs/ESTRUCTURA.md`. Sin dependencias, cambios en `public/_headers`, servidor, Worker ni DNS.
 
 ## Inventario CSP
 
@@ -38,10 +38,10 @@ Cambios: `src/lib/security-headers.ts`, este plan y solo sección 7 de `docs/EST
 
 No se encontraron imágenes data:/blob: ni iframes externos en src o en el CSS compilado inspeccionado. No se encontró sendBeacon propio. La petición HTTP sin JavaScript no puede observar las solicitudes de analítica ejecutadas en navegador; el Director confirma que Chrome observó el beacon Cloudflare y el colector `analytics.google.com`, además de GTM y el RUM propio. El envío a Formspree sigue sin probarse en navegador. Los destinos dinámicos de GA4/Lovable y los transportes alternativos requieren observación antes de activar CSP; no se añaden comodines fuera de las recomendaciones oficiales para GA4.
 
-## Política propuesta
+## Política aplicada en fases 1 y 1b
 
 HSTS idéntico a estáticos: `max-age=31536000; includeSubDomains; preload`.
-CSP conservada en una estructura de directivas y serializada con `; `, reutilizando fuentes repetidas. Para GA4 se usan los hosts wildcard de la guía oficial; `analytics.google.com` queda cubierto por `https://*.analytics.google.com`:
+CSP conservada en una estructura de directivas y serializada con `; `, reutilizando fuentes repetidas. Para GA4 se usan los hosts wildcard de la guía oficial, más el host raíz `https://analytics.google.com` que el comodín `https://*.analytics.google.com` no cubre:
 
 ```text
 default-src 'self'
@@ -55,7 +55,7 @@ base-uri 'self'
 form-action 'self' https://formspree.io
 ```
 
-Solo se añade `Content-Security-Policy-Report-Only`, nunca Content-Security-Policy en el Worker. Su valor es idéntico byte a byte a la CSP de `public/_headers:7`. Los orígenes de Cloudflare y GA4 incorporados se justifican por los hallazgos del Director y la guía oficial. No se introduce un servicio nuevo ni se cambia su configuración.
+En las fases 1 y 1b la política del Worker se entregó en modo Report-Only. Su valor es idéntico byte a byte a la CSP de `public/_headers:7`. Los orígenes de Cloudflare y GA4 incorporados se justifican por los hallazgos del Director y la guía oficial. No se introduce un servicio nuevo ni se cambia su configuración.
 
 ## Fase 1b — orígenes observados en producción
 
@@ -71,24 +71,34 @@ connect-src: https://*.google-analytics.com https://*.analytics.google.com https
 
 La política resultante conserva los orígenes propios y Formspree, incorpora `https://static.cloudflareinsights.com` en `script-src` y aplica las recomendaciones GA4. En `connect-src` también permite explícitamente `https://analytics.google.com`, porque el comodín `*.analytics.google.com` no cubre el host sin subdominio. Los hosts específicos `www.googletagmanager.com`, `www.google-analytics.com` y `region1.google-analytics.com` se eliminan al quedar cubiertos por los comodines indicados. Las directivas permanecen en modo Report-Only en el Worker y la línea CSP de `public/_headers` se sincroniza byte a byte. No se agregan los destinos adicionales de Google Signals, Ads ni Tag Manager Preview; el píxel `ga-audiences` sigue bloqueado por `img-src`.
 
-## Por qué Report-Only primero
+## Motivo de Report-Only en las fases 1 y 1b
 
 Permite observar violaciones sin bloquear hidratación, formulario, analítica ni estilos. No equivale a protección CSP activa, no impide XSS por sí sola y conserva unsafe-inline por compatibilidad. Sin endpoint de reportes no hay recopilación remota: revisar consola del navegador, incluyendo recorridos y errores. Las cuatro cabeceras previas conservan su protección y HSTS sí se aplica en HTTPS.
+
+## Fase 2 — CSP activada
+
+**Fecha:** 2026-11-10. El Director verificó en Chrome que el píxel `ga-audiences` ya no se solicita, GA4 sigue enviando `page_view` y eventos de contacto a `www.google-analytics.com/g/collect` con `npa=1`, no hay infracciones CSP en `/` ni en `/servicios/tiendas-online`, y el beacon de Cloudflare carga sin infracción. El responsable desactivó también Google Signals y la personalización de anuncios en el panel de GA4.
+
+La cabecera del Worker pasa a `Content-Security-Policy`, conservando exactamente las mismas directivas y fuentes. La versión Cloudflare previa para reversión es la activa antes del despliegue y corresponde al commit `d27aa79`.
+
+Señales de fallo: deja de medirse la analítica, falla el envío del formulario, se rompe el estilo o la hidratación, o la consola muestra recursos legítimos bloqueados. Revertir el commit y restaurar la versión Cloudflare previa ante esas señales.
+
+Pendientes: el responsable debe probar el formulario de contacto real. Nonces para retirar `'unsafe-inline'` y un endpoint de reportes siguen siendo mejoras futuras.
 
 ## Constitution Check, riesgo y reversión
 
 Riesgo **alto** por cabeceras y HSTS (Principio IV). Arquitectura, SSR, cuerpo streaming y control PROD preservados; wrapper solo añade las cabeceras ausentes y conserva valores interiores, status y statusText. Principio X: HSTS exacto y una CSP única idéntica a la de estáticos. La excepción expresa permite este plan sin spec independiente.
-Versión activa de reversión identificada por el Director: Cloudflare version `872516db`, commit `aefd56b`, 100 % del tráfico en Worker **quimoratech**. Antes de un despliegue autorizado, confirmar que esa versión sigue disponible para restauración.
+La versión Cloudflare activa antes de la Fase 2, identificada por el Director para reversión, corresponde al commit `d27aa79` en Worker **quimoratech**. La versión `872516db` (commit `aefd56b`) fue la referencia de reversión de una fase anterior.
 Señales de fallo: cabeceras previas alteradas, CSP bloqueante accidental, respuesta/cuerpo roto, error de build, nueva violación CSP sin explicar o acceso HTTPS/subdominios afectado. Con autorización, revertir el commit completo y restaurar la versión Cloudflare registrada; comprobar V9. HSTS cacheado no desaparece inmediatamente al revertir código: una retirada con max-age=0 sería otra acción expresa y no elimina automáticamente políticas heredadas/preload. No cambiar preload ni DNS aquí.
 
 ## Verificación y cierre
 
 1. Bun: tipos, lint, Prettier solo del módulo y este plan, build; registrar códigos y avisos. No normalizar documentos con deuda P4.
-2. Buscar las cabeceras nuevas y la política en `.output/server/`; comparar HSTS y CSP byte a byte con public/\_headers. Confirmar que no hay CSP bloqueante ni el origen de Cloudflare Insights sin evidencia.
+2. Buscar las cabeceras nuevas y la política en `.output/server/`; comparar HSTS y CSP byte a byte con public/\_headers. En fase 2 debe aparecer `Content-Security-Policy` y no `Content-Security-Policy-Report-Only`.
 3. Con Wrangler ya instalado, intentar servir exclusivamente el build con `dev --local`, config generada, persistencia temporal fuera del repo y sin deploy; HEAD a `/` y una ruta inexistente. La verificación HEAD local no fue posible: el runtime instalado admite como máximo compatibilidad `2026-07-21`, mientras el Worker requiere `2026-07-22`. No cambiar compatibilidad ni sustituir por vite dev.
-4. Verificar conservación de valores interiores y del cuerpo en el wrapper; ausencia de CSP bloqueante añadida. Conservar el control PROD sin tocar src/server.ts.
+4. Verificar conservación de valores interiores y del cuerpo en el wrapper; confirmar que solo se aplica la CSP activa prevista. Conservar el control PROD sin tocar src/server.ts.
 5. Diff de archivos protegidos vacío; solo módulo, este plan y sección 7 documental modificados. Detener todo servidor local iniciado. V8 antes de cualquier commit autorizado; V9 en producción solo tras autorización y a cargo del responsable.
 
 ## Fuera de alcance y preguntas pendientes
 
-Fase 2: activar CSP bloqueante, nonces/hashes para retirar unsafe-inline, endpoint/report-to/report-uri, ampliar destinos sin evidencia y sincronizar ampliaciones futuras en public/\_headers. También fuera: dependencias, privacidad, servicios nuevos, DNS, preload, nombre del Worker y otras secciones documentales. Confirmar destinos reales de GA4, condiciones del beacon y la integración Lovable mediante navegador antes de activar CSP. ¿Qué procedimiento de revisión de violaciones se aprobará para la fase 2?
+Fase 3: introducir nonces o hashes para retirar unsafe-inline y habilitar un endpoint de reportes. También fuera: dependencias, privacidad, servicios nuevos, DNS, preload, nombre del Worker y otras secciones documentales. Antes de ampliar la política, observar en navegador el origen nuevo y actualizar en el mismo cambio tanto `src/lib/security-headers.ts` como `public/_headers`. El envío real a Formspree sigue pendiente de prueba por el responsable.

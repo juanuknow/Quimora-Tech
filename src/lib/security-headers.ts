@@ -9,8 +9,9 @@
  * HSTS y CSP coinciden con `public/_headers`. Los orígenes de analítica se
  * limitan a los observados en producción y a la guía oficial de GA4.
  *
- * La CSP del Worker solo informa: activarla y añadir nonces/reportes son fases
- * posteriores. src/server.ts mantiene estas cabeceras solo en producción.
+ * La CSP del Worker bloquea según esta política. Nonces para retirar
+ * 'unsafe-inline' y un endpoint de reportes son mejoras futuras.
+ * src/server.ts mantiene estas cabeceras solo en producción.
  */
 const SELF = "'self'";
 const UNSAFE_INLINE = "'unsafe-inline'";
@@ -50,7 +51,7 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-  "Content-Security-Policy-Report-Only": CONTENT_SECURITY_POLICY,
+  "Content-Security-Policy": CONTENT_SECURITY_POLICY,
 };
 
 /**

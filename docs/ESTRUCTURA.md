@@ -145,12 +145,14 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
   las redirecciones y los errores reciben sus cabeceras desde
   `src/lib/security-headers.ts`, mediante `src/server.ts` solo en producción.
   - El Worker añade las cuatro cabeceras previas, HSTS con el mismo valor que los
-    estáticos y `Content-Security-Policy-Report-Only`; no añade CSP bloqueante.
-  - La CSP coincide con `public/_headers` y se entrega en modo Report-Only. Incluye
-    el beacon de Cloudflare y los orígenes de GA4 indicados por la guía oficial.
-  - Report-Only permite observar violaciones sin bloquear recursos. Nonces,
-    endpoint de reportes y activación CSP son fases posteriores. No se altera
-    la vista previa de Lovable: el wrapper sigue desactivado en desarrollo.
+    estáticos y `Content-Security-Policy` activa, idéntica a la CSP de
+    `public/_headers`.
+  - Todo origen externo nuevo exige actualizar la política en
+    `src/lib/security-headers.ts` y `public/_headers` en el mismo cambio; de lo
+    contrario, el navegador lo bloqueará.
+  - Se conservan `'unsafe-inline'` por compatibilidad. Nonces y un endpoint de
+    reportes quedan como mejoras futuras. No se altera la vista previa de
+    Lovable: el wrapper sigue desactivado en desarrollo.
   - Los archivos sin hash en el nombre (`/fonts`, `/images`, `/videos`, `favicon.ico`,
     `og-image.png`) llevan `Cache-Control: max-age=3600, stale-while-revalidate=86400`:
     si se reemplaza uno conservando el nombre, tarda como máximo ~1 h en verse (más una
