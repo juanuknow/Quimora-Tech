@@ -206,7 +206,7 @@ Solo 3 secciones + navbar + footer:
 - **Formspree** (`https://formspree.io/f/mzdnenqv`), sin backend propio. Endpoint en `src/lib/site.ts` como `FORMSPREE_ENDPOINT`.
 - Envío vía `fetch` POST (JSON) con estados de carga / éxito / error en el componente `Contact`.
 - Validación en cliente (campos requeridos + regex de email).
-- Los correos llegan a `devopsconsultoring@gmail.com` (correo operativo actual; migrar a `hola@quimoratech.com` cuando esté el buzón).
+- El correo público es `hola@quimoratech.com`, reenviado por Cloudflare Email Routing; el formulario sigue llegando por Formspree al buzón operativo configurado allí.
 
 **Alternativa siempre visible:** botón flotante y enlaces directos de WhatsApp (`wa.me/573244577198`) — helper `whatsappHref()` en `src/lib/site.ts`.
 

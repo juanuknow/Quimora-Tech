@@ -95,7 +95,7 @@ Es una orientación, sin compromiso.
 
 - **Web:** [quimoratech.com](https://quimoratech.com)
 - **WhatsApp:** [+57 324 457 7198](https://wa.me/573244577198?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios)
-- **Correo:** [devopsconsultoring@gmail.com](mailto:devopsconsultoring@gmail.com)
+- **Correo:** [hola@quimoratech.com](mailto:hola@quimoratech.com)
 - **Ubicación:** Cali, Colombia
 
 ---

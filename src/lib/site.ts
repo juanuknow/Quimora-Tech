@@ -5,7 +5,8 @@
  */
 
 export const WHATSAPP_NUMBER = "573244577198";
-export const CONTACT_EMAIL = "devopsconsultoring@gmail.com";
+/** Public domain address forwarded by Cloudflare Email Routing. */
+export const CONTACT_EMAIL = "hola@quimoratech.com";
 export const CONTACT_PHONE = "+573244577198";
 export const CONTACT_PHONE_DISPLAY = "+57 324 457 7198";
 /** Segundo número de contacto (cofundador) — mismos canales que el principal, sin etiqueta distinta. */

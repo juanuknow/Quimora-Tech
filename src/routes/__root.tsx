@@ -10,7 +10,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { GA_MEASUREMENT_ID, FOCUS_RING } from "../lib/site";
+import { CONTACT_EMAIL, CONTACT_PHONE, FOCUS_RING, GA_MEASUREMENT_ID, SITE_URL } from "../lib/site";
 
 type GA4Config = {
   allow_google_signals: boolean;
@@ -153,10 +153,10 @@ const STRUCTURED_DATA = {
   name: "Quimora Tech",
   description:
     "Agencia de diseño y desarrollo web. Creamos sitios ultra-rápidos, mobile-first y optimizados para convertir visitantes en clientes.",
-  url: "https://quimoratech.com",
-  image: "https://quimoratech.com/og-image.png",
-  telephone: "+573244577198",
-  email: "devopsconsultoring@gmail.com",
+  url: SITE_URL,
+  image: `${SITE_URL}/og-image.png`,
+  telephone: CONTACT_PHONE,
+  email: CONTACT_EMAIL,
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",
