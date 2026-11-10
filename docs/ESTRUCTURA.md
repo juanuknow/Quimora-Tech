@@ -141,18 +141,17 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
   El nombre del Worker (`juanuknow-conversion-craft-96`) viene del nombre antiguo
   del repositorio; **cambiarlo crea un Worker nuevo**, no renombra el existente.
 - **Dominio:** `quimoratech.com`.
-- **Cabeceras HTTP — `public/_headers` solo cubre los archivos estáticos.** Cloudflare lo
-  aplica únicamente a lo que sirve como *Static Assets* (`/assets/*`, `/fonts/*`,
-  `/images/*`, `/videos/*`, `favicon.ico`, `robots.txt`, etc.). El **HTML de las páginas lo
-  genera el Worker (SSR, `src/server.ts`) y NO recibe esas cabeceras**. Verificado en
-  producción el 6-nov-2026: `GET /` no traía CSP, HSTS, `X-Frame-Options`, `nosniff`,
-  `Referrer-Policy` ni `Permissions-Policy`, mientras `/favicon.ico` y `/robots.txt` sí.
-  Consecuencias:
-  - La CSP y el HSTS de `_headers` **hoy no protegen ni bloquean nada en las páginas**; no
-    hace falta (ni basta) permitir ahí un servicio externo para que funcione.
-  - Para que las cabeceras de seguridad lleguen al HTML hay que añadirlas a la respuesta del
-    Worker (`src/server.ts`) o con una regla de Cloudflare. Está pendiente de una fase
-    aparte; no activar una CSP obligatoria sin pasarla antes por `Content-Security-Policy-Report-Only`.
+- **Cabeceras HTTP:** `public/_headers` solo se aplica a Static Assets; el HTML SSR,
+  las redirecciones y los errores reciben sus cabeceras desde
+  `src/lib/security-headers.ts`, mediante `src/server.ts` solo en producción.
+  - El Worker añade las cuatro cabeceras previas, HSTS con el mismo valor que los
+    estáticos y `Content-Security-Policy-Report-Only`; no añade CSP bloqueante.
+  - La CSP coincide con `public/_headers` y se entrega en modo Report-Only; el
+    beacon de Cloudflare queda pendiente de observar antes de ampliar la política.
+    La CSP de los estáticos permanece sin cambios.
+  - Report-Only permite observar violaciones sin bloquear recursos. Nonces,
+    endpoint de reportes y activación CSP son fases posteriores. No se altera
+    la vista previa de Lovable: el wrapper sigue desactivado en desarrollo.
   - Los archivos sin hash en el nombre (`/fonts`, `/images`, `/videos`, `favicon.ico`,
     `og-image.png`) llevan `Cache-Control: max-age=3600, stale-while-revalidate=86400`:
     si se reemplaza uno conservando el nombre, tarda como máximo ~1 h en verse (más una

@@ -4,22 +4,50 @@
  *
  * Por qué aquí y no en `public/_headers`: Cloudflare solo aplica `_headers` a
  * los archivos estáticos (Static Assets). El HTML lo genera el Worker y nunca
- * pasa por ese archivo, así que hasta ahora salía sin estas cabeceras.
+ * pasa por ese archivo.
  *
- * Los valores coinciden con los que `public/_headers` ya envía para los
- * estáticos, de modo que el sitio entero queda con una sola política.
+ * HSTS y CSP coinciden con `public/_headers`; el beacon queda pendiente de
+ * observar en Report-Only antes de considerar ampliar la política.
  *
- * Fuera de alcance a propósito (fases posteriores): CSP y HSTS.
+ * La CSP del Worker solo informa: activarla y añadir nonces/reportes son fases
+ * posteriores. src/server.ts mantiene estas cabeceras solo en producción.
  */
-export const BASIC_SECURITY_HEADERS: Readonly<Record<string, string>> = {
+const SELF = "'self'";
+const UNSAFE_INLINE = "'unsafe-inline'";
+const FORMSPREE_ORIGIN = "https://formspree.io";
+
+const CSP_DIRECTIVES = {
+  "default-src": [SELF],
+  "script-src": [SELF, UNSAFE_INLINE, "https://www.googletagmanager.com"],
+  "connect-src": [
+    SELF,
+    FORMSPREE_ORIGIN,
+    "https://www.google-analytics.com",
+    "https://region1.google-analytics.com",
+  ],
+  "img-src": [SELF, "data:"],
+  "style-src": [SELF, UNSAFE_INLINE],
+  "font-src": [SELF],
+  "frame-ancestors": ["'none'"],
+  "base-uri": [SELF],
+  "form-action": [SELF, FORMSPREE_ORIGIN],
+} as const;
+
+const CONTENT_SECURITY_POLICY = Object.entries(CSP_DIRECTIVES)
+  .map(([directive, sources]) => `${directive} ${sources.join(" ")}`)
+  .join("; ");
+
+export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  "Content-Security-Policy-Report-Only": CONTENT_SECURITY_POLICY,
 };
 
 /**
- * Devuelve la respuesta con las cabeceras básicas añadidas.
+ * Devuelve la respuesta con las cabeceras de seguridad que falten.
  *
  * - Solo AÑADE las que falten: si una capa interior (TanStack, un middleware)
  *   ya fijó alguna de estas cabeceras, se respeta su valor en vez de pisarlo.
@@ -32,9 +60,7 @@ export const BASIC_SECURITY_HEADERS: Readonly<Record<string, string>> = {
  *   Content-Type, Set-Cookie…).
  */
 export function withSecurityHeaders(response: Response): Response {
-  const missing = Object.entries(BASIC_SECURITY_HEADERS).filter(
-    ([name]) => !response.headers.has(name),
-  );
+  const missing = Object.entries(SECURITY_HEADERS).filter(([name]) => !response.headers.has(name));
   if (missing.length === 0) return response;
 
   const headers = new Headers(response.headers);
