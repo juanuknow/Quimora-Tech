@@ -182,7 +182,10 @@ cambios no relacionados.
 ### XII. Ramas, commits y revisión
 - **Metodología:** todo trabajo se hace en una **rama local temporal**
   `tipo/descripcion` creada desde `main` actualizada. Se integra en `main` con
-  fast-forward o merge, con autorización expresa, y se elimina después de integrarse.
+  fast-forward o merge, con autorización expresa. Una rama que se publicó para
+  vista previa se integra con `git merge --no-ff`: el fast-forward de un commit
+  ya compilado no dispara el despliegue de producción. Se elimina después de
+  integrarse.
 - Las ramas de trabajo no se publican en GitHub salvo autorización expresa. La
   autorización habitual es para obtener una **vista previa**: Cloudflare compila
   cada rama publicada y la sirve en
@@ -244,7 +247,7 @@ cuando se documenta su procedimiento y lo aprueba el responsable (enmienda PATCH
 | V6 | Responsive | DevTools en 375 / 768 / 1440 px y 320 px, en `bun run dev` o en la vista previa de la rama | Sin desbordes, solapamientos ni scroll horizontal | Cambios visuales |
 | V7 | Accesibilidad del cambio | Revisión manual de los criterios del Principio VII que el cambio afecta | Sin fallos en los criterios revisados, listados | Cambios de UI o contenido |
 | V8 | Secretos | Revisión de `git diff --cached` antes de cada commit, incluido el contenido completo de los archivos nuevos preparados | Sin datos de la lista del Principio X; si aparecen, se detiene antes del commit sin reproducirlos en el informe | Todo commit |
-| V9 | Después del despliegue | Check de GitHub "Workers Builds" en verde + `curl -I https://quimoratech.com/` (cabeceras) + carga de `/` y de una ruta de servicio | Todo correcto | Después de cada push a `main` |
+| V9 | Después del despliegue | Confirmar en el historial de compilaciones que existe una compilación de `main` para el commit publicado; check de GitHub "Workers Builds" en verde + `curl -I https://quimoratech.com/` (cabeceras) + carga de `/` y de una ruta de servicio | Todo correcto | Después de cada push a `main` |
 | V10 | Vista previa | Publicar la rama, esperar el check "Workers Builds" en verde y revisar la URL de vista previa: consola sin errores, cabeceras de seguridad presentes y los recorridos que el cambio toca | Todo correcto | Cambios visibles y cambios de riesgo alto, antes de integrar en `main` |
 
 ### III.b Pendientes (no bloquean hasta estar disponibles)
@@ -284,4 +287,4 @@ V9 está en verde.
 - **Revisión completa:** ante una sustitución arquitectónica significativa, al
   levantar una restricción del MVP, o a petición del responsable.
 
-**Versión:** 1.1.0 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-10
+**Versión:** 1.1.1 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-10
