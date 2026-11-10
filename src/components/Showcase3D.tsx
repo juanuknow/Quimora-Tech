@@ -370,7 +370,7 @@ export function Showcase3D() {
           </div>
         </div>
 
-        {/* Featured case */}
+        {/* Featured project */}
         <div
           ref={ref}
           className={`mt-16 grid items-center gap-10 transition-all duration-700 ease-out lg:grid-cols-2 lg:gap-16 ${
@@ -488,7 +488,7 @@ function NextProjectCard() {
         </span>
         <div>
           <p className="font-display text-lg font-semibold text-brand">
-            ¿Y si el próximo caso fuera el tuyo?
+            ¿Y si el próximo proyecto fuera el tuyo?
           </p>
           <p className="mt-1 text-sm text-foreground/70">
             Cuéntanos tu idea y la convertimos en una solución a medida.

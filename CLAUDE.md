@@ -1,7 +1,7 @@
 # CLAUDE.md — Quimora Tech Landing Page
 
 **Versión:** 1.4  
-**Estado:** Landing completa en producción (Hero, Stats, Beneficios, Soluciones de Software, Showcase, Timeline, Especialidades, Problema, Diagnóstico, Precios, FAQ, Contacto, CTA; orden por bloques en `docs/ESTRUCTURA.md`) + páginas legales\
+**Estado:** Landing completa en producción (Hero, Problema, Stats, Beneficios, Soluciones de Software, Proyectos, Timeline, Diagnóstico, Precios, FAQ y Contacto; orden en `docs/ESTRUCTURA.md`) + páginas legales\
 **Responsable:** Juan Pablo Toquica López (founder & Lead Developer)  
 **Última actualización:** 6 de agosto de 2026  
 
@@ -264,7 +264,7 @@ Cada destino tiene **un** verbo. Cambiar la etiqueta rompe la predictibilidad de
 | Hero (primario, con incentivo) | **Solicitar mi cotización gratis** |
 | WhatsApp | **Escribir por WhatsApp** |
 | WhatsApp con oferta propia | *\<oferta\>* **por WhatsApp** (ej. "Agendar por WhatsApp") |
-| `#showcase` (portafolio; secundario en Hero y FinalCTA) | **Ver Casos de Éxito** |
+| `#showcase` (portafolio; secundario en Hero) | **Ver Proyectos** |
 | Abre el diagnóstico (sección `#diagnostico` e invitación) | **Comenzar diagnóstico gratuito** |
 | WhatsApp con el contexto del diagnóstico (resultado) | **Continuar por WhatsApp** |
 | Acción local del resultado del diagnóstico | **Copiar mensaje** |

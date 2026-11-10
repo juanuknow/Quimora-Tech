@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://quimoratech.com/#contacto"><strong>Solicitar cotización</strong></a> ·
   <a href="https://wa.me/573244577198?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios"><strong>Escribir por WhatsApp</strong></a> ·
-  <a href="https://quimoratech.com/#showcase"><strong>Ver Casos de Éxito</strong></a>
+  <a href="https://quimoratech.com/#showcase"><strong>Ver Proyectos</strong></a>
 </p>
 
 ---

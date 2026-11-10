@@ -30,7 +30,7 @@ const FOOTER_NAV = [
   {
     title: "Empresa",
     links: [
-      { href: "/#showcase", label: "Casos de Éxito" },
+      { href: "/#showcase", label: "Proyectos" },
       { href: "/#faq", label: "Preguntas Frecuentes" },
       { href: "/#contacto", label: "Contacto" },
     ],

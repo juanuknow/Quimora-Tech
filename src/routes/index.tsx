@@ -7,7 +7,6 @@ import { DiagnosisShortcuts } from "../components/DiagnosisShortcuts";
 import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
 import { SoftwareSolutions } from "../components/SoftwareSolutions";
-import { Specialists } from "../components/Specialists";
 import { FloatingDiagnosis } from "../components/FloatingDiagnosis";
 import { FloatingWhatsApp } from "../components/FloatingWhatsApp";
 import { TopBar } from "../components/TopBar";
@@ -20,7 +19,6 @@ import { Timeline } from "../components/Timeline";
 import { Pricing } from "../components/Pricing";
 import { FAQ } from "../components/FAQ";
 import { Contact } from "../components/Contact";
-import { FinalCTA } from "../components/FinalCTA";
 import { Footer } from "../components/Footer";
 
 export const Route = createFileRoute("/")({
@@ -43,34 +41,31 @@ function LandingPage() {
       <ReadingProgress />
       <TopBar />
       <Nav />
-      {/* Recorrido comercial por bloques. Las seis secciones enlazadas en el
-          navbar (top, soluciones, showcase, nosotros, precios, contacto) DEBEN
-          conservar este orden relativo: el scroll-spy de Nav depende de él. */}
+      {/* Recorrido comercial. Las seis secciones enlazadas en el navbar (top,
+          soluciones, showcase, nosotros, precios, contacto) DEBEN conservar
+          este orden relativo: el scroll-spy de Nav depende de él. */}
       {/* tabIndex -1: destino de foco del enlace "Saltar al contenido" y de las
           ventanas del diagnóstico cuando el elemento anterior ya no existe. */}
       <main id="main" tabIndex={-1} className="outline-none">
-        {/* 1. Presentación */}
+        {/* 1. Presentación y problema */}
         <Hero />
-        {/* 2. Respaldo técnico y beneficios */}
+        <Problem />
+        {/* 2. Respaldo y razones para elegirnos */}
         <Stats />
         <Benefits />
-        {/* 3. Servicios y soluciones */}
+        {/* 3. Oferta principal y proyectos */}
         <SoftwareSolutions />
-        {/* 4. Casos de éxito */}
         <Showcase3D />
-        {/* 5. Cómo trabajamos y especialidades */}
+        {/* 4. Cómo trabajamos */}
         <Timeline />
-        <Specialists />
-        {/* 6. Diagnóstico: el problema y la herramienta para resolverlo */}
-        <Problem />
+        {/* 5. Diagnóstico */}
         <DiagnosisShortcuts />
         <DigitalDiagnosis />
         <AuditOffer />
-        {/* 7–9. Precios, objeciones y cierre */}
+        {/* 6. Precios, preguntas y contacto */}
         <Pricing />
         <FAQ />
         <Contact />
-        <FinalCTA />
       </main>
       <Footer />
       <FloatingDiagnosis />

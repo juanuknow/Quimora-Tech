@@ -79,17 +79,21 @@ descripción, canonical) y delega el cuerpo en una plantilla compartida
 
 ### Orden de la landing (`/`)
 
-| Bloque                              | Secciones                                             |
-| ----------------------------------- | ----------------------------------------------------- |
-| 1. Presentación                     | `Hero`                                                |
-| 2. Respaldo técnico y beneficios    | `Stats` → `Benefits`                                  |
-| 3. Servicios y soluciones           | `SoftwareSolutions`                                   |
-| 4. Casos de éxito                   | `Showcase3D`                                          |
-| 5. Cómo trabajamos y especialidades | `Timeline` → `Specialists`                            |
-| 6. Diagnóstico                      | `Problem` → `DiagnosisShortcuts` → `DigitalDiagnosis` |
-| 7. Precios                          | `Pricing`                                             |
-| 8. Preguntas frecuentes             | `FAQ`                                                 |
-| 9. Contacto y cierre                | `Contact` → `FinalCTA`                                |
+| Posición | Sección | Componente |
+| --- | --- | --- |
+| 1 | Presentación | `Hero` |
+| 2 | Problema | `Problem` |
+| 3 | Estándares | `Stats` |
+| 4 | Beneficios | `Benefits` |
+| 5 | Servicios | `SoftwareSolutions` |
+| 6 | Proyectos | `Showcase3D` |
+| 7 | Cómo trabajamos | `Timeline` |
+| 8 | Atajos de diagnóstico | `DiagnosisShortcuts` |
+| 9 | Diagnóstico | `DigitalDiagnosis` |
+| 10 | Auditoría | `AuditOffer` |
+| 11 | Precios | `Pricing` |
+| 12 | Preguntas frecuentes | `FAQ` |
+| 13 | Contacto | `Contact` |
 
 Los fondos de secciones contiguas alternan (blanco, gris, oscuro) para que no se
 fundan entre sí; al mover una sección, revisar sus vecinas. Las seis secciones
@@ -101,7 +105,7 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | Grupo | Componentes |
 | --- | --- |
 | Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
-| Secciones de la landing | `Hero`, `Problem`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Stats`, `Timeline`, `Specialists`, `Pricing`, `FAQ`, `Contact`, `FinalCTA` |
+| Secciones de la landing | `Hero`, `Problem`, `Stats`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Timeline`, `DiagnosisShortcuts`, `DigitalDiagnosis`, `AuditOffer`, `Pricing`, `FAQ`, `Contact` |
 | Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido), `FloatingDiagnosis` (botón flotante de la home: comenzar o, tras terminar, ver el resultado y volver a empezar). Todos abren la misma ventana con `requestDiagnosis()` |
 | Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
 | Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio) |

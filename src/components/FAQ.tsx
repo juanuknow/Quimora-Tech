@@ -70,7 +70,7 @@ const FAQ_JSON_LD = {
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" className="border-t border-hairline bg-background">
+    <section id="faq" className="border-t border-hairline bg-hairline/60">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}

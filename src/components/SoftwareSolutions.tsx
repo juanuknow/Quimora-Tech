@@ -27,8 +27,8 @@ const GRID_STYLE: CSSProperties = {
 /* ============================ Section ============================ */
 
 /**
- * Bloque "somos tu aliado tecnológico": amplía el alcance de la marca más allá
- * de la página web.
+ * Bloque centrado en sitios web y tiendas online; los sistemas de gestión y las
+ * automatizaciones se ofrecen cuando la operación del cliente los necesita.
  *
  * Su fondo oscuro es intencional: dentro de una paleta monocromática, la
  * inversión de contraste es la forma de hacerla destacar sin introducir color,
@@ -56,12 +56,12 @@ export function SoftwareSolutions() {
               Aliado tecnológico
             </span>
             <h2 className="mt-6 font-display text-3xl font-bold leading-[1.15] tracking-tight text-white md:text-display-lg">
-              Desarrollamos soluciones de software a la medida
+              Páginas web y tiendas online hechas para vender
             </h2>
             <p className="mt-5 max-w-xl text-base leading-[1.7] text-white/70 md:text-body">
-              Quimora Tech no se queda en la página web. Diseñamos, desarrollamos y ponemos en
-              producción el software que tu negocio necesita: desde una landing que capta clientes
-              hasta sistemas internos que ordenan toda tu operación.
+              Nuestro foco son los sitios corporativos, las landing pages y las tiendas online a
+              medida. Cuando tu operación lo necesita, también desarrollamos sistemas de gestión y
+              automatizaciones.
             </p>
             <p className="mt-4 max-w-xl text-base leading-[1.7] text-white/70 md:text-body">
               Un solo equipo de principio a fin, con la misma exigencia de velocidad, seguridad y
@@ -95,9 +95,7 @@ export function SoftwareSolutions() {
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
-              href={whatsappHref(
-                "Hola, quiero desarrollar una solución de software a la medida para mi negocio",
-              )}
+              href={whatsappHref("Hola, quiero una página web o tienda online para mi negocio")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("contact", { method: "whatsapp", location: "soluciones" })}

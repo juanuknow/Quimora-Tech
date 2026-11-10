@@ -20,7 +20,7 @@ const NAV_LINKS = [
   // de este ítem lista justamente esos servicios, así que el clic debe
   // aterrizar donde vive el contenido que el submenú promete.
   { id: "soluciones", href: "/#soluciones", label: "Servicios" },
-  { id: "showcase", href: "/#showcase", label: "Casos de Éxito" },
+  { id: "showcase", href: "/#showcase", label: "Proyectos" },
   { id: "nosotros", href: "/#nosotros", label: "Nosotros" },
   { id: "precios", href: "/#precios", label: "Precios" },
   { id: "contacto", href: "/#contacto", label: "Contacto" },

@@ -13,8 +13,8 @@ const SHORTCUT_IDS: readonly BusinessId[] = [
 const SHORTCUTS = BUSINESS_OPTIONS.filter((o) => SHORTCUT_IDS.includes(o.id));
 
 /**
- * Franja entre "El problema" y el Diagnóstico: el visitante acaba de ver qué le
- * cuesta clientes, y elegir su caso aquí abre el diagnóstico en la pregunta 2.
+ * Franja después de `Timeline` y antes de `DigitalDiagnosis`; elegir un caso aquí
+ * abre el diagnóstico en la pregunta 2.
  */
 export function DiagnosisShortcuts() {
   return (
