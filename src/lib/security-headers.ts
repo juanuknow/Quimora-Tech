@@ -6,8 +6,8 @@
  * los archivos estáticos (Static Assets). El HTML lo genera el Worker y nunca
  * pasa por ese archivo.
  *
- * HSTS y CSP coinciden con `public/_headers`; el beacon queda pendiente de
- * observar en Report-Only antes de considerar ampliar la política.
+ * HSTS y CSP coinciden con `public/_headers`. Los orígenes de analítica se
+ * limitan a los observados en producción y a la guía oficial de GA4.
  *
  * La CSP del Worker solo informa: activarla y añadir nonces/reportes son fases
  * posteriores. src/server.ts mantiene estas cabeceras solo en producción.
@@ -18,14 +18,20 @@ const FORMSPREE_ORIGIN = "https://formspree.io";
 
 const CSP_DIRECTIVES = {
   "default-src": [SELF],
-  "script-src": [SELF, UNSAFE_INLINE, "https://www.googletagmanager.com"],
+  "script-src": [
+    SELF,
+    UNSAFE_INLINE,
+    "https://*.googletagmanager.com",
+    "https://static.cloudflareinsights.com",
+  ],
   "connect-src": [
     SELF,
     FORMSPREE_ORIGIN,
-    "https://www.google-analytics.com",
-    "https://region1.google-analytics.com",
+    "https://*.google-analytics.com",
+    "https://*.analytics.google.com",
+    "https://*.googletagmanager.com",
   ],
-  "img-src": [SELF, "data:"],
+  "img-src": [SELF, "data:", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
   "style-src": [SELF, UNSAFE_INLINE],
   "font-src": [SELF],
   "frame-ancestors": ["'none'"],

@@ -146,9 +146,8 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
   `src/lib/security-headers.ts`, mediante `src/server.ts` solo en producción.
   - El Worker añade las cuatro cabeceras previas, HSTS con el mismo valor que los
     estáticos y `Content-Security-Policy-Report-Only`; no añade CSP bloqueante.
-  - La CSP coincide con `public/_headers` y se entrega en modo Report-Only; el
-    beacon de Cloudflare queda pendiente de observar antes de ampliar la política.
-    La CSP de los estáticos permanece sin cambios.
+  - La CSP coincide con `public/_headers` y se entrega en modo Report-Only. Incluye
+    el beacon de Cloudflare y los orígenes de GA4 indicados por la guía oficial.
   - Report-Only permite observar violaciones sin bloquear recursos. Nonces,
     endpoint de reportes y activación CSP son fases posteriores. No se altera
     la vista previa de Lovable: el wrapper sigue desactivado en desarrollo.

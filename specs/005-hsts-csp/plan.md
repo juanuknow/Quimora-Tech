@@ -12,42 +12,42 @@ Cambios: `src/lib/security-headers.ts`, este plan y solo sección 7 de `docs/EST
 
 «Cubierto» compara las fuentes con la política de `public/_headers:7`; ese archivo no aplica su CSP al documento SSR. Las referencias son líneas de la base salvo las fuentes de dependencias instaladas.
 
-| Recurso                                        | Archivo:línea                                                                                                          | Directiva / cobertura actual                                                                                   |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Bootstrap y serialización inline TanStack      | `src/routes/__root.tsx:190`; `node_modules/@tanstack/router-core/src/ssr/ssr-server.ts:485-487,595-599`                | `script-src 'unsafe-inline'`: sí                                                                               |
-| Módulo de hidratación `/assets/*.js`           | `src/routes/__root.tsx:190`; `node_modules/@tanstack/react-router/src/Scripts.tsx:29-38`                               | `script-src 'self'`: sí                                                                                        |
-| Inicialización GA4 inline                      | `src/routes/__root.tsx:180-183`                                                                                        | `script-src 'unsafe-inline'`: sí                                                                               |
-| Script GA4 `www.googletagmanager.com/gtag/js`  | `src/routes/__root.tsx:176-178`                                                                                        | `script-src https://www.googletagmanager.com`: sí                                                              |
-| JSON-LD raíz, FAQ, servicios y verticales      | `src/routes/__root.tsx:169-171`; `src/components/FAQ.tsx:74-76`, `ServiceDetail.tsx:38-40`, `VerticalDetail.tsx:34-36` | Inline, sin descarga a schema.org; cubierto conservadoramente por `script-src 'unsafe-inline'`                 |
-| Estilos de progreso e invitación               | `src/components/DiagnosisDialog.tsx:371`; `DiagnosisInvite.tsx:254-259`                                                | `style-src 'unsafe-inline'`: sí                                                                                |
-| Estilos de navegación, reveal y galería        | `src/components/Nav.tsx:293`; `Reveal.tsx:34`; `ShowcaseGallery.tsx:169`                                               | `style-src 'unsafe-inline'`: sí                                                                                |
-| Rejilla, SVG y timeline                        | `src/components/SoftwareSolutions.tsx:20-24,44`; `SolutionsVisual.tsx:80-82`; `Timeline.tsx:82,91,125`                 | `style-src 'unsafe-inline'`: sí; gradientes sin red                                                            |
-| Mutaciones CSSOM                               | `src/lib/hooks.ts:46-63`; `src/components/Nav.tsx:194-227`; `DiagnosisDialog.tsx:181-196`                              | Sin origen externo; política conserva estilos inline                                                           |
-| `<style>` de error autónomo                    | `src/lib/error-page.ts:19-29`                                                                                          | `style-src 'unsafe-inline'`: sí                                                                                |
-| CSS externo propio                             | `src/routes/__root.tsx:112-115`                                                                                        | `style-src 'self'`: sí                                                                                         |
-| Fuentes Inter y Space Grotesk autoalojadas     | `src/styles.css:10-22`; `src/routes/__root.tsx:118-133`                                                                | `font-src 'self'`: sí                                                                                          |
-| Imágenes propias y SVG inline                  | `src/components/Showcase3D.tsx:54,85,108-202`; `Nav.tsx:248`; `Footer.tsx:59`; `SolutionsVisual.tsx:86`                | `img-src 'self'`: sí; SVG inline no descarga                                                                   |
-| Vídeo `/videos/soluciones.mp4`                 | `src/components/SolutionsVisual.tsx:39-40`; `public/videos/soluciones.mp4`                                             | Sin media-src, hereda `default-src 'self'`: sí                                                                 |
-| Fetch JSON del formulario a Formspree          | `src/components/Contact.tsx:65-70`; `src/lib/site.ts:18`                                                               | `connect-src https://formspree.io`; form-action existente también lo permite: sí                               |
-| Eventos GA4 mediante gtag                      | `src/lib/site.ts:27-31`; `src/routes/__root.tsx:182`                                                                   | Colectores ya permitidos: www.google-analytics.com y region1.google-analytics.com; no se ejecutó medición real |
-| Beacon Cloudflare inyectado en el borde        | `specs/001-diagnostico-captacion/baseline-network.md:10`                                                               | Pendiente de observar en Report-Only; no se amplía la política                                                 |
-| Transporte RUM `/cdn-cgi/rum` en sitio proxied | Misma referencia y documentación oficial de Cloudflare enlazada abajo                                                  | `connect-src 'self'`: sí; no se añade el destino alternativo de sitios no proxied                              |
-| Reporte Lovable                                | `src/lib/lovable-error-reporting.ts:22-35`                                                                             | Solo delega a window.\_\_lovableEvents; no define URL, fetch ni beacon. No inventar un origen                  |
-| web-vitals                                     | `package.json:25`; búsqueda completa en src sin importación ni use-web-vitals.ts                                       | Dependencia declarada pero no usada; ningún destino de red propio demostrado                                   |
-| WhatsApp                                       | `src/lib/site.ts:35-36`                                                                                                | Navegación a wa.me, no fetch, iframe ni subrecurso; no necesita connect-src                                    |
+| Recurso                                        | Archivo:línea                                                                                                          | Directiva / cobertura actual                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Bootstrap y serialización inline TanStack      | `src/routes/__root.tsx:190`; `node_modules/@tanstack/router-core/src/ssr/ssr-server.ts:485-487,595-599`                | `script-src 'unsafe-inline'`: sí                                                               |
+| Módulo de hidratación `/assets/*.js`           | `src/routes/__root.tsx:190`; `node_modules/@tanstack/react-router/src/Scripts.tsx:29-38`                               | `script-src 'self'`: sí                                                                        |
+| Inicialización GA4 inline                      | `src/routes/__root.tsx:180-183`                                                                                        | `script-src 'unsafe-inline'`: sí                                                               |
+| Script GA4 `www.googletagmanager.com/gtag/js`  | `src/routes/__root.tsx:176-178`                                                                                        | `script-src https://*.googletagmanager.com`: sí                                                |
+| JSON-LD raíz, FAQ, servicios y verticales      | `src/routes/__root.tsx:169-171`; `src/components/FAQ.tsx:74-76`, `ServiceDetail.tsx:38-40`, `VerticalDetail.tsx:34-36` | Inline, sin descarga a schema.org; cubierto conservadoramente por `script-src 'unsafe-inline'` |
+| Estilos de progreso e invitación               | `src/components/DiagnosisDialog.tsx:371`; `DiagnosisInvite.tsx:254-259`                                                | `style-src 'unsafe-inline'`: sí                                                                |
+| Estilos de navegación, reveal y galería        | `src/components/Nav.tsx:293`; `Reveal.tsx:34`; `ShowcaseGallery.tsx:169`                                               | `style-src 'unsafe-inline'`: sí                                                                |
+| Rejilla, SVG y timeline                        | `src/components/SoftwareSolutions.tsx:20-24,44`; `SolutionsVisual.tsx:80-82`; `Timeline.tsx:82,91,125`                 | `style-src 'unsafe-inline'`: sí; gradientes sin red                                            |
+| Mutaciones CSSOM                               | `src/lib/hooks.ts:46-63`; `src/components/Nav.tsx:194-227`; `DiagnosisDialog.tsx:181-196`                              | Sin origen externo; política conserva estilos inline                                           |
+| `<style>` de error autónomo                    | `src/lib/error-page.ts:19-29`                                                                                          | `style-src 'unsafe-inline'`: sí                                                                |
+| CSS externo propio                             | `src/routes/__root.tsx:112-115`                                                                                        | `style-src 'self'`: sí                                                                         |
+| Fuentes Inter y Space Grotesk autoalojadas     | `src/styles.css:10-22`; `src/routes/__root.tsx:118-133`                                                                | `font-src 'self'`: sí                                                                          |
+| Imágenes propias y SVG inline                  | `src/components/Showcase3D.tsx:54,85,108-202`; `Nav.tsx:248`; `Footer.tsx:59`; `SolutionsVisual.tsx:86`                | `img-src 'self'`: sí; SVG inline no descarga                                                   |
+| Vídeo `/videos/soluciones.mp4`                 | `src/components/SolutionsVisual.tsx:39-40`; `public/videos/soluciones.mp4`                                             | Sin media-src, hereda `default-src 'self'`: sí                                                 |
+| Fetch JSON del formulario a Formspree          | `src/components/Contact.tsx:65-70`; `src/lib/site.ts:18`                                                               | `connect-src https://formspree.io`; form-action existente también lo permite: sí               |
+| Eventos GA4 mediante gtag                      | `src/lib/site.ts:27-31`; `src/routes/__root.tsx:182`                                                                   | Conexión observada a analytics.google.com; cubierto por `*.analytics.google.com`               |
+| Beacon Cloudflare inyectado en el borde        | Hallazgo del Director en Chrome sobre la home de producción                                                            | `script-src https://static.cloudflareinsights.com`: sí                                         |
+| Transporte RUM `/cdn-cgi/rum` en sitio proxied | Hallazgo del Director en Chrome sobre la home de producción                                                            | `connect-src 'self'`: sí; no se añade el destino alternativo de sitios no proxied              |
+| Reporte Lovable                                | `src/lib/lovable-error-reporting.ts:22-35`                                                                             | Solo delega a window.\_\_lovableEvents; no define URL, fetch ni beacon. No inventar un origen  |
+| web-vitals                                     | `package.json:25`; búsqueda completa en src sin importación ni use-web-vitals.ts                                       | Dependencia declarada pero no usada; ningún destino de red propio demostrado                   |
+| WhatsApp                                       | `src/lib/site.ts:35-36`                                                                                                | Navegación a wa.me, no fetch, iframe ni subrecurso; no necesita connect-src                    |
 
-No se encontraron imágenes data:/blob: ni iframes externos en src o en el CSS compilado inspeccionado. Se conserva `img-src data:` ya existente; no se añade blob:. No se encontró sendBeacon propio. Una petición HTTP sin ejecutar JavaScript a la home de producción devolvió GA4 y assets propios, cinco scripts inline (dos JSON-LD) y cero `<style>`; no mostró el beacon Cloudflare. Aunque hay una referencia histórica, el beacon queda pendiente de observar en Report-Only y no se amplía la política. Los destinos dinámicos de GA4/Lovable y los transportes alternativos requieren observación en navegador antes de activar CSP; no se añaden comodines ni orígenes especulativos.
+No se encontraron imágenes data:/blob: ni iframes externos en src o en el CSS compilado inspeccionado. No se encontró sendBeacon propio. La petición HTTP sin JavaScript no puede observar las solicitudes de analítica ejecutadas en navegador; el Director confirma que Chrome observó el beacon Cloudflare y el colector `analytics.google.com`, además de GTM y el RUM propio. El envío a Formspree sigue sin probarse en navegador. Los destinos dinámicos de GA4/Lovable y los transportes alternativos requieren observación antes de activar CSP; no se añaden comodines fuera de las recomendaciones oficiales para GA4.
 
 ## Política propuesta
 
 HSTS idéntico a estáticos: `max-age=31536000; includeSubDomains; preload`.
-CSP conservada en una estructura de directivas y serializada con `; `, reutilizando fuentes repetidas:
+CSP conservada en una estructura de directivas y serializada con `; `, reutilizando fuentes repetidas. Para GA4 se usan los hosts wildcard de la guía oficial; `analytics.google.com` queda cubierto por `https://*.analytics.google.com`:
 
 ```text
 default-src 'self'
-script-src 'self' 'unsafe-inline' https://www.googletagmanager.com
-connect-src 'self' https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com
-img-src 'self' data:
+script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://static.cloudflareinsights.com
+connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com
 style-src 'self' 'unsafe-inline'
 font-src 'self'
 frame-ancestors 'none'
@@ -55,7 +55,21 @@ base-uri 'self'
 form-action 'self' https://formspree.io
 ```
 
-Solo se añade `Content-Security-Policy-Report-Only`, nunca Content-Security-Policy en el Worker. Su valor es idéntico byte a byte a la CSP de `public/_headers:7`. El beacon queda pendiente de observar en Report-Only; no se añade su origen sin evidencia de producción. No se introduce un servicio nuevo ni se cambia su configuración. Referencias: [beacon y destinos Cloudflare](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/), [CSP y Analytics](https://developers.google.com/tag-platform/security/guides/csp).
+Solo se añade `Content-Security-Policy-Report-Only`, nunca Content-Security-Policy en el Worker. Su valor es idéntico byte a byte a la CSP de `public/_headers:7`. Los orígenes de Cloudflare y GA4 incorporados se justifican por los hallazgos del Director y la guía oficial. No se introduce un servicio nuevo ni se cambia su configuración.
+
+## Fase 1b — orígenes observados en producción
+
+El Director verificó en Chrome, sobre la home de producción: (1) Cloudflare inyecta `https://static.cloudflareinsights.com/beacon.min.js/...` con `integrity` y `data-cf-beacon`; CSP reportó una infracción `script-src-elem`; (2) GA4 envía mediciones por `fetch` a `https://analytics.google.com/g/collect`, antes no permitido por `connect-src`; (3) se observaron `https://www.googletagmanager.com/gtag/js` y una solicitud XHR same-origin a `https://quimoratech.com/cdn-cgi/rum`; (4) no se observaron iframes. El envío a Formspree no se probó en navegador.
+
+La guía oficial [Use Tag Manager with a Content Security Policy](https://developers.google.com/tag-platform/security/guides/csp), apartado “Google Analytics 4 (Google Analytics)”, recomienda exactamente:
+
+```text
+script-src: https://*.googletagmanager.com
+img-src: https://*.google-analytics.com https://*.googletagmanager.com
+connect-src: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+```
+
+La política resultante conserva los orígenes propios y Formspree, incorpora `https://static.cloudflareinsights.com` en `script-src` y aplica esas tres recomendaciones GA4. Los hosts específicos `www.googletagmanager.com`, `www.google-analytics.com` y `region1.google-analytics.com` se eliminan al quedar cubiertos por los comodines indicados. Las directivas permanecen en modo Report-Only en el Worker y la línea CSP de `public/_headers` se sincroniza byte a byte. No se agregan los destinos adicionales de Google Signals, Ads ni Tag Manager Preview.
 
 ## Por qué Report-Only primero
 
