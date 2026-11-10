@@ -46,7 +46,7 @@ CSP conservada en una estructura de directivas y serializada con `; `, reutiliza
 ```text
 default-src 'self'
 script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://static.cloudflareinsights.com
-connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://*.googletagmanager.com
 img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com
 style-src 'self' 'unsafe-inline'
 font-src 'self'
@@ -59,7 +59,7 @@ Solo se añade `Content-Security-Policy-Report-Only`, nunca Content-Security-Pol
 
 ## Fase 1b — orígenes observados en producción
 
-El Director verificó en Chrome, sobre la home de producción: (1) Cloudflare inyecta `https://static.cloudflareinsights.com/beacon.min.js/...` con `integrity` y `data-cf-beacon`; CSP reportó una infracción `script-src-elem`; (2) GA4 envía mediciones por `fetch` a `https://analytics.google.com/g/collect`, antes no permitido por `connect-src`; (3) se observaron `https://www.googletagmanager.com/gtag/js` y una solicitud XHR same-origin a `https://quimoratech.com/cdn-cgi/rum`; (4) no se observaron iframes. El envío a Formspree no se probó en navegador.
+El Director verificó en Chrome, sobre la home de producción: (1) Cloudflare inyecta `https://static.cloudflareinsights.com/beacon.min.js/...` con `integrity` y `data-cf-beacon`; CSP reportó una infracción `script-src-elem`; (2) GA4 envía mediciones por `fetch` a `https://analytics.google.com/g/collect`, que infringía `connect-src` porque `https://*.analytics.google.com` no cubre el host raíz; se añade el host exacto; (3) se observaron `https://www.googletagmanager.com/gtag/js` y una solicitud XHR same-origin a `https://quimoratech.com/cdn-cgi/rum`; (4) no se observaron iframes. El Director también observó el píxel `https://www.google.com.co/ads/ga-audiences`, que infringe `img-src`; por decisión del responsable no se permite y se desactivan las señales publicitarias en GA4. El envío a Formspree no se probó en navegador.
 
 La guía oficial [Use Tag Manager with a Content Security Policy](https://developers.google.com/tag-platform/security/guides/csp), apartado “Google Analytics 4 (Google Analytics)”, recomienda exactamente:
 
@@ -69,7 +69,7 @@ img-src: https://*.google-analytics.com https://*.googletagmanager.com
 connect-src: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
 ```
 
-La política resultante conserva los orígenes propios y Formspree, incorpora `https://static.cloudflareinsights.com` en `script-src` y aplica esas tres recomendaciones GA4. Los hosts específicos `www.googletagmanager.com`, `www.google-analytics.com` y `region1.google-analytics.com` se eliminan al quedar cubiertos por los comodines indicados. Las directivas permanecen en modo Report-Only en el Worker y la línea CSP de `public/_headers` se sincroniza byte a byte. No se agregan los destinos adicionales de Google Signals, Ads ni Tag Manager Preview.
+La política resultante conserva los orígenes propios y Formspree, incorpora `https://static.cloudflareinsights.com` en `script-src` y aplica las recomendaciones GA4. En `connect-src` también permite explícitamente `https://analytics.google.com`, porque el comodín `*.analytics.google.com` no cubre el host sin subdominio. Los hosts específicos `www.googletagmanager.com`, `www.google-analytics.com` y `region1.google-analytics.com` se eliminan al quedar cubiertos por los comodines indicados. Las directivas permanecen en modo Report-Only en el Worker y la línea CSP de `public/_headers` se sincroniza byte a byte. No se agregan los destinos adicionales de Google Signals, Ads ni Tag Manager Preview; el píxel `ga-audiences` sigue bloqueado por `img-src`.
 
 ## Por qué Report-Only primero
 

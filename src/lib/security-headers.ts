@@ -29,6 +29,7 @@ const CSP_DIRECTIVES = {
     FORMSPREE_ORIGIN,
     "https://*.google-analytics.com",
     "https://*.analytics.google.com",
+    "https://analytics.google.com", // The wildcard does not cover the apex host.
     "https://*.googletagmanager.com",
   ],
   "img-src": [SELF, "data:", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
