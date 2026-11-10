@@ -30,7 +30,6 @@ decisiones de diseño y los estándares de código, ver [`CLAUDE.md`](../CLAUDE.
 │   ├── _headers              Cabeceras de los ESTÁTICOS (caché y seguridad); no llegan al HTML SSR (ver §7)
 │   ├── fonts/                Inter y Space Grotesk (variables, autoalojadas)
 │   ├── images/               Capturas del showcase (webp) y logo
-│   ├── videos/               soluciones.mp4 (carga diferida)
 │   ├── og-image.png          Imagen Open Graph 1200×630
 │   ├── favicon.ico · robots.txt · sitemap.xml
 ├── docs/                     Documentación del proyecto
@@ -107,7 +106,7 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 | Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
 | Secciones de la landing | `Hero`, `Problem`, `Stats`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Timeline`, `DiagnosisShortcuts`, `DigitalDiagnosis`, `AuditOffer`, `Pricing`, `FAQ`, `Contact` |
 | Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido), `FloatingDiagnosis` (botón flotante de la home: comenzar o, tras terminar, ver el resultado y volver a empezar). Todos abren la misma ventana con `requestDiagnosis()` |
-| Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (mockup y vídeo ambiental) |
+| Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (ilustración SVG de tienda online en navegador y móvil) |
 | Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio) |
 | Plantillas de página | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`) |
 | Movimiento reutilizable | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones) |
@@ -157,7 +156,7 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
   - Se conservan `'unsafe-inline'` por compatibilidad. Nonces y un endpoint de
     reportes quedan como mejoras futuras. No se altera la vista previa de
     Lovable: el wrapper sigue desactivado en desarrollo.
-  - Los archivos sin hash en el nombre (`/fonts`, `/images`, `/videos`, `favicon.ico`,
+  - Los archivos sin hash en el nombre (`/fonts`, `/images`, `/videos` — regla pendiente de retirar —, `favicon.ico`,
     `og-image.png`) llevan `Cache-Control: max-age=3600, stale-while-revalidate=86400`:
     si se reemplaza uno conservando el nombre, tarda como máximo ~1 h en verse (más una
     vista intermedia con la copia vieja, de ≤25 h). Solo `/assets/*` (con hash) es `immutable`.

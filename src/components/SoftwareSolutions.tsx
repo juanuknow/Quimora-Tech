@@ -48,12 +48,12 @@ export function SoftwareSolutions() {
       />
 
       <div className="relative mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-32">
-        {/* Encabezado: texto a la izquierda, mockup a la derecha (como el hero). */}
+        {/* Encabezado: texto a la izquierda, ilustración de tienda a la derecha. */}
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-widest text-white/70">
               <Sparkles size={14} />
-              Aliado tecnológico
+              Servicios
             </span>
             <h2 className="mt-6 font-display text-3xl font-bold leading-[1.15] tracking-tight text-white md:text-display-lg">
               Páginas web y tiendas online hechas para vender

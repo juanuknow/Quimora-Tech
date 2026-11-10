@@ -1,82 +1,28 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { useInView } from "../lib/hooks";
 
-/**
- * Marco del visual de la sección: el mockup SVG hace de placeholder y el vídeo
- * ambiental se funde encima cuando está listo.
- *
- * El SVG no es un adorno redundante — es lo que sostiene el encuadre mientras
- * el vídeo no existe: ocupa el hueco (sin salto de layout), se ve completo si
- * el vídeo falla o el usuario pide movimiento reducido, y es lo único que
- * aparece en el HTML servido. El vídeo nunca es la única versión del bloque.
- */
+/** Marco de la ilustración SVG de una tienda online en navegador y móvil. */
 export function SolutionsVisual() {
-  // rootMargin adelanta el disparo ~250px antes de que el bloque entre en el
-  // viewport: el vídeo ya está descargando cuando el usuario lo alcanza, en
-  // vez de arrancar justo al 25% de visibilidad y notarse el fundido tarde.
-  const { ref, inView } = useInView<HTMLDivElement>(0, "250px");
-  const [videoReady, setVideoReady] = useState(false);
-  const [playVideo, setPlayVideo] = useState(false);
-
-  // El `src` solo se monta al acercarse la sección al viewport: así el vídeo
-  // no compite por ancho de banda con la carga inicial —vive muy por debajo
-  // del pliegue— y quien nunca baja hasta aquí no lo descarga jamás.
-  useEffect(() => {
-    if (!inView) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setPlayVideo(true);
-  }, [inView]);
-
   return (
-    <div ref={ref} className="relative">
+    <div className="relative">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-8 rounded-full bg-white/10 blur-3xl"
       />
       <div className="relative aspect-video overflow-hidden rounded-xl border border-white/15 bg-brand-dark shadow-2xl">
         <SolutionsMockup />
-        {playVideo && (
-          <video
-            src="/videos/soluciones.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-            tabIndex={-1}
-            onCanPlay={() => setVideoReady(true)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out ${
-              videoReady ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        )}
-        {/* Viñeta: funde los bordes del vídeo con el negro de la sección para
-            que se lea como parte del fondo y no como un recuadro pegado. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(9,9,11,0.85)_100%)]"
-        />
       </div>
     </div>
   );
 }
 
-/**
- * Mockup de un panel de gestión: da cuerpo visual a "software", no solo a
- * "página web". Las animaciones arrancan al entrar en pantalla —no en la carga—
- * porque la sección vive muy por debajo del pliegue.
- */
+/** Tienda online en navegador y móvil, con animaciones escalonadas al entrar en pantalla. */
 function SolutionsMockup() {
   const { ref, inView } = useInView<SVGSVGElement>(0.25);
 
   // Con movimiento reducido `useInView` responde `true` de inmediato y las
-  // clases `animate-*` quedan neutralizadas en CSS: el mockup se ve completo,
-  // nunca atrapado en `opacity-0`.
-  //
-  // El retardo viaja por `style` y no como `[--delay:…]`: Tailwind compila las
-  // clases leyendo el código fuente, así que una construida en tiempo de
-  // ejecución no existiría en el CSS final.
+  // clases `animate-*` quedan neutralizadas en CSS: la ilustración se ve completa.
+  // El retardo usa `style` porque Tailwind no compila valores dinámicos de clase.
   const fade = (delay: string) => ({
     className: inView ? "animate-fade-in" : "opacity-0",
     style: { "--delay": delay } as CSSProperties,
@@ -85,125 +31,197 @@ function SolutionsMockup() {
   return (
     <svg
       ref={ref}
-      viewBox="0 0 420 300"
-      preserveAspectRatio="xMidYMid meet"
+      viewBox="0 0 480 270"
       className="absolute inset-0 h-full w-full"
       fill="none"
       role="img"
-      aria-label="Ilustración de un panel de gestión con indicadores, una gráfica de crecimiento y un módulo de integraciones"
+      aria-label="Ilustración de una tienda online en una ventana de navegador y en un teléfono, con productos, carrito y botón de compra"
     >
-      {/* Ventana */}
+      {/* Ventana del navegador */}
       <rect
-        x="30"
-        y="24"
-        width="360"
-        height="248"
+        x="40"
+        y="20"
+        width="400"
+        height="222"
         rx="12"
         fill="rgba(255,255,255,0.04)"
         stroke="rgba(255,255,255,0.18)"
         strokeWidth="1.2"
       />
-      {/* Barra de título */}
-      <line x1="30" y1="58" x2="390" y2="58" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" />
-      <circle cx="50" cy="41" r="3.5" fill="rgba(255,255,255,0.35)" />
-      <circle cx="64" cy="41" r="3.5" fill="rgba(255,255,255,0.22)" />
-      <circle cx="78" cy="41" r="3.5" fill="rgba(255,255,255,0.22)" />
-      <rect x="150" y="36" width="120" height="10" rx="5" fill="rgba(255,255,255,0.08)" />
+      <line x1="40" y1="52" x2="440" y2="52" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" />
+      <circle cx="58" cy="36" r="3.5" fill="rgba(255,255,255,0.35)" />
+      <circle cx="72" cy="36" r="3.5" fill="rgba(255,255,255,0.22)" />
+      <circle cx="86" cy="36" r="3.5" fill="rgba(255,255,255,0.22)" />
+      {/* Barra de dirección con candado */}
+      <rect x="170" y="30" width="140" height="12" rx="6" fill="rgba(255,255,255,0.08)" />
+      <rect x="179" y="35.5" width="5" height="4" rx="1" fill="rgba(255,255,255,0.45)" />
+      <path
+        d="M180 35.5v-1.4a1.5 1.5 0 0 1 3 0v1.4"
+        stroke="rgba(255,255,255,0.45)"
+        strokeWidth="0.9"
+      />
+      <rect x="189" y="34" width="62" height="4" rx="2" fill="rgba(255,255,255,0.22)" />
 
-      {/* Barra lateral */}
-      <line x1="116" y1="58" x2="116" y2="272" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" />
+      {/* Navegación de la tienda y carrito con contador */}
       <g {...fade("0.15s")}>
-        <rect x="44" y="78" width="56" height="8" rx="4" fill="rgba(255,255,255,0.42)" />
-        <rect x="44" y="100" width="48" height="8" rx="4" fill="rgba(255,255,255,0.16)" />
-        <rect x="44" y="122" width="52" height="8" rx="4" fill="rgba(255,255,255,0.16)" />
-        <rect x="44" y="144" width="40" height="8" rx="4" fill="rgba(255,255,255,0.16)" />
+        <rect x="54" y="62" width="30" height="8" rx="4" fill="rgba(255,255,255,0.42)" />
+        <rect x="170" y="63" width="24" height="6" rx="3" fill="rgba(255,255,255,0.16)" />
+        <rect x="202" y="63" width="24" height="6" rx="3" fill="rgba(255,255,255,0.16)" />
+        <rect x="234" y="63" width="24" height="6" rx="3" fill="rgba(255,255,255,0.16)" />
+        <path
+          d="M305 62h2.2l1.7 8.4h8.2l1.5-5.8h-10.6"
+          stroke="rgba(255,255,255,0.6)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="310.3" cy="73.2" r="1.1" fill="rgba(255,255,255,0.6)" />
+        <circle cx="316.3" cy="73.2" r="1.1" fill="rgba(255,255,255,0.6)" />
+        <circle cx="321" cy="60.5" r="3.6" fill="#ffffff" />
       </g>
 
-      {/* Indicadores */}
+      {/* Portada: titular, botón y producto destacado */}
       <g {...fade("0.3s")}>
-        {[132, 216, 300].map((x, i) => (
-          <g key={x}>
-            <rect
-              x={x}
-              y="78"
-              width="74"
-              height="46"
-              rx="8"
-              fill="rgba(255,255,255,0.06)"
-              stroke="rgba(255,255,255,0.12)"
-              strokeWidth="1"
-            />
-            <rect x={x + 12} y="90" width="26" height="6" rx="3" fill="rgba(255,255,255,0.28)" />
-            <rect
-              x={x + 12}
-              y="103"
-              width={44 - i * 8}
-              height="9"
-              rx="4.5"
-              fill="rgba(255,255,255,0.5)"
-            />
-          </g>
-        ))}
+        <rect
+          x="54"
+          y="82"
+          width="270"
+          height="56"
+          rx="8"
+          fill="rgba(255,255,255,0.05)"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="1"
+        />
+        <rect x="68" y="93" width="122" height="8" rx="4" fill="rgba(255,255,255,0.5)" />
+        <rect x="68" y="105" width="86" height="8" rx="4" fill="rgba(255,255,255,0.5)" />
+        <rect x="68" y="119" width="52" height="12" rx="6" fill="#ffffff" />
+        <rect x="77" y="123.5" width="34" height="3" rx="1.5" fill="#09090b" />
+        <rect x="262" y="88" width="50" height="44" rx="8" fill="rgba(255,255,255,0.08)" />
+        <path
+          d="M276 105h22l-1.8 16h-18.4z"
+          stroke="rgba(255,255,255,0.6)"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M281.5 105v-3a5.5 5.5 0 0 1 11 0v3"
+          stroke="rgba(255,255,255,0.6)"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
       </g>
 
-      {/* Panel de la gráfica */}
-      <rect
-        x="132"
-        y="140"
-        width="242"
-        height="112"
-        rx="8"
-        fill="rgba(255,255,255,0.04)"
-        stroke="rgba(255,255,255,0.1)"
-        strokeWidth="1"
-      />
-      <line x1="146" y1="238" x2="360" y2="238" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-      {/* --len (250) supera la longitud real del trazo (~239 px) para que
-            termine de dibujarse justo al final de la animación. */}
-      <polyline
-        points="152,226 194,200 236,210 278,176 320,186 358,156"
-        stroke="#ffffff"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={inView ? "animate-draw-stroke [--len:250]" : "opacity-0"}
-      />
-      <circle cx="278" cy="176" r="3.5" fill="#ffffff" {...fade("1s")} />
-      <circle cx="358" cy="156" r="4.5" fill="#ffffff" {...fade("1.5s")} />
-
-      {/* Módulo flotante: integraciones / automatización */}
-      <g {...fade("0.75s")}>
+      {/* Primer producto */}
+      <g {...fade("0.45s")}>
         <rect
-          x="248"
-          y="218"
-          width="140"
+          x="54"
+          y="148"
+          width="127"
           height="66"
+          rx="8"
+          fill="rgba(255,255,255,0.06)"
+          stroke="rgba(255,255,255,0.12)"
+          strokeWidth="1"
+        />
+        <rect x="62" y="156" width="111" height="28" rx="6" fill="rgba(255,255,255,0.07)" />
+        <circle cx="117.5" cy="170" r="8" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" />
+        <rect x="62" y="191" width="52" height="6" rx="3" fill="rgba(255,255,255,0.28)" />
+        <rect x="62" y="201" width="30" height="7" rx="3.5" fill="rgba(255,255,255,0.5)" />
+        <circle cx="167" cy="204" r="7" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" />
+        <path
+          d="M164 204h6M167 201v6"
+          stroke="rgba(255,255,255,0.6)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+      </g>
+
+      {/* Segundo producto */}
+      <g {...fade("0.6s")}>
+        <rect
+          x="197"
+          y="148"
+          width="127"
+          height="66"
+          rx="8"
+          fill="rgba(255,255,255,0.06)"
+          stroke="rgba(255,255,255,0.12)"
+          strokeWidth="1"
+        />
+        <rect x="205" y="156" width="111" height="28" rx="6" fill="rgba(255,255,255,0.07)" />
+        <rect
+          x="252.5"
+          y="162"
+          width="16"
+          height="16"
+          rx="4"
+          stroke="rgba(255,255,255,0.4)"
+          strokeWidth="1.2"
+        />
+        <rect x="205" y="191" width="44" height="6" rx="3" fill="rgba(255,255,255,0.28)" />
+        <rect x="205" y="201" width="34" height="7" rx="3.5" fill="rgba(255,255,255,0.5)" />
+        <circle cx="310" cy="204" r="7" fill="#ffffff" />
+        <path d="M307 204h6M310 201v6" stroke="#09090b" strokeWidth="1.3" strokeLinecap="round" />
+      </g>
+
+      {/* Teléfono: la misma tienda en móvil */}
+      <g {...fade("0.8s")}>
+        <rect
+          x="344"
+          y="62"
+          width="76"
+          height="172"
+          rx="12"
+          fill="#09090b"
+          stroke="rgba(255,255,255,0.3)"
+          strokeWidth="1.4"
+        />
+        <rect x="371" y="68" width="22" height="4" rx="2" fill="rgba(255,255,255,0.22)" />
+        <rect x="354" y="82" width="22" height="6" rx="3" fill="rgba(255,255,255,0.42)" />
+        <rect x="400" y="82" width="10" height="6" rx="3" fill="rgba(255,255,255,0.2)" />
+        <rect x="354" y="96" width="56" height="38" rx="6" fill="rgba(255,255,255,0.08)" />
+        <circle cx="382" cy="115" r="9" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" />
+        <rect x="354" y="142" width="42" height="6" rx="3" fill="rgba(255,255,255,0.3)" />
+        <rect x="354" y="153" width="26" height="7" rx="3.5" fill="rgba(255,255,255,0.5)" />
+        <rect
+          x="354"
+          y="168"
+          width="56"
+          height="24"
+          rx="6"
+          fill="rgba(255,255,255,0.06)"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="1"
+        />
+        <rect x="360" y="174" width="12" height="12" rx="3" fill="rgba(255,255,255,0.12)" />
+        <rect x="378" y="175" width="24" height="4" rx="2" fill="rgba(255,255,255,0.28)" />
+        <rect x="378" y="182" width="15" height="4" rx="2" fill="rgba(255,255,255,0.16)" />
+        <rect x="354" y="206" width="56" height="16" rx="8" fill="#ffffff" />
+        <rect x="368" y="212.5" width="28" height="3" rx="1.5" fill="#09090b" />
+      </g>
+
+      {/* Aviso flotante: pedido confirmado */}
+      <g {...fade("1.2s")}>
+        <rect
+          x="150"
+          y="226"
+          width="150"
+          height="36"
           rx="10"
           fill="#09090b"
           stroke="rgba(255,255,255,0.22)"
           strokeWidth="1.2"
         />
-        <line
-          x1="272"
-          y1="240"
-          x2="266"
-          y2="258"
-          stroke="rgba(255,255,255,0.4)"
-          strokeWidth="1.2"
+        <circle cx="170" cy="244" r="8.5" fill="#ffffff" />
+        <path
+          d="M166 244.2l2.8 2.8 5.2-5.6"
+          stroke="#09090b"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <line
-          x1="272"
-          y1="240"
-          x2="284"
-          y2="258"
-          stroke="rgba(255,255,255,0.4)"
-          strokeWidth="1.2"
-        />
-        <circle cx="272" cy="238" r="4.5" fill="#ffffff" />
-        <circle cx="265" cy="260" r="3.5" fill="rgba(255,255,255,0.55)" />
-        <circle cx="285" cy="260" r="3.5" fill="rgba(255,255,255,0.55)" />
-        <rect x="302" y="236" width="66" height="8" rx="4" fill="rgba(255,255,255,0.38)" />
-        <rect x="302" y="252" width="44" height="8" rx="4" fill="rgba(255,255,255,0.18)" />
+        <rect x="187" y="236" width="78" height="7" rx="3.5" fill="rgba(255,255,255,0.38)" />
+        <rect x="187" y="248" width="50" height="6" rx="3" fill="rgba(255,255,255,0.18)" />
       </g>
     </svg>
   );
