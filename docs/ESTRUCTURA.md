@@ -5,13 +5,15 @@ decisiones de diseño y los estándares de código, ver [`CLAUDE.md`](../CLAUDE.
 
 ## 1. Flujo de trabajo y ramas
 
-- **Una sola rama: `main`.** Es la rama de producción y la única que existe.
+- **`main` es producción.** El trabajo va en ramas locales temporales `tipo/descripcion`;
+  los cambios visibles se publican para obtener una vista previa y las ramas se eliminan
+  tras integrarse.
 - El repositorio está conectado a **Lovable**: los commits a `main` se sincronizan
   con su editor. Por eso **no se reescribe historia** (sin `push --force`, ni
   `rebase`/`amend`/`squash` de commits ya publicados) y no se renombra la rama.
   Ver [`AGENTS.md`](../AGENTS.md).
-- Convención de commits en el historial: prefijo en mayúsculas (`FIX:`, `FEAT:`)
-  y mensaje en español que explica el porqué.
+- Convención: Conventional Commits en minúscula (`fix:`, `feat:`, `docs:`); el
+  mensaje explica el porqué, el riesgo y cómo se verificó.
 
 ## 2. Árbol de carpetas
 
@@ -139,10 +141,14 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
 ## 7. Despliegue y build
 
 - **Build:** `vite build` (Nitro, destino Cloudflare) genera `.output/`.
-- **Hosting:** Cloudflare Workers. `wrangler.jsonc` es la fuente de verdad de la
-  configuración del Worker (nombre, `compatibility_date`, observabilidad).
-  El nombre del Worker (`juanuknow-conversion-craft-96`) viene del nombre antiguo
-  del repositorio; **cambiarlo crea un Worker nuevo**, no renombra el existente.
+- **Hosting:** Cloudflare Workers. El Worker de producción se llama `quimoratech`.
+  `wrangler.jsonc` conserva el nombre antiguo `juanuknow-conversion-craft-96`;
+  Workers Builds lo sustituye al desplegar. Alinear el archivo queda pendiente
+  como cambio de riesgo alto.
+- **Vista previa por rama:** Cloudflare Workers Builds compila cada rama publicada
+  y la sirve en `https://<rama>-quimoratech.<subdominio>.workers.dev` (las barras
+  del nombre de rama se convierten en guiones). La vista previa es pública para
+  quien tenga la URL y lleva `X-Robots-Tag: noindex`; no afecta a producción.
 - **Dominio:** `quimoratech.com`.
 - **Cabeceras HTTP:** `public/_headers` solo se aplica a Static Assets; el HTML SSR,
   las redirecciones y los errores reciben sus cabeceras desde

@@ -183,8 +183,16 @@ cambios no relacionados.
 - **Metodología:** todo trabajo se hace en una **rama local temporal**
   `tipo/descripcion` creada desde `main` actualizada. Se integra en `main` con
   fast-forward o merge, con autorización expresa, y se elimina después de integrarse.
-- Las ramas de trabajo no se publican en GitHub salvo autorización expresa: el
-  repositorio es público y Cloudflare puede construir cualquier rama publicada.
+- Las ramas de trabajo no se publican en GitHub salvo autorización expresa. La
+  autorización habitual es para obtener una **vista previa**: Cloudflare compila
+  cada rama publicada y la sirve en
+  `https://<rama>-quimoratech.<subdominio>.workers.dev`, con
+  `X-Robots-Tag: noindex` y sin afectar a producción.
+- La vista previa es pública para quien tenga la URL. No se publica una rama
+  con contenido no publicable (Principio X).
+- Todo cambio visible (UI, contenido, layout, movimiento) y todo cambio de
+  riesgo alto se verifica en su vista previa antes de integrarse en `main`.
+- La rama remota se elimina tras integrarse o descartarse. La rama local, también.
 - Conventional Commits en minúscula (`feat`, `fix`, `docs`, `style`, `refactor`,
   `perf`, `test`, `chore`, `security`). Cada mensaje explica el porqué, el riesgo y
   cómo se verificó.
@@ -232,11 +240,12 @@ cuando se documenta su procedimiento y lo aprueba el responsable (enmienda PATCH
 | V2 | Lint | `bun run lint` | código de salida 0 | Todo cambio de código |
 | V3 | Formato | `bunx prettier --check <archivos modificados>`; nunca `--write .` | código de salida 0 | Todo cambio de código y todo documento nuevo |
 | V4 | Build | `bun run build` | código de salida 0 | Riesgo medio y alto; siempre antes de integrar en `main` |
-| V5 | Recorridos críticos | Manual en `bun run dev`: formulario (éxito y error), enlaces de WhatsApp, anclas en escritorio y móvil, páginas legales, 404; consola sin errores | Todos funcionan | Si el cambio los toca |
-| V6 | Responsive | DevTools en 375 / 768 / 1440 px y 320 px | Sin desbordes, solapamientos ni scroll horizontal | Cambios visuales |
+| V5 | Recorridos críticos | Manual en `bun run dev` o en la vista previa de la rama: formulario (éxito y error), enlaces de WhatsApp, anclas en escritorio y móvil, páginas legales, 404; consola sin errores | Todos funcionan | Si el cambio los toca |
+| V6 | Responsive | DevTools en 375 / 768 / 1440 px y 320 px, en `bun run dev` o en la vista previa de la rama | Sin desbordes, solapamientos ni scroll horizontal | Cambios visuales |
 | V7 | Accesibilidad del cambio | Revisión manual de los criterios del Principio VII que el cambio afecta | Sin fallos en los criterios revisados, listados | Cambios de UI o contenido |
 | V8 | Secretos | Revisión de `git diff --cached` antes de cada commit, incluido el contenido completo de los archivos nuevos preparados | Sin datos de la lista del Principio X; si aparecen, se detiene antes del commit sin reproducirlos en el informe | Todo commit |
 | V9 | Después del despliegue | Check de GitHub "Workers Builds" en verde + `curl -I https://quimoratech.com/` (cabeceras) + carga de `/` y de una ruta de servicio | Todo correcto | Después de cada push a `main` |
+| V10 | Vista previa | Publicar la rama, esperar el check "Workers Builds" en verde y revisar la URL de vista previa: consola sin errores, cabeceras de seguridad presentes y los recorridos que el cambio toca | Todo correcto | Cambios visibles y cambios de riesgo alto, antes de integrar en `main` |
 
 ### III.b Pendientes (no bloquean hasta estar disponibles)
 
@@ -275,4 +284,4 @@ V9 está en verde.
 - **Revisión completa:** ante una sustitución arquitectónica significativa, al
   levantar una restricción del MVP, o a petición del responsable.
 
-**Versión:** 1.0.1 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-10
+**Versión:** 1.1.0 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-10
