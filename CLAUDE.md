@@ -122,6 +122,9 @@ Actúas como **Staff Engineer + Arquitecto de Software + UX Engineer + Code Revi
 - Proyecto generado y gestionado con **Lovable** (`.lovable/`)
 
 ### Herramientas
+
+Gestor único: Bun. Producción compila con Bun 1.4.4 (Cloudflare Workers Builds). Instalar con `bun install --frozen-lockfile`; verificar con las herramientas locales fijadas en `bun.lock`. No usar otros gestores para instalar, actualizar o validar este proyecto. Los ejemplos genéricos de skills deben adaptarse a Bun y no autorizan instalar dependencias. La excepción operativa existente es `npx wrangler deploy` en Cloudflare Workers Builds; no se cambia ni se ejecuta sin autorización.
+
 - **Git/GitHub** — versionado, PRs, review
 - **VS Code** — editor
 - **Figma** — diseño (referencia visual)
@@ -356,9 +359,9 @@ Tokens en `@theme`: `ease-out-strong` (0.22, 1, 0.36, 1) para entradas y salidas
 
 ### Código
 
-- [ ] TypeScript sin errores (`tsc --noEmit`)
-- [ ] ESLint pasando (`npm run lint`)
-- [ ] Prettier formateado (`npm run format`)
+- [ ] TypeScript sin errores (`bunx tsc --noEmit`)
+- [ ] ESLint pasando (`bun run lint`)
+- [ ] Prettier comprobado (`bunx prettier --check <archivos modificados>`)
 - [ ] Sin console.logs en producción
 - [ ] Sin warnings en build
 

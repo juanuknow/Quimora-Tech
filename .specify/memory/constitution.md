@@ -228,11 +228,11 @@ cuando se documenta su procedimiento y lo aprueba el responsable (enmienda PATCH
 
 | ID | Verificación | Comando / procedimiento | Pasa si | Cuándo |
 |---|---|---|---|---|
-| V1 | Tipos | `npx tsc --noEmit` | código de salida 0 | Todo cambio de código |
-| V2 | Lint | `npm run lint` | código de salida 0 | Todo cambio de código |
-| V3 | Formato | `npx prettier --check <archivos modificados>`; nunca `--write .` | código de salida 0 | Todo cambio de código y todo documento nuevo |
-| V4 | Build | `npm run build` | código de salida 0 | Riesgo medio y alto; siempre antes de integrar en `main` |
-| V5 | Recorridos críticos | Manual en `npm run dev`: formulario (éxito y error), enlaces de WhatsApp, anclas en escritorio y móvil, páginas legales, 404; consola sin errores | Todos funcionan | Si el cambio los toca |
+| V1 | Tipos | `bunx tsc --noEmit` | código de salida 0 | Todo cambio de código |
+| V2 | Lint | `bun run lint` | código de salida 0 | Todo cambio de código |
+| V3 | Formato | `bunx prettier --check <archivos modificados>`; nunca `--write .` | código de salida 0 | Todo cambio de código y todo documento nuevo |
+| V4 | Build | `bun run build` | código de salida 0 | Riesgo medio y alto; siempre antes de integrar en `main` |
+| V5 | Recorridos críticos | Manual en `bun run dev`: formulario (éxito y error), enlaces de WhatsApp, anclas en escritorio y móvil, páginas legales, 404; consola sin errores | Todos funcionan | Si el cambio los toca |
 | V6 | Responsive | DevTools en 375 / 768 / 1440 px y 320 px | Sin desbordes, solapamientos ni scroll horizontal | Cambios visuales |
 | V7 | Accesibilidad del cambio | Revisión manual de los criterios del Principio VII que el cambio afecta | Sin fallos en los criterios revisados, listados | Cambios de UI o contenido |
 | V8 | Secretos | Revisión de `git diff --cached` antes de cada commit, incluido el contenido completo de los archivos nuevos preparados | Sin datos de la lista del Principio X; si aparecen, se detiene antes del commit sin reproducirlos en el informe | Todo commit |
@@ -244,7 +244,7 @@ cuando se documenta su procedimiento y lo aprueba el responsable (enmienda PATCH
 |---|---|---|
 | P1 | Lighthouse con umbral comparativo | Procedimiento reproducible y línea base (Principio VI); confirmar cómo servir el build de producción en local |
 | P2 | Core Web Vitals de campo | Confirmar adónde envía datos `use-web-vitals.ts` y cómo se consultan al percentil 75 |
-| P3 | Avisos nuevos del build | Registrar la línea base de avisos actuales de `npm run build` |
+| P3 | Avisos nuevos del build | Registrar la línea base de avisos actuales de `bun run build` |
 | P4 | Formato del repositorio completo | Normalizar en una fase aparte los documentos con formato pendiente; hasta entonces V3 no se aplica a ellos |
 | P5 | Pruebas automatizadas | Decisión sobre un ejecutor de pruebas (por ejemplo, Vitest para `src/lib/`) |
 | P6 | Escáner automático de secretos | Decisión sobre la herramienta (por ejemplo, gitleaks) |
@@ -275,4 +275,4 @@ V9 está en verde.
 - **Revisión completa:** ante una sustitución arquitectónica significativa, al
   levantar una restricción del MVP, o a petición del responsable.
 
-**Versión:** 1.0.0 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-06
+**Versión:** 1.0.1 | **Ratificada:** 2026-11-06 | **Última enmienda:** 2026-11-10

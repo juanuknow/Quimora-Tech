@@ -46,7 +46,7 @@ decisiones de diseño y los estándares de código, ver [`CLAUDE.md`](../CLAUDE.
 ├── wrangler.jsonc            Configuración del Worker en Cloudflare
 ├── vite.config.ts            Config vía @lovable.dev/vite-tanstack-config
 ├── package.json              Scripts y dependencias
-├── bun.lock · package-lock.json   Lockfiles (ver sección 7)
+├── bun.lock                  Lockfile único de Bun (ver sección 7)
 ├── tsconfig.json · eslint.config.js · .prettierrc · .prettierignore
 └── .gitignore
 ```
@@ -157,18 +157,23 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
     `og-image.png`) llevan `Cache-Control: max-age=3600, stale-while-revalidate=86400`:
     si se reemplaza uno conservando el nombre, tarda como máximo ~1 h en verse (más una
     vista intermedia con la copia vieja, de ≤25 h). Solo `/assets/*` (con hash) es `immutable`.
-- **Dos lockfiles:** `bun.lock` (lo usa Lovable) y `package-lock.json` (npm). No borrar
-  ninguno sin comprobar con qué gestor construye Cloudflare.
+- **Gestor único:** Bun; `bun.lock` es el único lockfile versionado.
+  Producción compila con Bun 1.4.4 (Cloudflare Workers Builds).
+  Desarrollo y verificación usan `bun install --frozen-lockfile`.
+  Cloudflare Workers Builds instala con ese comando y construye con `bun run build`.
+  Su comando de publicación existente, `npx wrangler deploy`, se conserva; no se
+  ejecuta sin autorización. Lovable usa `bun.lock`.
+  El campo `packageManager` no está declarado; fijarlo se evaluará por separado.
 
 ## 8. Comandos
 
 ```bash
-npm install        # instalar dependencias
-npm run dev        # servidor de desarrollo (http://localhost:8080)
-npm run build      # build de producción
-npx tsc --noEmit   # comprobación de tipos
-npm run lint       # ESLint
-npm run format     # Prettier
+bun install --frozen-lockfile # instalar las versiones fijadas
+bun run dev                   # servidor de desarrollo (http://localhost:8080)
+bun run build                 # build de producción
+bunx tsc --noEmit             # comprobación de tipos
+bun run lint                  # ESLint
+bunx prettier --check src     # comprobar formato; no aplicar cambios masivos
 ```
 
 ## 9. Dónde cambiar cada cosa

@@ -106,18 +106,20 @@ Es una orientación, sin compromiso.
 Este repositorio contiene el sitio [quimoratech.com](https://quimoratech.com), construido con
 TanStack Start (React 19), Vite, TypeScript, Tailwind CSS v4, Nitro y Cloudflare Workers.
 
+Requiere Bun (producción usa 1.4.4). El proyecto usa exclusivamente Bun para instalar y verificar dependencias; `bun.lock` es la fuente única de versiones. No generar ni versionar `package-lock.json`. Las verificaciones se ejecutan después de una instalación congelada completa.
+
 ```bash
-npm install
-npm run dev        # http://localhost:8080
+bun install --frozen-lockfile
+bun run dev        # http://localhost:8080
 ```
 
-| Comando            | Qué hace                         |
-| ------------------ | -------------------------------- |
-| `npm run dev`      | Servidor de desarrollo           |
-| `npm run build`    | Build de producción (`.output/`) |
-| `npx tsc --noEmit` | Comprobación de tipos            |
-| `npm run lint`     | ESLint                           |
-| `npm run format`   | Prettier                         |
+| Comando                     | Qué hace                         |
+| --------------------------- | -------------------------------- |
+| `bun run dev`               | Servidor de desarrollo           |
+| `bun run build`             | Build de producción (`.output/`) |
+| `bunx tsc --noEmit`         | Comprobación de tipos            |
+| `bun run lint`              | ESLint                           |
+| `bunx prettier --check src` | Comprobación de formato          |
 
 - [`docs/ESTRUCTURA.md`](docs/ESTRUCTURA.md): carpetas, rutas, componentes, datos y despliegue.
 - [`.specify/memory/constitution.md`](.specify/memory/constitution.md): reglas obligatorias para todo cambio.
