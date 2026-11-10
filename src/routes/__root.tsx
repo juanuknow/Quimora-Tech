@@ -12,6 +12,17 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { GA_MEASUREMENT_ID, FOCUS_RING } from "../lib/site";
 
+type GA4Config = {
+  allow_google_signals: boolean;
+  allow_ad_personalization_signals: boolean;
+};
+
+// Alinea el tag con la política de privacidad: no compartir señales para publicidad.
+const GA4_CONFIG: GA4Config = {
+  allow_google_signals: false,
+  allow_ad_personalization_signals: false,
+};
+
 /** Botón primario de las páginas de sistema (404 / error), con el mismo
  *  lenguaje visual que los CTA de la landing: alto táctil y foco visible. */
 const SYSTEM_BUTTON = `inline-flex h-11 items-center justify-center rounded-md bg-cta px-5 font-display text-sm font-semibold text-white transition duration-200 hover:bg-cta-hover active:scale-[0.98] ${FOCUS_RING}`;
@@ -179,7 +190,7 @@ function RootShell({ children }: { children: ReactNode }) {
             />
             <script
               dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`,
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}',${JSON.stringify(GA4_CONFIG)});`,
               }}
             />
           </>
