@@ -149,11 +149,14 @@ enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
   y la sirve en `https://<rama>-quimoratech.<subdominio>.workers.dev` (las barras
   del nombre de rama se convierten en guiones). La vista previa es pública para
   quien tenga la URL y lleva `X-Robots-Tag: noindex`; no afecta a producción.
-  Una rama ya compilada en vista previa no dispara una compilación nueva al
-  integrarse por fast-forward: `main` recibe el mismo commit y Workers Builds no
-  lo vuelve a compilar (observado el 2026-11-10 con el commit `084e672`). Las
-  ramas que se publicaron se integran con `git merge --no-ff`, cuyo commit de
-  merge es nuevo y sí despliega.
+  Incidencia del 2026-11-10: Workers Builds no compiló dos push consecutivos a
+  `main` (`084e672`, integrado por fast-forward tras su vista previa, y
+  `dbb4dd4`, un commit nuevo), con la configuración de compilaciones intacta.
+  Causa no determinada. El cambio se publicó promocionando desde el panel de
+  Cloudflare la versión ya compilada para la vista previa (Implementaciones →
+  Promocionar versión), acción que requiere autorización expresa del
+  responsable. Tras cada push a `main` se comprueba que exista su compilación
+  (V9).
 - **Dominio:** `quimoratech.com`.
 - **Cabeceras HTTP:** `public/_headers` solo se aplica a Static Assets; el HTML SSR,
   las redirecciones y los errores reciben sus cabeceras desde
