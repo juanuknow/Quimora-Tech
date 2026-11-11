@@ -378,23 +378,6 @@
   animation-delay: var(--delay, 0ms);
 }
 
-/* Halo pulsante del plan destacado. Va en un elemento aparte, detrás de la
-   tarjeta, y no en su `box-shadow`: una animación siempre le gana a una regla
-   normal, así que animar la sombra de la tarjeta anularía su `hover:shadow-xl`.
-   Separados, ambos efectos conviven. */
-@keyframes featured-halo {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.85;
-  }
-}
-.animate-featured-halo {
-  animation: featured-halo 3s ease-in-out infinite;
-}
-
 /* -------------------- 3D effects -------------------- */
 
 /* Establishes a shared perspective and smooth return for interactive tilt cards.
@@ -546,12 +529,6 @@
   .animate-fade-in,
   .animate-tab-in {
     animation: none;
-  }
-
-  /* El halo se queda fijo y tenue: sigue marcando el plan destacado sin latir. */
-  .animate-featured-halo {
-    animation: none;
-    opacity: 0.5;
   }
 
   /* Crítico: la regla global de arriba acorta `animation-duration` pero NO

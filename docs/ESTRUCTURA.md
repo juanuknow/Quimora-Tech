@@ -153,6 +153,7 @@ enlazadas en el navbar (`top`, `showcase`, `soluciones`, `nosotros`, `precios`,
   responsable. Tras cada push a `main` se comprueba que exista su compilación
   (V9).
 - Si un push no genera compilación en Workers Builds en 10 minutos, relanzarla con el disparador correspondiente (producción o “Implementar ramas de no producción”) desde el panel o la API de Cloudflare, indicando rama y commit. Ocurrió el 10 y el 11/11/2026.
+- Tras integrar en main, confirmar que Workers Builds compiló `main` para ese commit. Si el commit ya se compiló antes en su rama de vista previa, puede no compilarse en main (10 y 11/11/2026): en ese caso promover la versión de la rama desde Implementaciones o relanzar el disparador de producción. Hipótesis no confirmada.
 - **Dominio:** `quimoratech.com`.
 - **Cabeceras HTTP:** `public/_headers` solo se aplica a Static Assets; el HTML SSR,
   las redirecciones y los errores reciben sus cabeceras desde

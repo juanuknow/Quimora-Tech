@@ -1,90 +1,107 @@
-/**
- * Planes de la sección Precios: fuente única. La consume `Pricing` y, sin
- * precios, el diagnóstico (componentes del plan Emprendedor, regla R-K2).
- */
-export const PLANS = [
+/** Fuente única de planes. `adds` contiene solo lo que suma cada nivel. */
+export type PlanName = "Emprendedor" | "Presencia" | "Crecimiento" | "A Medida";
+
+export interface Plan {
+  name: PlanName;
+  price: string;
+  period: string;
+  promo: string | null;
+  audience: string;
+  description: string;
+  delivery: string;
+  support: string;
+  includesPlan?: PlanName;
+  includesNote?: string;
+  adds: readonly string[];
+  defaultSelected?: boolean;
+}
+
+export const PLANS: readonly Plan[] = [
   {
     name: "Emprendedor",
     price: "Desde $450.000",
-    period: "pago único",
+    period: "Pago único",
     promo: "Hosting 3 meses + dominio incluidos",
+    audience: "Para empezar a vender en línea",
     description:
-      "El punto de partida: tu negocio en línea con su catálogo y un canal directo para recibir pedidos.",
-    features: [
-      "Desarrollo de tu sitio web",
+      "Tu negocio en internet en una sola página: lo que ofreces y un canal directo para recibir pedidos.",
+    delivery: "2–3 semanas",
+    support: "Durante el lanzamiento",
+    adds: [
+      "Sitio de una página con tu marca",
       "Catálogo de productos o servicios",
-      "Información de tu negocio",
+      "Información de tu negocio: horario, ubicación y contacto",
       "Enlace directo a WhatsApp",
-      "Entrega en 2-3 semanas",
     ],
-    featured: false,
   },
   {
     name: "Presencia",
     price: "Desde $650.000",
-    period: "pago único",
+    period: "Pago único",
     promo: "Hosting 3 meses + dominio incluidos",
+    audience: "Para atraer clientes nuevos",
     description:
-      "Ideal para negocios que necesitan una presencia digital profesional para atraer clientes y generar contactos.",
-    features: [
-      "Landing page a medida",
-      "Diseño responsive (Mobile-first)",
+      "Una web profesional que te hace visible en Google y convierte visitas en contactos.",
+    delivery: "2–3 semanas",
+    support: "Durante el lanzamiento",
+    includesPlan: "Emprendedor",
+    adds: [
+      "Diseño a medida de tu marca",
       "Formulario de contacto",
-      "Vinculación con redes sociales",
-      "Optimización básica de SEO",
-      "Conexión con Google Analytics",
-      "Catálogo de productos o servicios",
-      "Galería de imágenes o portafolio",
-      "Integración con Google Maps",
+      "Galería de fotos o portafolio",
+      "Mapa con tu ubicación (Google Maps)",
+      "Enlaces a tus redes sociales",
+      "SEO local: apareces cuando te buscan en tu zona",
+      "Google Analytics para medir tus visitas",
     ],
-    featured: false,
+    defaultSelected: true,
   },
   {
     name: "Crecimiento",
     price: "Desde $950.000",
-    period: "pago único",
+    period: "Pago único",
     promo: "Hosting 3 meses + dominio incluidos",
+    audience: "Para crecer y administrar tu web",
     description:
-      "Todo lo del plan Presencia, potenciado: más secciones, más control y más datos para vender más.",
-    features: [
-      "Todo lo incluido en Presencia",
-      "Sitio multi-sección (institucional completo)",
-      "Panel de edición simple para tus textos e imágenes",
+      "Más secciones, más control y más datos: tu web crece con tu negocio sin depender de nosotros.",
+    delivery: "2–4 semanas",
+    support: "1 mes después del lanzamiento",
+    includesPlan: "Presencia",
+    adds: [
+      "Sitio con varias páginas (inicio, servicios, nosotros…)",
+      "Panel para editar tus textos e imágenes",
       "Blog o sección de novedades",
-      "Google Analytics + Search Console",
-      "SEO avanzado en todas las páginas",
-      "Botón flotante de WhatsApp",
-      "Certificado SSL y seguridad reforzada",
-      "1 mes de soporte post-lanzamiento incluido",
-      "Entrega en 2-4 semanas",
+      "SEO en todas las páginas",
+      "Google Search Console: ves cómo te encuentran",
+      "1 mes de soporte después del lanzamiento",
     ],
-    featured: true,
   },
   {
     name: "A Medida",
     price: "Cotización personalizada",
-    period: "según alcance",
+    period: "Según alcance",
     promo: null,
+    audience: "Para vender, agendar o automatizar",
     description:
-      "Para tiendas en línea, sistemas de reservas o integraciones específicas de tu negocio.",
-    features: [
-      "Funcionalidad a medida",
-      "Integraciones y pagos",
-      "Mantenimiento incluido",
-      "Acompañamiento continuo",
+      "Cuando tu negocio necesita funciones propias: vender en línea, agendar o conectar tus sistemas.",
+    delivery: "Según alcance",
+    support: "Acompañamiento continuo",
+    includesNote: "Crecimiento, según lo necesites",
+    adds: [
+      "Tienda online con pagos en línea",
+      "Reservas o agendamiento de citas",
+      "Integraciones con tus sistemas (inventario, facturación…)",
+      "Mantenimiento mensual incluido",
     ],
-    featured: false,
   },
-] as const;
+];
 
 /** Compromisos reales presentes en cualquier proyecto (sin métricas inventadas). */
 export const PLAN_INCLUDES = [
-  "Diseño mobile-first, responsive",
-  "Optimización de velocidad de carga",
-  "Buenas prácticas de SEO desde el inicio",
-  "Conexión con WhatsApp",
-  "Entrega de accesos y archivos del proyecto",
-  "Acompañamiento durante el lanzamiento",
+  "Diseño para celular",
+  "Carga rápida",
+  "Certificado SSL (https)",
+  "SEO técnico",
+  "Entrega de accesos y archivos",
+  "Acompañamiento en el lanzamiento",
 ] as const;
-
-export type Plan = (typeof PLANS)[number];

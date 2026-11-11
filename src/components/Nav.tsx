@@ -57,7 +57,7 @@ const READING_LINE_RATIO = 0.25;
  * lectura y está más abajo que las demás que la cruzaron. Esto:
  * - funciona igual al bajar, al subir y tras un salto por ancla (todo eso
  *   dispara `scroll`);
- * - en las secciones que no tienen enlace (Problem, Stats, Diagnóstico, FAQ…)
+ * - en las secciones sin enlace propio, como Por qué Quimora, Orientación y FAQ,
  *   mantiene la última sección enlazada que quedó por encima, en vez de
  *   quedarse con la que estuviera marcada antes (el fallo del enfoque anterior
  *   con IntersectionObserver, que solo reaccionaba a entradas en una franja).

@@ -32,8 +32,8 @@ const GRID_STYLE: CSSProperties = {
  *
  * Su fondo oscuro es intencional: dentro de una paleta monocromática, la
  * inversión de contraste es la forma de hacerla destacar sin introducir color,
- * que rompería el sistema. Va precedida de `Benefits` (blanca) para no fundirse
- * con la franja oscura de `Stats`.
+ * que rompería el sistema. Va seguida de `WhyQuimora`, de superficie clara,
+ * para separar visualmente el catálogo de servicios.
  */
 export function SoftwareSolutions() {
   return (

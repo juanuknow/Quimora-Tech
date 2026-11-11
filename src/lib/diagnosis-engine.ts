@@ -243,8 +243,8 @@ const WHATSAPP_FEATURE = "Enlace directo a WhatsApp";
 
 function emprendedorComponents(): readonly string[] {
   const plan = PLANS.find((p) => p.name === "Emprendedor");
-  const features: readonly string[] = plan?.features ?? [];
-  if (!features.includes(CATALOG_FEATURE) || !features.includes(WHATSAPP_FEATURE)) {
+  const adds: readonly string[] = plan?.adds ?? [];
+  if (!adds.includes(CATALOG_FEATURE) || !adds.includes(WHATSAPP_FEATURE)) {
     throw new Error("El plan Emprendedor ya no publica los componentes que respaldan R-K2");
   }
   return [CATALOG_FEATURE, WHATSAPP_FEATURE];
