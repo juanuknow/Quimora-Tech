@@ -9,10 +9,11 @@ export const WHATSAPP_NUMBER = "573244577198";
 export const CONTACT_EMAIL = "hola@quimoratech.com";
 export const CONTACT_PHONE = "+573244577198";
 export const CONTACT_PHONE_DISPLAY = "+57 324 457 7198";
+export const CONTACT_CITY = "Cali, Colombia";
+export const BUSINESS_HOURS = "Lun–Vie · 8:00 a. m. – 6:00 p. m.";
+export const SERVICE_AREA = "Atención en todo el país";
 /** Segundo número de contacto (cofundador) — mismos canales que el principal, sin etiqueta distinta. */
 export const WHATSAPP_NUMBER_2 = "573044744337";
-export const CONTACT_PHONE_2 = "+573044744337";
-export const CONTACT_PHONE_2_DISPLAY = "+57 304 474 4337";
 export const SITE_URL = "https://quimoratech.com";
 
 /** Formspree endpoint that receives contact-form submissions (no backend). */

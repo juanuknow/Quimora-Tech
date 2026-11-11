@@ -1,22 +1,21 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
-import { Phone, Mail, Check } from "lucide-react";
+import { Mail, Check, MapPin, Clock, Globe } from "lucide-react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 import { NewTabHint, NEW_TAB_NOTICE } from "./NewTabHint";
 import {
   FOCUS_RING,
   CONTACT_EMAIL,
-  CONTACT_PHONE,
-  CONTACT_PHONE_DISPLAY,
   WHATSAPP_NUMBER_2,
-  CONTACT_PHONE_2,
-  CONTACT_PHONE_2_DISPLAY,
+  CONTACT_CITY,
+  BUSINESS_HOURS,
+  SERVICE_AREA,
   FORMSPREE_ENDPOINT,
   whatsappHref,
   trackEvent,
 } from "../lib/site";
 
 /* -------------------- Contact -------------------- */
-type ContactErrors = { name?: string; email?: string; message?: string };
+type ContactErrors = { name?: string; email?: string; phone?: string; message?: string };
 
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
@@ -26,6 +25,7 @@ export function Contact() {
   const [submitError, setSubmitError] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +46,14 @@ export function Contact() {
     if (!form.email.trim()) next.email = "Necesitamos un correo para responderte.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       next.email = "Ese correo no parece válido.";
+    const phoneDigits = form.phone.replace(/\D/g, "");
+    if (!form.phone.trim()) next.phone = "Necesitamos un teléfono para contactarte.";
+    else if (
+      !/^[\d+\-()\s]+$/.test(form.phone) ||
+      phoneDigits.length < 7 ||
+      phoneDigits.length > 15
+    )
+      next.phone = "Ese teléfono no parece válido.";
     if (!form.message.trim()) next.message = "Cuéntanos brevemente qué necesitas.";
     setErrors(next);
     return next;
@@ -57,6 +65,7 @@ export function Contact() {
     const next = validate();
     if (next.name) nameRef.current?.focus();
     else if (next.email) emailRef.current?.focus();
+    else if (next.phone) phoneRef.current?.focus();
     else if (next.message) messageRef.current?.focus();
     if (Object.keys(next).length > 0) return;
 
@@ -68,7 +77,7 @@ export function Contact() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          phone: form.phone || "—",
+          phone: form.phone,
           message: form.message,
           _subject: `Nueva consulta de ${form.name} · Quimora Tech`,
         }),
@@ -107,24 +116,14 @@ export function Contact() {
                 onClick={() => trackEvent("contact", { method: "whatsapp", location: "contacto" })}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Escribir por WhatsApp, línea 1 ${NEW_TAB_NOTICE}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <WhatsAppIcon size={18} />
                 </span>
-                Escribir por WhatsApp
+                WhatsApp línea 1
                 <NewTabHint />
-              </a>
-              <a
-                href={`tel:${CONTACT_PHONE}`}
-                onClick={() => trackEvent("contact", { method: "phone", location: "contacto" })}
-                aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
-                className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
-                  <Phone size={18} />
-                </span>
-                Llamar al {CONTACT_PHONE_DISPLAY}
               </a>
               <a
                 href={whatsappHref("Hola, quiero una consulta gratis", WHATSAPP_NUMBER_2)}
@@ -133,26 +132,14 @@ export function Contact() {
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
+                aria-label={`Escribir por WhatsApp, línea 2 ${NEW_TAB_NOTICE}`}
                 className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
                   <WhatsAppIcon size={18} />
                 </span>
-                WhatsApp al {CONTACT_PHONE_2_DISPLAY}
-              </a>
-              <a
-                href={`tel:${CONTACT_PHONE_2}`}
-                onClick={() =>
-                  trackEvent("contact", { method: "phone", location: "contacto-linea-2" })
-                }
-                aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
-                className={`inline-flex items-center gap-3 rounded-md text-sm text-foreground transition-colors hover:text-brand ${FOCUS_RING}`}
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
-                  <Phone size={18} />
-                </span>
-                Llamar al {CONTACT_PHONE_2_DISPLAY}
+                WhatsApp línea 2
+                <NewTabHint />
               </a>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
@@ -163,6 +150,35 @@ export function Contact() {
                 </span>
                 {CONTACT_EMAIL}
               </a>
+            </div>
+            <div className="mt-6 flex flex-col gap-4 border-t border-hairline pt-6">
+              <div className="inline-flex items-center gap-3 text-sm text-foreground">
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand"
+                >
+                  <MapPin size={18} />
+                </span>
+                {CONTACT_CITY}
+              </div>
+              <div className="inline-flex items-center gap-3 text-sm text-foreground">
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand"
+                >
+                  <Clock size={18} />
+                </span>
+                {BUSINESS_HOURS}
+              </div>
+              <div className="inline-flex items-center gap-3 text-sm text-foreground">
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand"
+                >
+                  <Globe size={18} />
+                </span>
+                {SERVICE_AREA}
+              </div>
             </div>
           </div>
 
@@ -265,17 +281,29 @@ export function Contact() {
                       htmlFor="cf-phone"
                       className="font-display text-sm font-medium text-foreground"
                     >
-                      Teléfono <span className="text-muted-foreground">(opcional)</span>
+                      Teléfono{" "}
+                      <span aria-hidden="true" className="text-accent-strong">
+                        *
+                      </span>
                     </label>
                     <input
                       id="cf-phone"
+                      ref={phoneRef}
                       type="tel"
                       autoComplete="tel"
                       value={form.phone}
                       onChange={update("phone")}
-                      className={`mt-2 ${fieldBase} border-input`}
+                      aria-required="true"
+                      aria-invalid={!!errors.phone}
+                      aria-describedby={errors.phone ? "cf-phone-err" : undefined}
+                      className={`mt-2 ${fieldBase} ${errors.phone ? "border-destructive" : "border-input"}`}
                       placeholder="+57 300 000 0000"
                     />
+                    {errors.phone && (
+                      <p id="cf-phone-err" className="mt-1.5 text-xs text-destructive-strong">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                 </div>
 

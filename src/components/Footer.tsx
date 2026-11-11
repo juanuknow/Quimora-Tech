@@ -1,15 +1,11 @@
-import { Phone, Mail, ArrowUp } from "lucide-react";
+import { Mail, ArrowUp } from "lucide-react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 import { NewTabHint, NEW_TAB_NOTICE } from "./NewTabHint";
 import { verticals } from "../lib/verticals-data";
 import {
   LIGHT_RING,
   CONTACT_EMAIL,
-  CONTACT_PHONE,
-  CONTACT_PHONE_DISPLAY,
   WHATSAPP_NUMBER_2,
-  CONTACT_PHONE_2,
-  CONTACT_PHONE_2_DISPLAY,
   trackEvent,
   whatsappHref,
 } from "../lib/site";
@@ -74,7 +70,7 @@ export function Footer() {
               className={`tilt-card mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 font-display text-sm font-semibold text-brand-dark transition-colors hover:bg-white/90 ${LIGHT_RING}`}
             >
               <WhatsAppIcon size={16} />
-              Escribir por WhatsApp
+              WhatsApp línea 1
               <NewTabHint />
             </a>
           </div>
@@ -127,15 +123,18 @@ export function Footer() {
             <ul className="mt-3 flex flex-col gap-1 text-sm text-white/65">
               <li>
                 <a
-                  href={`tel:${CONTACT_PHONE}`}
-                  onClick={() => trackEvent("contact", { method: "phone", location: "footer" })}
-                  aria-label={`Llamar al ${CONTACT_PHONE_DISPLAY}`}
+                  href={whatsappHref("Hola, quiero más información")}
+                  onClick={() => trackEvent("contact", { method: "whatsapp", location: "footer" })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Escribir por WhatsApp, línea 1 ${NEW_TAB_NOTICE}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
-                    <Phone size={15} />
+                    <WhatsAppIcon size={15} />
                   </span>
-                  Llamar al {CONTACT_PHONE_DISPLAY}
+                  WhatsApp línea 1
+                  <NewTabHint />
                 </a>
               </li>
               <li>
@@ -146,28 +145,14 @@ export function Footer() {
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Escribir por WhatsApp al ${CONTACT_PHONE_2_DISPLAY} ${NEW_TAB_NOTICE}`}
+                  aria-label={`Escribir por WhatsApp, línea 2 ${NEW_TAB_NOTICE}`}
                   className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
                     <WhatsAppIcon size={15} />
                   </span>
-                  WhatsApp al {CONTACT_PHONE_2_DISPLAY}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${CONTACT_PHONE_2}`}
-                  onClick={() =>
-                    trackEvent("contact", { method: "phone", location: "footer-linea-2" })
-                  }
-                  aria-label={`Llamar al ${CONTACT_PHONE_2_DISPLAY}`}
-                  className={`inline-flex min-h-11 items-center gap-3 rounded-sm transition hover:text-white active:scale-[0.98] ${LIGHT_RING}`}
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
-                    <Phone size={15} />
-                  </span>
-                  Llamar al {CONTACT_PHONE_2_DISPLAY}
+                  WhatsApp línea 2
+                  <NewTabHint />
                 </a>
               </li>
               <li>
