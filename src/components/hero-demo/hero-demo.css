@@ -1,3 +1,6 @@
+/* Excepción deliberada al sistema: el interior de esta ventana es el dibujo
+   de un sitio ajeno, como BrowserChrome. Las medidas y los colores propios de
+   cada mini-web reproducen el prototipo; la UI de Quimora usa Tailwind y tokens. */
 .hero-demo .nav {
   display: flex;
   justify-content: space-between;
@@ -247,65 +250,6 @@
   font-size: 0.54rem;
 }
 
-.hero-demo {
-  color: var(--brand);
-  width: 100%;
-}
-.hero-demo .picker-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted-foreground);
-}
-.hero-demo .chips {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.hero-demo .chip {
-  min-height: 44px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1px solid var(--hairline);
-  background: #fff;
-  color: var(--brand);
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
-}
-.hero-demo .chip:hover {
-  background: var(--brand-soft);
-}
-.hero-demo .chip[aria-selected="true"] {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
-}
-.hero-demo :is(button, a, [role="tabpanel"]):focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 3px;
-}
-.hero-demo .demo-caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-}
-.hero-demo .demo-caption button {
-  min-height: 44px;
-  padding: 0 8px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
 .hero-demo .window {
   margin-top: 6px;
   border: 1.5px solid var(--brand);
@@ -367,33 +311,8 @@
   pointer-events: auto;
 }
 .hero-demo .view:focus-visible {
+  outline: 2px solid var(--brand);
   outline-offset: -3px;
-}
-.hero-demo .result {
-  margin-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.hero-demo .result p {
-  font-size: 0.9rem;
-  color: var(--foreground);
-  max-width: 22rem;
-  line-height: 1.45;
-}
-.hero-demo .want {
-  min-height: 44px;
-  padding: 10px 18px;
-  border-radius: 6px;
-  background: var(--brand);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
 }
 @media (max-width: 400px) {
   .hero-demo .nav {
@@ -404,13 +323,9 @@
     width: 100%;
     min-height: 414px;
   }
-  .hero-demo .chip {
-    padding-inline: 12px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-demo .view,
-  .hero-demo .chip {
+  .hero-demo .view {
     transition: none;
     transform: none;
   }
@@ -421,4 +336,9 @@
   padding: 4px 6px;
   border-radius: 4px;
   background: #7c2d12;
+}
+
+.hero-demo .real-estate-body .grid2 {
+  flex: 1;
+  min-height: 0;
 }

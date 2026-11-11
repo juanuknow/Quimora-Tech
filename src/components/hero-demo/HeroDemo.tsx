@@ -1,7 +1,6 @@
-import { createElement, useEffect, useId, useRef, useState } from "react";
-import { trackEvent } from "../../lib/site";
+import { useEffect, useId, useRef, useState } from "react";
+import { FOCUS_RING, trackEvent } from "../../lib/site";
 import { HERO_DEMOS, HERO_DEMO_KEYS } from "../../lib/hero-demo-data";
-import type { DemoLogoNode } from "../../lib/hero-demo-data";
 import { RestaurantDemo } from "./RestaurantDemo";
 import { StoreDemo } from "./StoreDemo";
 import { ClinicDemo } from "./ClinicDemo";
@@ -9,14 +8,6 @@ import { RealEstateDemo } from "./RealEstateDemo";
 import "./hero-demo.css";
 
 const DEMO_COMPONENTS = [RestaurantDemo, StoreDemo, ClinicDemo, RealEstateDemo];
-
-function renderLogo(node: DemoLogoNode, key = 0): React.ReactNode {
-  return createElement(
-    node.tag,
-    { ...node.props, key, ...(node.tag === "svg" ? { "aria-hidden": true } : {}) },
-    ...node.children.map((child, index) => renderLogo(child, index)),
-  );
-}
 
 export function HeroDemo() {
   const id = useId();
@@ -50,11 +41,11 @@ export function HeroDemo() {
   }
 
   return (
-    <div className="hero-demo min-w-0" onPointerEnter={() => setRotating(false)}>
-      <p className="picker-label" id={`${id}-label`}>
+    <div className="hero-demo w-full min-w-0 text-brand" onPointerEnter={() => setRotating(false)}>
+      <p className="text-caption font-semibold text-muted-foreground" id={`${id}-label`}>
         ¿Qué negocio tienes?
       </p>
-      <div className="chips" role="tablist" aria-labelledby={`${id}-label`}>
+      <div className="mt-2.5 flex flex-wrap gap-2" role="tablist" aria-labelledby={`${id}-label`}>
         {HERO_DEMO_KEYS.map((key, index) => (
           <button
             key={key}
@@ -62,7 +53,7 @@ export function HeroDemo() {
               tabs.current[index] = element;
             }}
             type="button"
-            className="chip"
+            className={`min-h-11 cursor-pointer rounded-full border px-3.5 text-caption font-semibold transition-colors motion-reduce:transition-none max-[400px]:px-3 ${active === index ? "border-brand bg-brand text-white" : "border-hairline bg-background text-brand hover:bg-brand-soft"} ${FOCUS_RING}`}
             role="tab"
             id={`${id}-tab-${key}`}
             aria-controls={`${id}-panel-${key}`}
@@ -96,10 +87,14 @@ export function HeroDemo() {
           </button>
         ))}
       </div>
-      <div className="demo-caption">
+      <div className="mt-3 flex items-center justify-between gap-2 text-caption text-muted-foreground">
         <span>Ejemplo ficticio</span>
         {!reducedMotion && (
-          <button type="button" onClick={() => setRotating((value) => !value)}>
+          <button
+            type="button"
+            className={`min-h-11 cursor-pointer px-2 underline underline-offset-4 ${FOCUS_RING}`}
+            onClick={() => setRotating((value) => !value)}
+          >
             {rotating ? "Pausar ejemplos" : "Rotar ejemplos"}
           </button>
         )}
@@ -115,6 +110,7 @@ export function HeroDemo() {
           {HERO_DEMO_KEYS.map((key, index) => {
             const demo = HERO_DEMOS[key];
             const Demo = DEMO_COMPONENTS[index];
+            const Logo = demo.logo;
             const visible = index === active;
             return (
               <div
@@ -130,7 +126,7 @@ export function HeroDemo() {
               >
                 <div className="nav">
                   <span className="logo">
-                    {renderLogo(demo.logo)}
+                    <Logo />
                     {demo.name}
                   </span>
                   <span className="links">
@@ -145,12 +141,16 @@ export function HeroDemo() {
           })}
         </div>
       </div>
-      <div className="result">
-        <p role="status" aria-live={rotating && !reducedMotion ? "off" : "polite"}>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p
+          className="max-w-[22rem] text-ui leading-[1.45] text-foreground"
+          role="status"
+          aria-live={rotating && !reducedMotion ? "off" : "polite"}
+        >
           {data.benefit}
         </p>
         <a
-          className="want"
+          className={`inline-flex min-h-11 items-center rounded-md bg-cta px-[18px] py-2.5 text-ui font-semibold text-white transition-colors hover:bg-cta-hover motion-reduce:transition-none ${FOCUS_RING}`}
           href={`/para/${HERO_DEMO_KEYS[active]}`}
           onClick={() => trackEvent("hero_business_cta", { vertical: HERO_DEMO_KEYS[active] })}
         >

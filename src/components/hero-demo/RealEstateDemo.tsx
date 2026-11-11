@@ -3,7 +3,7 @@ import { HERO_DEMOS } from "../../lib/hero-demo-data";
 export function RealEstateDemo() {
   const data = HERO_DEMOS.inmobiliarias;
   return (
-    <div className={"body"}>
+    <div className="body real-estate-body">
       <div className={"filters"}>
         <span>
           <small>{data.copy[0]}</small>

@@ -1,16 +1,17 @@
+import type { ComponentType } from "react";
+import { RestaurantLogo } from "../components/hero-demo/RestaurantLogo";
+import { StoreLogo } from "../components/hero-demo/StoreLogo";
+import { ClinicLogo } from "../components/hero-demo/ClinicLogo";
+import { RealEstateLogo } from "../components/hero-demo/RealEstateLogo";
+
 /** Fictional businesses from the v2 prototype. Never customer testimonials. */
-export type DemoLogoNode = {
-  tag: "svg" | "circle" | "rect" | "path" | "ellipse";
-  props: Record<string, string>;
-  children: readonly DemoLogoNode[];
-};
 export type HeroDemoData = {
   label: string;
   name: string;
   domain: string;
   benefit: string;
   navigation: readonly string[];
-  logo: DemoLogoNode;
+  logo: ComponentType;
   /** Reading order of the real text in each miniature. SVG artwork stays in its component. */
   copy: readonly string[];
 };
@@ -21,32 +22,7 @@ export const HERO_DEMOS = {
     domain: "cazuelaybrasa.co",
     benefit: "Menú digital siempre actualizado y reservas por WhatsApp con un clic.",
     navigation: ["Menú", "Reservas", "Ubicación"],
-    logo: {
-      tag: "svg",
-      props: {
-        viewBox: "0 0 24 24",
-      },
-      children: [
-        {
-          tag: "circle",
-          props: {
-            cx: "12",
-            cy: "12",
-            r: "11",
-            fill: "#9a3412",
-          },
-          children: [],
-        },
-        {
-          tag: "path",
-          props: {
-            d: "M7 14c0-3 2-6 5-8 3 2 5 5 5 8a5 5 0 0 1-10 0z",
-            fill: "#fdba74",
-          },
-          children: [],
-        },
-      ],
-    },
+    logo: RestaurantLogo,
     copy: [
       "Cocina vallecaucana a la brasa",
       "Abierto hoy · 12:00 – 22:00 · Granada, Cali",
@@ -69,36 +45,7 @@ export const HERO_DEMOS = {
     domain: "almendratienda.co",
     benefit: "Catálogo permanente que Google indexa y pedidos por WhatsApp sin comisiones.",
     navigation: ["Mujer", "Hogar", "Carrito (2)"],
-    logo: {
-      tag: "svg",
-      props: {
-        viewBox: "0 0 24 24",
-      },
-      children: [
-        {
-          tag: "rect",
-          props: {
-            width: "24",
-            height: "24",
-            rx: "7",
-            fill: "#78350f",
-          },
-          children: [],
-        },
-        {
-          tag: "ellipse",
-          props: {
-            cx: "12",
-            cy: "12",
-            rx: "5",
-            ry: "7.5",
-            fill: "#fcd34d",
-            transform: "rotate(25 12 12)",
-          },
-          children: [],
-        },
-      ],
-    },
+    logo: StoreLogo,
     copy: [
       "Nueva colección artesanal",
       "Hecho en el Valle · Envíos en Cali",
@@ -119,32 +66,7 @@ export const HERO_DEMOS = {
     domain: "odontologiaarce.co",
     benefit: "Agendamiento de citas online con recordatorios que reducen las inasistencias.",
     navigation: ["Tratamientos", "Equipo", "Citas"],
-    logo: {
-      tag: "svg",
-      props: {
-        viewBox: "0 0 24 24",
-      },
-      children: [
-        {
-          tag: "rect",
-          props: {
-            width: "24",
-            height: "24",
-            rx: "12",
-            fill: "#0e7490",
-          },
-          children: [],
-        },
-        {
-          tag: "path",
-          props: {
-            d: "M7 8c2-2 4-1 5 0 1-1 3-2 5 0 1 2 0 5-1 7l-1 4h-1l-1-4h-2l-1 4H9l-1-4C7 13 6 10 7 8z",
-            fill: "#fff",
-          },
-          children: [],
-        },
-      ],
-    },
+    logo: ClinicLogo,
     copy: [
       "Dra. Valeria Arce",
       "Ortodoncia y estética dental · 12 años",
@@ -178,45 +100,7 @@ export const HERO_DEMOS = {
     domain: "ceibainmobiliaria.co",
     benefit: "Catálogo propio con filtros y visitas agendadas desde cada inmueble.",
     navigation: ["Venta", "Arriendo", "Avalúos"],
-    logo: {
-      tag: "svg",
-      props: {
-        viewBox: "0 0 24 24",
-      },
-      children: [
-        {
-          tag: "rect",
-          props: {
-            width: "24",
-            height: "24",
-            rx: "6",
-            fill: "#14532d",
-          },
-          children: [],
-        },
-        {
-          tag: "circle",
-          props: {
-            cx: "12",
-            cy: "9",
-            r: "6",
-            fill: "#4ade80",
-          },
-          children: [],
-        },
-        {
-          tag: "rect",
-          props: {
-            x: "11",
-            y: "13",
-            width: "2",
-            height: "7",
-            fill: "#bbf7d0",
-          },
-          children: [],
-        },
-      ],
-    },
+    logo: RealEstateLogo,
     copy: [
       "Tipo",
       "Apartamento ▾",
