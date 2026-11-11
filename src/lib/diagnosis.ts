@@ -59,8 +59,6 @@ export type DiagnosisSource = "seccion" | "flotante";
 
 export interface DiagnosisStartDetail {
   source: DiagnosisSource;
-  /** Preselección opcional en una apertura manual: empieza en la pregunta 2. */
-  business?: BusinessId;
   /** Solo desde el botón flotante: muestra el último resultado de la visita. */
   showLastResult?: boolean;
 }

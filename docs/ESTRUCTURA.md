@@ -80,20 +80,17 @@ descripción, canonical) y delega el cuerpo en una plantilla compartida
 
 ### Orden de la landing (`/`)
 
-| Posición | Sección              | Componente          |
-| -------- | -------------------- | ------------------- |
-| 1        | Presentación         | `Hero`              |
-| 2        | Proyectos            | `Showcase3D`        |
-| 3        | Servicios            | `SoftwareSolutions` |
-| 4        | Problema             | `Problem`           |
-| 5        | Estándares           | `Stats`             |
-| 6        | Beneficios           | `Benefits`          |
-| 7        | Cómo trabajamos      | `Timeline`          |
-| 8        | Precios              | `Pricing`           |
-| 9        | Diagnóstico          | `DigitalDiagnosis`  |
-| 10       | Auditoría            | `AuditOffer`        |
-| 11       | Preguntas frecuentes | `FAQ`               |
-| 12       | Contacto             | `Contact`           |
+| Posición | Sección                               | Componente          |
+| -------- | ------------------------------------- | ------------------- |
+| 1        | Presentación                          | `Hero`              |
+| 2        | Proyectos                             | `Showcase3D`        |
+| 3        | Servicios                             | `SoftwareSolutions` |
+| 4        | Por qué Quimora Tech                  | `WhyQuimora`        |
+| 5        | Cómo trabajamos                       | `Timeline`          |
+| 6        | Precios                               | `Pricing`           |
+| 7        | Orientación (diagnóstico y auditoría) | `Guidance`          |
+| 8        | Preguntas frecuentes                  | `FAQ`               |
+| 9        | Contacto                              | `Contact`           |
 
 Los fondos de secciones contiguas alternan (blanco, gris, oscuro) para que no se
 fundan entre sí; al mover una sección, revisar sus vecinas. Las seis secciones
@@ -102,15 +99,15 @@ enlazadas en el navbar (`top`, `showcase`, `soluciones`, `nosotros`, `precios`,
 
 ### Por función
 
-| Grupo                     | Componentes                                                                                                                                                                                                                                                                                                                                                     |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Estructura del sitio      | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress`                                                                                                                                                                                                                                                                  |
-| Secciones de la landing   | `Hero`, `Showcase3D`, `SoftwareSolutions`, `Problem`, `Stats`, `Benefits`, `Timeline`, `Pricing`, `DigitalDiagnosis`, `AuditOffer`, `FAQ`, `Contact`                                                                                                                                                                                                            |
-| Diagnóstico (lead magnet) | `DigitalDiagnosis` (sección `#diagnostico` y apertura manual), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `FloatingDiagnosis` (comenzar o, tras terminar, ver el resultado y volver a empezar). Ambos accesos abren la misma ventana con `requestDiagnosis()`. No hay invitación automática ni atajos por negocio en la home |
-| Catálogo de soluciones    | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (ilustración SVG de tienda online en navegador y móvil)                                                                                                                                                       |
-| Portafolio                | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio)                                                                                                                                                                       |
-| Plantillas de página      | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`)                                                                                                                                                                                                                                                        |
-| Movimiento reutilizable   | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones)                                                                                                                                                                                                                                                                   |
+| Grupo                     | Componentes                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Estructura del sitio      | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress`                                                                                                                                                                                                                                                                                                      |
+| Secciones de la landing   | `Hero`, `Showcase3D`, `SoftwareSolutions`, `WhyQuimora`, `Timeline`, `Pricing`, `Guidance`, `FAQ`, `Contact`                                                                                                                                                                                                                                                                                        |
+| Diagnóstico (lead magnet) | `Guidance` (dos opciones, con anclas `#diagnostico` y `#auditoria`), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `FloatingDiagnosis` (comenzar o, tras terminar, ver el resultado y volver a empezar). La sección y el flotante usan `requestDiagnosis()`, sin preselección de negocio ni apertura automática. El primer negocio se elige dentro del cuestionario |
+| Catálogo de soluciones    | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (ilustración SVG de tienda online en navegador y móvil)                                                                                                                                                                                           |
+| Portafolio                | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio)                                                                                                                                                                                                           |
+| Plantillas de página      | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`)                                                                                                                                                                                                                                                                                            |
+| Movimiento reutilizable   | `Reveal` (entrada escalonada al verse)                                                                                                                                                                                                                                                                                                                                                              |
 
 ## 5. Datos y utilidades (`src/lib/`)
 
@@ -120,7 +117,7 @@ enlazadas en el navbar (`top`, `showcase`, `soluciones`, `nosotros`, `precios`,
 | `services-data.ts`                  | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara un `id` estable (`ServiceId`) y su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer` y el motor del diagnóstico) |
 | `pricing-data.ts`                   | **Fuente única** de los planes de la sección Precios (`PLANS`, `PLAN_INCLUDES`); la usan `Pricing` y, sin precios, el motor del diagnóstico (componentes del plan Emprendedor)                                                                             |
 | `verticals-data.ts`                 | Contenido de las páginas por rubro `/para/*` (alimenta `VerticalDetail`)                                                                                                                                                                                   |
-| `diagnosis.ts`                      | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, business? })`, el único punto de apertura de la ventana                                                                                        |
+| `diagnosis.ts`                      | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, showLastResult? })`, el único punto de apertura de la ventana                                                                                  |
 | `diagnosis-engine.ts`               | Motor puro del Diagnóstico (sin React ni DOM): opciones de las preguntas 2–5, `recommend()` (reglas R-P, R-K, R-C y R-N de `specs/001-diagnostico-captacion/spec.md`) y `buildWhatsAppMessage()`. Sin precios ni plazos                                    |
 | `diagnosis-result.ts`               | Últimas respuestas terminadas en la visita (`sessionStorage` `qt:diagnosis-last-answers`, con respaldo en memoria); alimenta `FloatingDiagnosis` y `DiagnosisDialog`                                                                                       |
 | `hooks.ts`                          | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor)                                                                                                                                                                    |
@@ -155,6 +152,7 @@ enlazadas en el navbar (`top`, `showcase`, `soluciones`, `nosotros`, `precios`,
   Promocionar versión), acción que requiere autorización expresa del
   responsable. Tras cada push a `main` se comprueba que exista su compilación
   (V9).
+- Si un push no genera compilación en Workers Builds en 10 minutos, relanzarla con el disparador correspondiente (producción o “Implementar ramas de no producción”) desde el panel o la API de Cloudflare, indicando rama y commit. Ocurrió el 10 y el 11/11/2026.
 - **Dominio:** `quimoratech.com`.
 - **Cabeceras HTTP:** `public/_headers` solo se aplica a Static Assets; el HTML SSR,
   las redirecciones y los errores reciben sus cabeceras desde

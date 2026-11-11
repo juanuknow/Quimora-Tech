@@ -1,6 +1,6 @@
+import { WhyQuimora } from "../components/WhyQuimora";
+import { Guidance } from "../components/Guidance";
 import { createFileRoute } from "@tanstack/react-router";
-import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
-import { AuditOffer } from "../components/AuditOffer";
 import { DiagnosisDialog } from "../components/DiagnosisDialog";
 import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
@@ -10,9 +10,6 @@ import { FloatingWhatsApp } from "../components/FloatingWhatsApp";
 import { TopBar } from "../components/TopBar";
 import { Nav } from "../components/Nav";
 import { Hero } from "../components/Hero";
-import { Problem } from "../components/Problem";
-import { Benefits } from "../components/Benefits";
-import { Stats } from "../components/Stats";
 import { Timeline } from "../components/Timeline";
 import { Pricing } from "../components/Pricing";
 import { FAQ } from "../components/FAQ";
@@ -48,13 +45,10 @@ function LandingPage() {
         <Hero />
         <Showcase3D />
         <SoftwareSolutions />
-        <Problem />
-        <Stats />
-        <Benefits />
+        <WhyQuimora />
         <Timeline />
         <Pricing />
-        <DigitalDiagnosis />
-        <AuditOffer />
+        <Guidance />
         <FAQ />
         <Contact />
       </main>

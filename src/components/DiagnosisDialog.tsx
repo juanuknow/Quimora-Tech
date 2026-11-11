@@ -153,7 +153,6 @@ export function DiagnosisDialog() {
   const [open, setOpen] = useState(false);
   const [phase, setPhase] = useState<"questions" | "result">("questions");
   const [step, setStep] = useState(0);
-  const [startStep, setStartStep] = useState(0);
   const [answers, setAnswers] = useState<Draft>(EMPTY);
   const [showError, setShowError] = useState(false);
 
@@ -163,13 +162,11 @@ export function DiagnosisDialog() {
       const detail = (e as CustomEvent<DiagnosisStartDetail>).detail;
       const dialog = dialogRef.current;
       if (!detail || !dialog || dialog.open) return;
-      const first = detail.business ? 1 : 0;
       const lastAnswers = detail.showLastResult ? getLastAnswers() : null;
       openerRef.current =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      setAnswers(lastAnswers ?? { ...EMPTY, business: detail.business ?? null });
-      setStep(first);
-      setStartStep(first);
+      setAnswers(lastAnswers ?? EMPTY);
+      setStep(0);
       setPhase(lastAnswers ? "result" : "questions");
       setShowError(false);
       setOpen(true);
@@ -252,7 +249,6 @@ export function DiagnosisDialog() {
     resultViewedRef.current = false;
     setAnswers(EMPTY);
     setStep(0);
-    setStartStep(0);
     setShowError(false);
     setPhase("questions");
   };
@@ -289,7 +285,7 @@ export function DiagnosisDialog() {
             {phase === "questions" ? (
               <Questions
                 step={step}
-                showIntro={step === 0 && startStep === 0}
+                showIntro={step === 0}
                 answers={answers}
                 setAnswers={(d) => {
                   setShowError(false);
