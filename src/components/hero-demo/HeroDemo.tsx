@@ -183,22 +183,13 @@ export function HeroDemo() {
           })}
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p
-          className="max-w-[22rem] text-ui leading-[1.45] text-foreground"
-          role="status"
-          aria-live={rotating && !reducedMotion ? "off" : "polite"}
-        >
-          {data.benefit}
-        </p>
-        <a
-          className={`inline-flex min-h-11 items-center rounded-md bg-cta px-[18px] py-2.5 text-ui font-semibold text-white transition-colors hover:bg-cta-hover motion-reduce:transition-none ${FOCUS_RING}`}
-          href={`/para/${HERO_DEMO_KEYS[active]}`}
-          onClick={() => trackEvent("hero_business_cta", { vertical: HERO_DEMO_KEYS[active] })}
-        >
-          Quiero una web así →
-        </a>
-      </div>
+      <p
+        className="mt-4 max-w-[28rem] text-ui leading-[1.45] text-foreground"
+        role="status"
+        aria-live={rotating && !reducedMotion ? "off" : "polite"}
+      >
+        {data.benefit}
+      </p>
     </div>
   );
 }
