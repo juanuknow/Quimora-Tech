@@ -1,4 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
+import type { FocusEvent } from "react";
+import { Pause, Play } from "lucide-react";
 import { FOCUS_RING, trackEvent } from "../../lib/site";
 import { HERO_DEMOS, HERO_DEMO_KEYS } from "../../lib/hero-demo-data";
 import { RestaurantDemo } from "./RestaurantDemo";
@@ -12,7 +14,10 @@ const DEMO_COMPONENTS = [RestaurantDemo, StoreDemo, ClinicDemo, RealEstateDemo];
 export function HeroDemo() {
   const id = useId();
   const [active, setActive] = useState(0);
-  const [rotating, setRotating] = useState(true);
+  const [userPaused, setUserPaused] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [focusInside, setFocusInside] = useState(false);
+  const [pageHidden, setPageHidden] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const data = HERO_DEMOS[HERO_DEMO_KEYS[active]];
@@ -26,26 +31,53 @@ export function HeroDemo() {
   }, []);
 
   useEffect(() => {
-    if (!rotating || reducedMotion) return;
+    const update = () => setPageHidden(document.hidden);
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+
+  const rotating = !userPaused && !hovering && !focusInside && !reducedMotion && !pageHidden;
+
+  useEffect(() => {
+    if (!rotating) return;
     const timer = window.setInterval(() => {
       if (!document.hidden) setActive((index) => (index + 1) % HERO_DEMO_KEYS.length);
     }, 3500);
     return () => window.clearInterval(timer);
-  }, [rotating, reducedMotion]);
+  }, [rotating]);
 
   function select(index: number, focus = false) {
-    setRotating(false);
+    setUserPaused(true);
     setActive(index);
     trackEvent("hero_business_select", { vertical: HERO_DEMO_KEYS[index] });
     if (focus) tabs.current[index]?.focus();
   }
 
+  function handleFocusOut(event: FocusEvent<HTMLDivElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget)) setFocusInside(false);
+  }
+
   return (
-    <div className="hero-demo w-full min-w-0 text-brand" onPointerEnter={() => setRotating(false)}>
+    <div
+      className="hero-demo w-full min-w-0 text-brand"
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") setHovering(true);
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "mouse") setHovering(false);
+      }}
+    >
       <p className="text-caption font-semibold text-muted-foreground" id={`${id}-label`}>
         ¿Qué negocio tienes?
       </p>
-      <div className="mt-2.5 flex flex-wrap gap-2" role="tablist" aria-labelledby={`${id}-label`}>
+      <div
+        className="mt-2.5 flex flex-wrap gap-2"
+        role="tablist"
+        aria-labelledby={`${id}-label`}
+        onFocus={() => setFocusInside(true)}
+        onBlur={handleFocusOut}
+      >
         {HERO_DEMO_KEYS.map((key, index) => (
           <button
             key={key}
@@ -59,7 +91,6 @@ export function HeroDemo() {
             aria-controls={`${id}-panel-${key}`}
             aria-selected={active === index}
             tabIndex={active === index ? 0 : -1}
-            onFocus={() => setRotating(false)}
             onClick={() => select(index)}
             onKeyDown={(event) => {
               let next: number;
@@ -92,10 +123,20 @@ export function HeroDemo() {
         {!reducedMotion && (
           <button
             type="button"
-            className={`min-h-11 cursor-pointer px-2 underline underline-offset-4 ${FOCUS_RING}`}
-            onClick={() => setRotating((value) => !value)}
+            className={`inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border border-hairline px-3 text-brand transition-colors hover:bg-brand-soft motion-reduce:transition-none ${FOCUS_RING}`}
+            aria-label={
+              userPaused
+                ? "Reanudar el cambio automático de ejemplos"
+                : "Pausar el cambio automático de ejemplos"
+            }
+            onClick={() => setUserPaused((value) => !value)}
           >
-            {rotating ? "Pausar ejemplos" : "Rotar ejemplos"}
+            {userPaused ? (
+              <Play size={14} aria-hidden="true" />
+            ) : (
+              <Pause size={14} aria-hidden="true" />
+            )}
+            {userPaused ? "Reanudar" : "Pausar"}
           </button>
         )}
       </div>
@@ -122,7 +163,8 @@ export function HeroDemo() {
                 aria-hidden={!visible}
                 inert={!visible}
                 tabIndex={visible ? 0 : -1}
-                onFocus={() => setRotating(false)}
+                onFocus={() => setFocusInside(true)}
+                onBlur={handleFocusOut}
               >
                 <div className="nav">
                   <span className="logo">
