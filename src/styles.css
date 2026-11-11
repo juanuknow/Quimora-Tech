@@ -313,19 +313,6 @@
   animation-delay: var(--delay, 0ms);
 }
 
-/* Dibuja un trazo SVG progresivamente. `--len` debe ser >= la longitud real
-   del path para que el trazo quede completo al terminar. */
-@keyframes draw-stroke {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-.animate-draw-stroke {
-  stroke-dasharray: var(--len, 300);
-  stroke-dashoffset: var(--len, 300);
-  animation: draw-stroke 1.5s cubic-bezier(0.33, 1, 0.68, 1) 0.45s both;
-}
-
 /* Anillo del botón flotante de WhatsApp. Más lento y corto de recorrido que el
    `animate-ping` de Tailwind (escala 2 en 1 s), que a tamaño fijo en pantalla
    resultaba insistente. La pausa entre 70% y 100% deja respirar el ciclo. */
@@ -432,22 +419,6 @@
 /* Inner layer that floats above the card surface for a parallax depth cue. */
 .tilt-layer {
   transform: translateZ(40px);
-  transform-style: preserve-3d;
-}
-
-/* Gentle 3D float for the hero visual — rotates subtly on two axes. */
-@keyframes float-3d {
-  0%,
-  100% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0);
-  }
-  50% {
-    transform: perspective(1000px) rotateX(4deg) rotateY(-6deg) translateY(-12px);
-  }
-}
-
-.animate-float-3d {
-  animation: float-3d 7s ease-in-out infinite;
   transform-style: preserve-3d;
 }
 
@@ -566,10 +537,6 @@
     animation: none;
   }
 
-  .animate-float-3d {
-    animation: none;
-  }
-
   .tilt-card {
     transition: none;
   }
@@ -601,12 +568,6 @@
   .animate-soft-ping {
     animation: none;
     opacity: 0;
-  }
-
-  .animate-draw-stroke {
-    stroke-dasharray: none;
-    stroke-dashoffset: 0;
-    animation: none;
   }
 
   * {

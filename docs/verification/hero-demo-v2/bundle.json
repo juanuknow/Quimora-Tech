@@ -1,0 +1,39 @@
+{
+  "before": [
+    {
+      "file": "FloatingWhatsApp-DMFmNg3B.js",
+      "bytes": 18696,
+      "gzip": 5719
+    },
+    {
+      "file": "index-CbPIPMeq.js",
+      "bytes": 354821,
+      "gzip": 111386
+    },
+    {
+      "file": "routes-D0g6JDdt.js",
+      "bytes": 124590,
+      "gzip": 33270
+    }
+  ],
+  "after": [
+    {
+      "file": "FloatingWhatsApp-BWjGzpzR.js",
+      "bytes": 18696,
+      "gzip": 5719
+    },
+    {
+      "file": "index-CHGmkcPE.js",
+      "bytes": 354858,
+      "gzip": 111402
+    },
+    {
+      "file": "routes-Dj1kt98X.js",
+      "bytes": 138734,
+      "gzip": 36957
+    }
+  ],
+  "beforeGzip": 150375,
+  "afterGzip": 154078,
+  "deltaGzip": 3703
+}
