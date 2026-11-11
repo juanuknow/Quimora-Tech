@@ -57,14 +57,14 @@ No se versionan (están en `.gitignore`): `node_modules/`, `.output/`, `.tanstac
 
 ## 3. Rutas (`src/routes/`)
 
-| Archivo | URL | Contenido |
-| --- | --- | --- |
-| `__root.tsx` | (todas) | Layout raíz: `<head>`, meta, Open Graph, schema.org, 404 y página de error |
-| `index.tsx` | `/` | Landing: solo compone las secciones (ver sección 4) |
-| `privacidad.tsx` | `/privacidad` | Política de privacidad (Ley 1581) |
-| `terminos.tsx` | `/terminos` | Términos y condiciones |
+| Archivo           | URL                 | Contenido                                                                                                                                                     |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `__root.tsx`      | (todas)             | Layout raíz: `<head>`, meta, Open Graph, schema.org, 404 y página de error                                                                                    |
+| `index.tsx`       | `/`                 | Landing: solo compone las secciones (ver sección 4)                                                                                                           |
+| `privacidad.tsx`  | `/privacidad`       | Política de privacidad (Ley 1581)                                                                                                                             |
+| `terminos.tsx`    | `/terminos`         | Términos y condiciones                                                                                                                                        |
 | `servicios/*.tsx` | `/servicios/<slug>` | 6 páginas de servicio: `desarrollo-web`, `landing-pages`, `tiendas-online`, `sistemas-de-inventario`, `sistemas-de-facturacion`, `automatizacion-de-procesos` |
-| `para/*.tsx` | `/para/<rubro>` | 4 páginas por tipo de negocio: `tiendas`, `restaurantes`, `clinicas`, `inmobiliarias` |
+| `para/*.tsx`      | `/para/<rubro>`     | 4 páginas por tipo de negocio: `tiendas`, `restaurantes`, `clinicas`, `inmobiliarias`                                                                         |
 
 Cada ruta de `servicios/` y `para/` es un archivo delgado: define el `<head>` (título,
 descripción, canonical) y delega el cuerpo en una plantilla compartida
@@ -80,54 +80,52 @@ descripción, canonical) y delega el cuerpo en una plantilla compartida
 
 ### Orden de la landing (`/`)
 
-| Posición | Sección | Componente |
-| --- | --- | --- |
-| 1 | Presentación | `Hero` |
-| 2 | Problema | `Problem` |
-| 3 | Estándares | `Stats` |
-| 4 | Beneficios | `Benefits` |
-| 5 | Servicios | `SoftwareSolutions` |
-| 6 | Proyectos | `Showcase3D` |
-| 7 | Cómo trabajamos | `Timeline` |
-| 8 | Atajos de diagnóstico | `DiagnosisShortcuts` |
-| 9 | Diagnóstico | `DigitalDiagnosis` |
-| 10 | Auditoría | `AuditOffer` |
-| 11 | Precios | `Pricing` |
-| 12 | Preguntas frecuentes | `FAQ` |
-| 13 | Contacto | `Contact` |
+| Posición | Sección              | Componente          |
+| -------- | -------------------- | ------------------- |
+| 1        | Presentación         | `Hero`              |
+| 2        | Proyectos            | `Showcase3D`        |
+| 3        | Servicios            | `SoftwareSolutions` |
+| 4        | Problema             | `Problem`           |
+| 5        | Estándares           | `Stats`             |
+| 6        | Beneficios           | `Benefits`          |
+| 7        | Cómo trabajamos      | `Timeline`          |
+| 8        | Precios              | `Pricing`           |
+| 9        | Diagnóstico          | `DigitalDiagnosis`  |
+| 10       | Auditoría            | `AuditOffer`        |
+| 11       | Preguntas frecuentes | `FAQ`               |
+| 12       | Contacto             | `Contact`           |
 
 Los fondos de secciones contiguas alternan (blanco, gris, oscuro) para que no se
 fundan entre sí; al mover una sección, revisar sus vecinas. Las seis secciones
-enlazadas en el navbar (`top`, `soluciones`, `showcase`, `nosotros`, `precios`,
+enlazadas en el navbar (`top`, `showcase`, `soluciones`, `nosotros`, `precios`,
 `contacto`) deben conservar su orden relativo: el scroll-spy de `Nav` depende de él.
 
 ### Por función
 
-| Grupo | Componentes |
-| --- | --- |
-| Estructura del sitio | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress` |
-| Secciones de la landing | `Hero`, `Problem`, `Stats`, `Benefits`, `SoftwareSolutions`, `Showcase3D`, `Timeline`, `DiagnosisShortcuts`, `DigitalDiagnosis`, `AuditOffer`, `Pricing`, `FAQ`, `Contact` |
-| Diagnóstico (lead magnet) | `DigitalDiagnosis` (presentación de la sección `#diagnostico` y su botón), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `DiagnosisInvite` (invitación de la home a los 2,5 s: ventana con ≥ 768 × 640 px o tarjeta inferior medida y suprimible), `DiagnosisShortcuts` (atajos que abren la ventana con el negocio ya elegido), `FloatingDiagnosis` (botón flotante de la home: comenzar o, tras terminar, ver el resultado y volver a empezar). Todos abren la misma ventana con `requestDiagnosis()` |
-| Catálogo de soluciones | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (ilustración SVG de tienda online en navegador y móvil) |
-| Portafolio | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio) |
-| Plantillas de página | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`) |
-| Movimiento reutilizable | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones) |
+| Grupo                     | Componentes                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Estructura del sitio      | `TopBar`, `Nav`, `Footer`, `FloatingWhatsApp`, `WhatsAppIcon`, `NewTabHint`, `ReadingProgress`                                                                                                                                                                                                                                                                  |
+| Secciones de la landing   | `Hero`, `Showcase3D`, `SoftwareSolutions`, `Problem`, `Stats`, `Benefits`, `Timeline`, `Pricing`, `DigitalDiagnosis`, `AuditOffer`, `FAQ`, `Contact`                                                                                                                                                                                                            |
+| Diagnóstico (lead magnet) | `DigitalDiagnosis` (sección `#diagnostico` y apertura manual), `DiagnosisDialog` (ventana única: 5 preguntas, resultado, WhatsApp y copiar), `FloatingDiagnosis` (comenzar o, tras terminar, ver el resultado y volver a empezar). Ambos accesos abren la misma ventana con `requestDiagnosis()`. No hay invitación automática ni atajos por negocio en la home |
+| Catálogo de soluciones    | `SoftwareSolutions` (sección: cabecera, catálogo y CTA), `SolutionsCatalog` (3 pestañas con teclado), `SolutionCard` (tarjeta), `SolutionsVisual` (ilustración SVG de tienda online en navegador y móvil)                                                                                                                                                       |
+| Portafolio                | `Showcase3D` (caso destacado), `ShowcaseGallery` (capturas con pestañas), `BrowserChrome` (marco de navegador y barra de ventana), `DesktopAppChrome` (marco de aplicación de escritorio)                                                                                                                                                                       |
+| Plantillas de página      | `ServiceDetail` (`/servicios/*`), `VerticalDetail` (`/para/*`), `LegalPage` (`/privacidad`, `/terminos`)                                                                                                                                                                                                                                                        |
+| Movimiento reutilizable   | `Reveal` (entrada escalonada al verse), `FlowConnector` (línea que se dibuja entre secciones)                                                                                                                                                                                                                                                                   |
 
 ## 5. Datos y utilidades (`src/lib/`)
 
-| Archivo | Responsabilidad |
-| --- | --- |
-| `site.ts` | **Fuente única** de contacto (WhatsApp, correo, teléfonos), `SITE_URL`, endpoint de Formspree, ID de Google Analytics, `trackEvent` y los anillos de foco `FOCUS_RING` / `LIGHT_RING`. No hardcodear estos valores en componentes. |
-| `services-data.ts` | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara un `id` estable (`ServiceId`) y su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer` y el motor del diagnóstico) |
-| `pricing-data.ts` | **Fuente única** de los planes de la sección Precios (`PLANS`, `PLAN_INCLUDES`); la usan `Pricing` y, sin precios, el motor del diagnóstico (componentes del plan Emprendedor) |
-| `verticals-data.ts` | Contenido de las páginas por rubro `/para/*` (alimenta `VerticalDetail`) |
-| `diagnosis.ts` | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, business? })`, el único punto de apertura de la ventana |
-| `diagnosis-engine.ts` | Motor puro del Diagnóstico (sin React ni DOM): opciones de las preguntas 2–5, `recommend()` (reglas R-P, R-K, R-C y R-N de `specs/001-diagnostico-captacion/spec.md`) y `buildWhatsAppMessage()`. Sin precios ni plazos |
-| `diagnosis-invite.ts` | Estado de la invitación en la sesión (`sessionStorage` `qt:diagnosis-invite`, con respaldo en memoria) |
-| `diagnosis-result.ts` | Últimas respuestas terminadas en la visita (`sessionStorage` `qt:diagnosis-last-answers`, con respaldo en memoria); alimenta `FloatingDiagnosis` y `DiagnosisDialog` |
-| `hooks.ts` | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor) |
-| `error-capture.ts`, `error-page.ts` | Captura de errores en SSR y página de error genérica |
-| `lovable-error-reporting.ts` | Integración de reporte de errores de Lovable |
+| Archivo                             | Responsabilidad                                                                                                                                                                                                                                            |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.ts`                           | **Fuente única** de contacto (WhatsApp, correo, teléfonos), `SITE_URL`, endpoint de Formspree, ID de Google Analytics, `trackEvent` y los anillos de foco `FOCUS_RING` / `LIGHT_RING`. No hardcodear estos valores en componentes.                         |
+| `services-data.ts`                  | Catálogo de servicios y soluciones, y las 3 categorías del catálogo (`SERVICE_CATEGORIES`); cada servicio declara un `id` estable (`ServiceId`) y su `category` (alimenta `SolutionsCatalog`, `ServiceDetail`, `Nav`, `Footer` y el motor del diagnóstico) |
+| `pricing-data.ts`                   | **Fuente única** de los planes de la sección Precios (`PLANS`, `PLAN_INCLUDES`); la usan `Pricing` y, sin precios, el motor del diagnóstico (componentes del plan Emprendedor)                                                                             |
+| `verticals-data.ts`                 | Contenido de las páginas por rubro `/para/*` (alimenta `VerticalDetail`)                                                                                                                                                                                   |
+| `diagnosis.ts`                      | Tipos de negocio del Diagnóstico, texto de apoyo aprobado (`DIAGNOSIS_INTRO`) y `requestDiagnosis({ source, business? })`, el único punto de apertura de la ventana                                                                                        |
+| `diagnosis-engine.ts`               | Motor puro del Diagnóstico (sin React ni DOM): opciones de las preguntas 2–5, `recommend()` (reglas R-P, R-K, R-C y R-N de `specs/001-diagnostico-captacion/spec.md`) y `buildWhatsAppMessage()`. Sin precios ni plazos                                    |
+| `diagnosis-result.ts`               | Últimas respuestas terminadas en la visita (`sessionStorage` `qt:diagnosis-last-answers`, con respaldo en memoria); alimenta `FloatingDiagnosis` y `DiagnosisDialog`                                                                                       |
+| `hooks.ts`                          | `useInView` (disparar al entrar en pantalla) y `useTilt` (inclinación 3D con el cursor)                                                                                                                                                                    |
+| `error-capture.ts`, `error-page.ts` | Captura de errores en SSR y página de error genérica                                                                                                                                                                                                       |
+| `lovable-error-reporting.ts`        | Integración de reporte de errores de Lovable                                                                                                                                                                                                               |
 
 ## 6. Estilos y animación (`src/styles.css`)
 
@@ -195,16 +193,15 @@ bunx prettier --check src     # comprobar formato; no aplicar cambios masivos
 
 ## 9. Dónde cambiar cada cosa
 
-| Quiero… | Edito… |
-| --- | --- |
-| Cambiar teléfono, correo, WhatsApp o endpoint del formulario | `src/lib/site.ts` |
-| Añadir o editar un servicio | `src/lib/services-data.ts`, eligiendo su `category` (+ una ruta en `src/routes/servicios/` si tiene página) |
-| Añadir una página por rubro | `src/lib/verticals-data.ts` + una ruta en `src/routes/para/` |
-| Reordenar la landing | `src/routes/index.tsx` |
-| Cambiar las preguntas o las reglas del Diagnóstico | `src/lib/diagnosis-engine.ts` (y su spec en `specs/001-diagnostico-captacion/`) |
-| Retirar la invitación automática al Diagnóstico | Quitar `<DiagnosisInvite />` de `src/routes/index.tsx` (el Diagnóstico sigue disponible) |
-| Cambiar colores, tipografía o curvas | `src/styles.css` (`@theme`) |
-| Cambiar meta/SEO global o schema.org | `src/routes/__root.tsx` |
-| Permitir un dominio externo en la CSP | Hoy no aplica al HTML (ver §7); pendiente de mover las cabeceras de seguridad al Worker |
-| Cambiar la caché de un estático | `public/_headers` |
-| Registrar una página nueva en el buscador | `public/sitemap.xml` |
+| Quiero…                                                      | Edito…                                                                                                      |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Cambiar teléfono, correo, WhatsApp o endpoint del formulario | `src/lib/site.ts`                                                                                           |
+| Añadir o editar un servicio                                  | `src/lib/services-data.ts`, eligiendo su `category` (+ una ruta en `src/routes/servicios/` si tiene página) |
+| Añadir una página por rubro                                  | `src/lib/verticals-data.ts` + una ruta en `src/routes/para/`                                                |
+| Reordenar la landing                                         | `src/routes/index.tsx`                                                                                      |
+| Cambiar las preguntas o las reglas del Diagnóstico           | `src/lib/diagnosis-engine.ts` (y su spec en `specs/001-diagnostico-captacion/`)                             |
+| Cambiar colores, tipografía o curvas                         | `src/styles.css` (`@theme`)                                                                                 |
+| Cambiar meta/SEO global o schema.org                         | `src/routes/__root.tsx`                                                                                     |
+| Permitir un dominio externo en la CSP                        | Hoy no aplica al HTML (ver §7); pendiente de mover las cabeceras de seguridad al Worker                     |
+| Cambiar la caché de un estático                              | `public/_headers`                                                                                           |
+| Registrar una página nueva en el buscador                    | `public/sitemap.xml`                                                                                        |

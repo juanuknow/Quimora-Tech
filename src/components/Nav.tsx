@@ -15,13 +15,13 @@ import { servicesWithPage } from "../lib/services-data";
 // enlace fuera de orden lo hacía saltar hacia adelante y volver atrás.
 const NAV_LINKS = [
   { id: "top", href: "/#top", label: "Inicio" },
+  { id: "showcase", href: "/#showcase", label: "Proyectos" },
   // Apunta a "#soluciones" (la sección con el catálogo real) y no a
   // "#servicios" (la sección "Por qué Quimora Tech"): el dropdown que cuelga
   // de este ítem lista justamente esos servicios, así que el clic debe
   // aterrizar donde vive el contenido que el submenú promete.
   { id: "soluciones", href: "/#soluciones", label: "Servicios" },
-  { id: "showcase", href: "/#showcase", label: "Proyectos" },
-  { id: "nosotros", href: "/#nosotros", label: "Nosotros" },
+  { id: "nosotros", href: "/#nosotros", label: "Cómo trabajamos" },
   { id: "precios", href: "/#precios", label: "Precios" },
   { id: "contacto", href: "/#contacto", label: "Contacto" },
 ] as const;

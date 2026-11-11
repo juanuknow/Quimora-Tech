@@ -8,7 +8,7 @@ import { NewTabHint } from "./NewTabHint";
 /**
  * Presentación de la sección `#diagnostico`, renderizada en el servidor. El
  * cuestionario y el resultado viven en la ventana única `DiagnosisDialog`
- * (FR-013a), que este botón abre igual que los atajos y la invitación.
+ * (FR-013a), que este botón abre igual que el acceso flotante.
  *
  * Sin JavaScript la ventana no puede abrirse: el `<noscript>` ofrece WhatsApp.
  */

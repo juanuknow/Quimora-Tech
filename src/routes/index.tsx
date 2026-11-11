@@ -2,8 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DigitalDiagnosis } from "../components/DigitalDiagnosis";
 import { AuditOffer } from "../components/AuditOffer";
 import { DiagnosisDialog } from "../components/DiagnosisDialog";
-import { DiagnosisInvite } from "../components/DiagnosisInvite";
-import { DiagnosisShortcuts } from "../components/DiagnosisShortcuts";
 import { ReadingProgress } from "../components/ReadingProgress";
 import { Showcase3D } from "../components/Showcase3D";
 import { SoftwareSolutions } from "../components/SoftwareSolutions";
@@ -42,28 +40,21 @@ function LandingPage() {
       <TopBar />
       <Nav />
       {/* Recorrido comercial. Las seis secciones enlazadas en el navbar (top,
-          soluciones, showcase, nosotros, precios, contacto) DEBEN conservar
+          showcase, soluciones, nosotros, precios, contacto) DEBEN conservar
           este orden relativo: el scroll-spy de Nav depende de él. */}
       {/* tabIndex -1: destino de foco del enlace "Saltar al contenido" y de las
           ventanas del diagnóstico cuando el elemento anterior ya no existe. */}
       <main id="main" tabIndex={-1} className="outline-none">
-        {/* 1. Presentación y problema */}
         <Hero />
+        <Showcase3D />
+        <SoftwareSolutions />
         <Problem />
-        {/* 2. Respaldo y razones para elegirnos */}
         <Stats />
         <Benefits />
-        {/* 3. Oferta principal y proyectos */}
-        <SoftwareSolutions />
-        <Showcase3D />
-        {/* 4. Cómo trabajamos */}
         <Timeline />
-        {/* 5. Diagnóstico */}
-        <DiagnosisShortcuts />
+        <Pricing />
         <DigitalDiagnosis />
         <AuditOffer />
-        {/* 6. Precios, preguntas y contacto */}
-        <Pricing />
         <FAQ />
         <Contact />
       </main>
@@ -72,8 +63,6 @@ function LandingPage() {
       <FloatingWhatsApp />
       {/* Superposición, no sección: la ventana única del diagnóstico (FR-013a). */}
       <DiagnosisDialog />
-      {/* Invitación (US3): retirarla solo exige borrar esta línea. */}
-      <DiagnosisInvite />
     </div>
   );
 }

@@ -12,8 +12,7 @@ const CONTROL = `inline-flex h-11 items-center rounded-full font-display text-ca
  *
  * El botón principal es el mismo elemento en ambos estados para que el foco
  * pueda volver a él al cerrar la ventana. `z-30` lo deja debajo de la barra de
- * navegación, su menú móvil y la tarjeta de invitación (`z-40`). Mientras esa tarjeta está en
- * pantalla se oculta, porque ofrece lo mismo, salvo que tenga el foco para no perderlo.
+ * navegación y su menú móvil.
  */
 export function FloatingDiagnosis() {
   const hasResult = useSyncExternalStore(
@@ -23,7 +22,7 @@ export function FloatingDiagnosis() {
   );
 
   return (
-    <div className="animate-pop-in-bounce fixed bottom-6 left-5 z-30 flex items-center rounded-full border border-hairline bg-background p-0.5 shadow-lg [--delay:1400ms] md:bottom-9 md:left-8 [body:has(#diagnosis-invite-card)_&:not(:focus-within)]:invisible">
+    <div className="animate-pop-in-bounce fixed bottom-6 left-5 z-30 flex items-center rounded-full border border-hairline bg-background p-0.5 shadow-lg [--delay:1400ms] md:bottom-9 md:left-8">
       <button
         type="button"
         onClick={() => requestDiagnosis({ source: "flotante", showLastResult: hasResult })}

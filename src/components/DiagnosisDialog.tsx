@@ -61,7 +61,6 @@ import {
   type Recommendation,
   type SituationId,
 } from "../lib/diagnosis-engine";
-import { markInvite } from "../lib/diagnosis-invite";
 import { getLastAnswers, saveLastAnswers } from "../lib/diagnosis-result";
 import { getService } from "../lib/services-data";
 import { FOCUS_RING, LIGHT_RING, trackEvent } from "../lib/site";
@@ -136,7 +135,7 @@ function isComplete(d: Draft): d is CompleteAnswers {
 
 /**
  * Ventana única del Diagnóstico Digital Gratuito (FR-013a). La abren la sección
- * `#diagnostico`, los atajos, la invitación y el botón flotante con `requestDiagnosis`.
+ * `#diagnostico` y el botón flotante con `requestDiagnosis`.
  *
  * `<dialog>` nativo con `showModal()`: capa superior, fondo inerte y Escape
  * gratis (evento `cancel`). En escritorio no se bloquea el desplazamiento del
@@ -158,7 +157,7 @@ export function DiagnosisDialog() {
   const [answers, setAnswers] = useState<Draft>(EMPTY);
   const [showError, setShowError] = useState(false);
 
-  // Apertura por evento (sección, atajos, invitación).
+  // Apertura manual por evento (sección y botón flotante).
   useEffect(() => {
     const onStart = (e: Event) => {
       const detail = (e as CustomEvent<DiagnosisStartDetail>).detail;
@@ -216,11 +215,9 @@ export function DiagnosisDialog() {
     [phase, answers],
   );
 
-  // Llegar al resultado, por cualquier vía, evita que la invitación vuelva a aparecer (FR-002),
-  // y se mide una sola vez por resultado mostrado (FR-025).
+  // Medir una sola vez por resultado mostrado (FR-025).
   useEffect(() => {
     if (!open || !recommendation) return;
-    markInvite("completed");
     if (!resultViewedRef.current) {
       resultViewedRef.current = true;
       trackEvent("diagnosis_result_view", { solution_id: recommendation.primary });

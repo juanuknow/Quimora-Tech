@@ -13,7 +13,7 @@ import {
 
 /**
  * Modelo compartido entre la ventana del Diagnóstico y quienes la abren desde
- * otra parte de la página (la sección, los atajos, la invitación y el botón flotante).
+ * otra parte de la página (la sección y el botón flotante).
  */
 
 export type BusinessId =
@@ -47,7 +47,7 @@ export const BUSINESS_OPTIONS: Option<BusinessId>[] = [
 
 /**
  * Texto de apoyo aprobado en la spec (FR-003). Lo usan la sección
- * `#diagnostico`, la pregunta 1 de la ventana (FR-003b) y la invitación de escritorio.
+ * `#diagnostico` y la pregunta 1 de la ventana (FR-003b).
  */
 export const DIAGNOSIS_INTRO =
   "Descubre qué oportunidades tiene tu negocio para crecer con tecnología. Responde unas preguntas y recibe una recomendación personalizada, completamente gratis.";
@@ -55,11 +55,11 @@ export const DIAGNOSIS_INTRO =
 export const DIAGNOSIS_START_EVENT = "diagnosis:start";
 
 /** Desde dónde se abre el diagnóstico; viaja a la analítica como `source`. */
-export type DiagnosisSource = "invitacion" | "seccion" | "atajo" | "flotante";
+export type DiagnosisSource = "seccion" | "flotante";
 
 export interface DiagnosisStartDetail {
   source: DiagnosisSource;
-  /** Solo desde un atajo: el diagnóstico empieza en la pregunta 2 con este negocio. */
+  /** Preselección opcional en una apertura manual: empieza en la pregunta 2. */
   business?: BusinessId;
   /** Solo desde el botón flotante: muestra el último resultado de la visita. */
   showLastResult?: boolean;
@@ -67,7 +67,7 @@ export interface DiagnosisStartDetail {
 
 /**
  * Abre la ventana única del diagnóstico (`DiagnosisDialog`). Es un evento del
- * `window` y no props: quien lo dispara (sección, atajos, invitación) y la
+ * `window` y no props: quien lo dispara (sección o botón flotante) y la
  * ventana viven en ramas distintas de la página. No desplaza la página.
  */
 export function requestDiagnosis(detail: DiagnosisStartDetail): void {

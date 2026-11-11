@@ -20,17 +20,17 @@ const FOOTER_NAV = [
     title: "Navegación",
     links: [
       { href: "/#top", label: "Inicio" },
+      { href: "/#showcase", label: "Proyectos" },
       // Mismo destino que "Servicios" en el navbar (el catálogo real).
       { href: "/#soluciones", label: "Servicios" },
       { href: "/#servicios", label: "Por qué Quimora Tech" },
-      { href: "/#nosotros", label: "Cómo Trabajamos" },
+      { href: "/#nosotros", label: "Cómo trabajamos" },
       { href: "/#precios", label: "Precios" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { href: "/#showcase", label: "Proyectos" },
       { href: "/#faq", label: "Preguntas Frecuentes" },
       { href: "/#contacto", label: "Contacto" },
     ],
