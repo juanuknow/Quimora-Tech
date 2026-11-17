@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { RotateCcw, Sparkles } from "lucide-react";
 import { requestDiagnosis } from "../lib/diagnosis";
 import { getLastAnswers, subscribeLastAnswers } from "../lib/diagnosis-result";
@@ -13,6 +13,10 @@ const CONTROL = `inline-flex h-11 items-center rounded-full font-display text-ca
  * El botón principal es el mismo elemento en ambos estados para que el foco
  * pueda volver a él al cerrar la ventana. `z-30` lo deja debajo de la barra de
  * navegación y su menú móvil.
+ *
+ * Con la etiqueta completa tapaba contenido abajo a la izquierda (fichas de
+ * precios, mockup de proyectos). Fuera del hero se compacta a solo el icono:
+ * la etiqueta pasa a `sr-only`, así el nombre accesible no cambia.
  */
 export function FloatingDiagnosis() {
   const hasResult = useSyncExternalStore(
@@ -20,17 +24,26 @@ export function FloatingDiagnosis() {
     () => getLastAnswers() !== null,
     () => false,
   );
+  const compact = usePastHero();
+  const label = hasResult ? "Ver mi diagnóstico" : "Comenzar diagnóstico gratuito";
 
   return (
     <div className="animate-pop-in-bounce fixed bottom-6 left-5 z-30 flex items-center rounded-full border border-hairline bg-background p-0.5 shadow-lg [--delay:1400ms] md:bottom-9 md:left-8">
       <button
         type="button"
         onClick={() => requestDiagnosis({ source: "flotante", showLastResult: hasResult })}
-        className={`${CONTROL} gap-2 px-4`}
+        title={compact ? label : undefined}
+        className={`${CONTROL} ${compact ? "w-11 justify-center" : "gap-2 px-4"}`}
       >
-        <Sparkles size={16} className="max-[359px]:hidden" aria-hidden="true" />
+        <Sparkles
+          size={16}
+          className={compact ? undefined : "max-[359px]:hidden"}
+          aria-hidden="true"
+        />
         {hasResult ? (
-          "Ver mi diagnóstico"
+          <span className={compact ? "sr-only" : undefined}>Ver mi diagnóstico</span>
+        ) : compact ? (
+          <span className="sr-only">{label}</span>
         ) : (
           <>
             <span className="md:hidden">Diagnóstico gratuito</span>
@@ -54,4 +67,21 @@ export function FloatingDiagnosis() {
       )}
     </div>
   );
+}
+
+/**
+ * `true` cuando el hero (`#top`) ya salió de la pantalla. Se observa el hero y
+ * no "si hubo scroll": las consultas `scroll-state` de CSS solo distinguen eso
+ * último, y dentro del hero el botón tiene espacio libre para su etiqueta.
+ */
+function usePastHero(): boolean {
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    const hero = document.getElementById("top");
+    if (!hero || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setPast(!entry.isIntersecting));
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+  return past;
 }
