@@ -211,13 +211,24 @@
     color: var(--color-foreground);
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    /* Mientras Inter no ha cargado (font-display: swap), escala la fuente de
+       respaldo a la altura de minúsculas de Inter (0,546): el texto cambia
+       menos de ancho al llegar la fuente. Con Inter ya cargada no altera nada.
+       Es un número y no `from-font`: este se resuelve con la primera fuente
+       disponible, que durante la carga es la propia de respaldo, y no haría
+       nada justo cuando hace falta. */
+    font-size-adjust: 0.546;
   }
 
+  /* Los títulos no se ajustan: medido con las fuentes bloqueadas, escalar el
+     respaldo a Space Grotesk (0,486) acercaba unos títulos y alejaba otros. Se
+     anula para que no hereden la proporción de Inter, que los agrandaría. */
   h1,
   h2,
   h3,
   .font-display {
     font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    font-size-adjust: none;
   }
 }
 
