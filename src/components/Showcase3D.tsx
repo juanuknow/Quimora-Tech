@@ -45,16 +45,17 @@ interface FeaturedProject {
 // Proyecto real construido por Quimora Tech. Sin métricas de resultados
 // inventadas: se muestra el sitio de verdad y lo que hace. Las cifras de
 // `facts` son conteos reales del catálogo y de las funciones del sitio.
-// La tienda aún no tiene dominio público: no se muestra ninguna dirección y
-// liveUrl se activará cuando esté desplegada en un dominio estable.
+// Publicada en Netlify. Si la tienda pasa a su dominio propio (diosascali.com),
+// actualizar `domain` y `liveUrl` juntos.
 const FEATURED: FeaturedProject = {
   name: "Diosa's Make up",
-  category: "Tienda online · Cosméticos · Aún sin publicar",
-  domain: "Vista previa de la tienda",
+  category: "Tienda online · Cosméticos",
+  domain: "diosamakeup.netlify.app",
+  liveUrl: "https://diosamakeup.netlify.app",
   fullImage: "/images/diosas-full.webp",
   fallbackImage: "/images/diosas-cosmeticos.webp",
   description:
-    "Tienda online de maquillaje y cuidado capilar: catálogo con menú por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp, compra al por mayor y reseñas moderadas. La dueña administra precios, stock, fotos y reseñas desde su propio panel. La tienda aún no está publicada; estas capturas son de la versión en desarrollo.",
+    "Tienda online de maquillaje y cuidado capilar: catálogo con menú por categorías y marcas, buscador, favoritos, carrito con pedido por WhatsApp, compra al por mayor y reseñas moderadas. La dueña administra precios, stock, fotos y reseñas desde su propio panel.",
   facts: [
     { value: "+850", label: "productos en el catálogo" },
     { value: "5", label: "grupos de categorías, con subcategorías y tipos" },
@@ -210,8 +211,7 @@ const CASES = [
     project: FEATURED,
     views: GALLERY_VIEWS,
     galleryHeading: "Recorre el sitio por dentro",
-    galleryIntro:
-      "Capturas reales de la versión en desarrollo, de la portada al pedido por WhatsApp.",
+    galleryIntro: "Capturas reales de la tienda, de la portada al pedido por WhatsApp.",
   },
   {
     project: ENTRE_HILOS,
