@@ -8,27 +8,27 @@ const COLLAPSE_MS = 300;
 const FAQS = [
   {
     q: "¿Cuánto tiempo tarda en estar lista mi web?",
-    a: "Típicamente entre 2 y 4 semanas dependiendo de la complejidad. El plazo exacto se confirma en la cotización.",
+    a: "Emprendedor y Presencia tienen un plazo orientativo de 2 a 3 semanas; Crecimiento, de 2 a 4. En A Medida depende del alcance. Confirmamos el calendario en la cotización y el plazo empieza cuando recibimos el contenido y la información acordados para iniciar.",
   },
   {
     q: "¿Puedo editar la web después?",
-    a: "Sí, te entrenamos y proporcionamos un panel de administración simple. No necesitas conocimientos técnicos.",
+    a: "Crecimiento incluye un panel para editar textos e imágenes. En A Medida definimos las funciones de administración en la propuesta. Emprendedor y Presencia no incluyen ese panel; puedes consultarnos por cambios o mantenimiento.",
   },
   {
     q: "¿Incluye posicionamiento en Google (SEO)?",
-    a: "Sí, todas nuestras webs están optimizadas desde el inicio con mejores prácticas SEO. Conexión con Google Analytics y Google Search Console incluida.",
+    a: "Todos los planes incluyen buenas prácticas de SEO técnico; no garantizan una posición en Google. Presencia incluye Google Analytics, y Crecimiento suma Google Search Console. En A Medida confirmamos las herramientas en la propuesta.",
   },
   {
     q: "¿Qué pasa si necesito cambios después?",
-    a: "Tenemos planes de mantenimiento flexible. Respondemos en menos de 24 horas y acordamos contigo el plazo según el cambio.",
+    a: "El soporte de lanzamiento depende del plan; Crecimiento incluye un mes después del lanzamiento. Los cambios adicionales y el mantenimiento se acuerdan por separado. En A Medida la propuesta define el alcance y la duración del mantenimiento incluido.",
   },
   {
     q: "¿De quién es la web cuando terminamos?",
-    a: "Tuya, al 100%. Te entregamos los accesos y los archivos del proyecto. No quedas amarrado a nosotros: puedes seguir con quien quieras.",
+    a: "Te entregamos los accesos y archivos del proyecto. La titularidad de los entregables y las condiciones de entrega quedan por escrito en la propuesta o el contrato.",
   },
   {
-    q: "¿Por qué no son la opción más barata?",
-    a: "Porque no vendemos plantillas genéricas. Cada sitio se diseña a medida, optimizado para cargar rápido y para vender. Una web barata que no convierte termina saliendo más cara.",
+    q: "¿Cómo se define el precio de mi web?",
+    a: "Los precios publicados son referencias de partida. Confirmamos por escrito las páginas, funciones, contenido, revisiones, soporte y costos de terceros antes de empezar. El precio final depende de ese alcance.",
   },
   {
     q: "¿Trabajan con negocios fuera de Cali?",

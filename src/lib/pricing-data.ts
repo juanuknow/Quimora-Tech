@@ -40,8 +40,7 @@ export const PLANS: readonly Plan[] = [
     period: "Pago único",
     promo: "Hosting 3 meses + dominio incluidos",
     audience: "Para atraer clientes nuevos",
-    description:
-      "Una web profesional que te hace visible en Google y convierte visitas en contactos.",
+    description: "Una web profesional para presentar tu negocio y facilitar que te contacten.",
     delivery: "2–3 semanas",
     support: "Durante el lanzamiento",
     includesPlan: "Emprendedor",
@@ -51,7 +50,7 @@ export const PLANS: readonly Plan[] = [
       "Galería de fotos o portafolio",
       "Mapa con tu ubicación (Google Maps)",
       "Enlaces a tus redes sociales",
-      "SEO local: apareces cuando te buscan en tu zona",
+      "SEO local: estructura y contenido para búsquedas de tu zona",
       "Google Analytics para medir tus visitas",
     ],
     defaultSelected: true,
@@ -85,13 +84,13 @@ export const PLANS: readonly Plan[] = [
     description:
       "Cuando tu negocio necesita funciones propias: vender en línea, agendar o conectar tus sistemas.",
     delivery: "Según alcance",
-    support: "Acompañamiento continuo",
+    support: "Según lo acordado en la propuesta",
     includesNote: "Crecimiento, según lo necesites",
     adds: [
       "Tienda online con pagos en línea",
       "Reservas o agendamiento de citas",
       "Integraciones con tus sistemas (inventario, facturación…)",
-      "Mantenimiento mensual incluido",
+      "Mantenimiento incluido: alcance y duración en la propuesta",
     ],
   },
 ];

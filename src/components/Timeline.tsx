@@ -5,32 +5,32 @@ import { useInView } from "../lib/hooks";
 /* -------------------- Timeline (signature) -------------------- */
 const STEPS = [
   {
-    week: "SEMANA 1",
+    week: "ETAPA 1",
     icon: MessageCircle,
     accent: false,
     title: "Diagnóstico",
     body: "Escuchamos tus metas, analizamos tu competencia y definimos la estrategia.",
   },
   {
-    week: "SEMANA 2–3",
+    week: "ETAPA 2",
     icon: Code2,
     accent: false,
     title: "Desarrollo",
     body: "Diseñamos y desarrollamos tu web con las últimas tecnologías, optimizada desde el inicio.",
   },
   {
-    week: "SEMANA 4",
+    week: "ETAPA 3",
     icon: Rocket,
     accent: true,
     title: "Lanzamiento",
-    body: "Tu web sale a producción. Tus clientes ya la ven, comienzan a contactarte.",
+    body: "Revisamos contigo la web y la publicamos conforme al alcance acordado.",
   },
   {
     week: "DESPUÉS",
     icon: TrendingUp,
     accent: false,
-    title: "Crecimiento Continuo",
-    body: "Medimos, optimizamos y escalamos. Cada semana, mejor.",
+    title: "Soporte y mantenimiento",
+    body: "El soporte de lanzamiento depende del plan. El mantenimiento y las mejoras se acuerdan en la propuesta.",
   },
 ] as const;
 
@@ -40,11 +40,15 @@ export function Timeline() {
       <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
         <div className="text-center">
           <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-accent-strong">
-            Tu web lista en 4 semanas. No 4 meses.
+            Alcance y plazo acordados antes de empezar
           </p>
           <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-display">
             Crecer es Simple
           </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-ui leading-relaxed text-foreground/75">
+            Plazos orientativos de 2 a 4 semanas según el plan; los proyectos a medida tienen su
+            propio calendario. Empezamos cuando recibimos el contenido y la información acordados.
+          </p>
         </div>
 
         <TimelineDesktop />

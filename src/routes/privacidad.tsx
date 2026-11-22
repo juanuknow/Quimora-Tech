@@ -21,7 +21,7 @@ export const Route = createFileRoute("/privacidad")({
 
 function PrivacyPage() {
   return (
-    <LegalPage title="Política de Privacidad" updated="17 de julio de 2026">
+    <LegalPage title="Política de Privacidad" updated="21 de noviembre de 2026">
       <p>
         En <strong>Quimora Tech</strong> valoramos y protegemos la privacidad de las personas que
         nos contactan. Esta Política describe cómo recolectamos, usamos y protegemos los datos
@@ -50,7 +50,7 @@ function PrivacyPage() {
       <ul>
         <li>Nombre completo.</li>
         <li>Correo electrónico.</li>
-        <li>Número de teléfono (opcional).</li>
+        <li>Número de teléfono (obligatorio en el formulario de contacto).</li>
         <li>El mensaje o la información sobre tu proyecto que decidas compartir.</li>
       </ul>
       <p>No recolectamos datos sensibles ni información de menores de edad de forma intencional.</p>

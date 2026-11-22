@@ -357,7 +357,8 @@ export function Contact() {
                   <a href="/privacidad" className="underline underline-offset-2 hover:text-brand">
                     Política de Privacidad
                   </a>{" "}
-                  y que te contactemos sobre tu consulta. Nunca compartimos tus datos.
+                  y que te contactemos sobre tu consulta. Utilizamos proveedores tecnológicos para
+                  procesarla, como explica la política.
                 </p>
               </form>
             )}

@@ -47,7 +47,7 @@ export function Pricing() {
       <div className="mx-auto max-w-[1200px] px-6 py-24 md:px-10 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-brand md:text-display">
-            Una inversión que se paga sola
+            Elige el alcance que necesita tu negocio
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-foreground/80 md:text-body">
             Precios claros desde el inicio. Elige un plan para ver su precio y todo lo que incluye.
@@ -253,8 +253,8 @@ export function Pricing() {
               ¿Ya tienes tu web funcionando?
             </h3>
             <p className="mt-1.5 text-sm leading-[1.6] text-foreground/75">
-              Con nuestros planes de mantenimiento mensual la mantenemos rápida, segura y creciendo:
-              actualizaciones, respaldos y mejoras continuas.
+              Cotizamos el mantenimiento mensual según las tareas que necesites, como
+              actualizaciones, respaldos o cambios de contenido.
             </p>
           </div>
           <a

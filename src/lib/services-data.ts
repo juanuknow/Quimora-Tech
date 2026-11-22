@@ -150,13 +150,13 @@ export const services: readonly Service[] = [
     metaDescription:
       "Desarrollo de tiendas online en Cali: catálogo, carrito y pagos en línea. Vende 24/7 sin depender solo de redes sociales.",
     longDescription:
-      "Una tienda online te permite vender las 24 horas del día sin depender únicamente de publicar en redes sociales, donde cada producto nuevo se pierde en el algoritmo a las pocas horas. Desarrollamos tiendas con catálogo por categorías, buscador de productos, carrito de compras y pagos en línea — la misma base con la que construimos la tienda de Diosa's Make up, un proyecto real, aún sin publicar, que puedes explorar en la sección de casos de este sitio.\n\nCada tienda se diseña mobile-first, porque la mayoría de las compras por celular se abandonan cuando el sitio es lento o difícil de navegar. Sumamos buenas prácticas de SEO desde el inicio para que tus productos también aparezcan en las búsquedas de Google, no solo en tus redes.\n\nIdeal para negocios que ya venden por WhatsApp o redes y quieren un catálogo propio, permanente e indexable — sin pagar comisión por cada venta.",
+      "Creamos catálogos con pedidos por WhatsApp y tiendas con pagos en línea. Son alcances distintos: la propuesta define cómo se confirma el pedido, si incluye pasarela de pago y qué integraciones necesita tu negocio.\n\nDiosa's Make up es un proyecto real aún sin publicar. Su caso muestra catálogo por categorías, buscador, carrito con pedido por WhatsApp y panel de administración. Puedes explorar esas funciones en las capturas de la sección de proyectos.\n\nDiseñamos primero para celular y aplicamos buenas prácticas de SEO técnico para facilitar la indexación de los productos, sin garantizar posiciones en Google. Quimora no cobra comisión sobre tus ventas; las tarifas de pasarelas y otros proveedores se informan por separado.",
     benefits: [
       "Catálogo de productos por categorías",
-      "Carrito de compras y checkout en línea",
-      "Diseño mobile-first — la mayoría de las compras llegan desde el celular",
-      "SEO desde el inicio para que tus productos aparezcan en Google",
-      "Sin comisión por venta, a diferencia de los marketplaces",
+      "Carrito con pedido por WhatsApp o pagos en línea, según el alcance contratado",
+      "Diseño pensado primero para celular",
+      "Buenas prácticas de SEO técnico para facilitar la indexación",
+      "Sin comisión de Quimora sobre ventas; cargos de terceros por separado",
     ],
   },
   {

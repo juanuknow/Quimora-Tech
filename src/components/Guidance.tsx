@@ -66,7 +66,7 @@ export function Guidance() {
             >
               Ya tengo una web
             </h3>
-            <p className="mt-4 text-ui font-semibold text-brand">Revisión de tu web actual.</p>
+            <p className="mt-4 text-ui font-semibold text-brand">Revisión pagada de tu web.</p>
             <p className="mt-2 max-w-lg text-ui leading-relaxed text-foreground">
               Te decimos qué mejorar primero en velocidad, SEO y conversión.
             </p>

@@ -10,8 +10,8 @@ import { NewTabHint } from "./NewTabHint";
 /** Compromisos del proceso, no métricas de trayectoria. */
 const CAPABILITIES = [
   "Del diseño al despliegue",
-  "Código propio, sin plantillas",
-  "Tecnología moderna y escalable",
+  "Diseño adaptado al alcance",
+  "Soporte según la propuesta",
 ] as const;
 
 /** Rejilla técnica de fondo, atenuada hacia los bordes con una máscara radial. */
@@ -59,13 +59,12 @@ export function SoftwareSolutions() {
               Páginas web y tiendas online hechas para vender
             </h2>
             <p className="mt-5 max-w-xl text-base leading-[1.7] text-white/70 md:text-body">
-              Nuestro foco son los sitios corporativos, las landing pages y las tiendas online a
-              medida. Cuando tu operación lo necesita, también desarrollamos sistemas de gestión y
-              automatizaciones.
+              Presenta tu negocio con una página web, recibe pedidos por WhatsApp con un catálogo o
+              habilita pagos en línea con una tienda. Trabajamos desde Cali para toda Colombia.
             </p>
             <p className="mt-4 max-w-xl text-base leading-[1.7] text-white/70 md:text-body">
-              Un solo equipo de principio a fin, con la misma exigencia de velocidad, seguridad y
-              medición en cada proyecto.
+              Si necesitas un sistema de gestión o conectar herramientas, evaluamos ese desarrollo a
+              medida por separado.
             </p>
             <ul className="mt-8 flex flex-wrap gap-2.5">
               {CAPABILITIES.map((item) => (

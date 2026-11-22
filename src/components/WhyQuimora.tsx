@@ -8,16 +8,16 @@ type Reason = {
 const REASONS: readonly Reason[] = [
   {
     title: "Que te encuentren",
-    problem: "Si no apareces en Google, tu cliente le compra a otro.",
+    problem: "Sin información clara en buscadores, es más difícil descubrir tu negocio.",
     solution:
       "SEO desde el primer día: estructura, velocidad y contenido pensados para búsquedas locales.",
-    standards: ["Meta Lighthouse 95+"],
+    standards: ["Buenas prácticas de SEO técnico"],
   },
   {
     title: "Que no se vayan",
     problem: "Una web lenta pierde visitas antes de mostrarse.",
     solution: "Sitios ligeros y diseñados primero para el celular.",
-    standards: ["Menos de 3 s de carga", "100 % responsive"],
+    standards: ["Optimización de carga", "Diseño responsive"],
   },
   {
     title: "Que te escriban",
@@ -28,8 +28,8 @@ const REASONS: readonly Reason[] = [
   {
     title: "Que sepas qué funciona",
     problem: "Sin datos, no sabes qué mejorar.",
-    solution: "Conectamos Google Analytics desde el lanzamiento para que veas resultados reales.",
-    standards: ["Analítica incluida"],
+    solution: "Presencia incluye Google Analytics; Crecimiento suma Google Search Console.",
+    standards: ["Medición según el plan"],
   },
 ];
 
