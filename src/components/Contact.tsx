@@ -15,10 +15,34 @@ import {
 } from "../lib/site";
 
 /* -------------------- Contact -------------------- */
-type ContactErrors = { name?: string; email?: string; phone?: string; message?: string };
+const NEED_OPTIONS = [
+  { value: "web", label: "Página web o landing" },
+  { value: "tienda", label: "Tienda online" },
+  { value: "software", label: "Sistema o software a medida" },
+  { value: "mantenimiento", label: "Mantenimiento de mi web" },
+  { value: "no-se", label: "Aún no lo sé, necesito orientación" },
+] as const satisfies ReadonlyArray<{ value: string; label: string }>;
+
+const EMPTY_FORM = {
+  name: "",
+  business: "",
+  phone: "",
+  email: "",
+  need: "",
+  message: "",
+  _gotcha: "",
+};
+
+type ContactErrors = {
+  name?: string;
+  contact?: string;
+  phone?: string;
+  email?: string;
+  need?: string;
+};
 
 export function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -26,7 +50,7 @@ export function Contact() {
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
-  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const needRef = useRef<HTMLSelectElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
 
   // Al confirmarse el envío el formulario desaparece del DOM y con él el foco:
@@ -37,24 +61,25 @@ export function Contact() {
   }, [sent]);
 
   const update =
-    (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    (field: keyof typeof form) =>
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const validate = (): ContactErrors => {
+  const validate = (data: typeof form): ContactErrors => {
     const next: ContactErrors = {};
-    if (!form.name.trim()) next.name = "Cuéntanos tu nombre.";
-    if (!form.email.trim()) next.email = "Necesitamos un correo para responderte.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    if (!data.name) next.name = "Cuéntanos tu nombre.";
+    if (!data.phone && !data.email)
+      next.contact = "Déjanos un WhatsApp o un correo para responderte.";
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
       next.email = "Ese correo no parece válido.";
-    const phoneDigits = form.phone.replace(/\D/g, "");
-    if (!form.phone.trim()) next.phone = "Necesitamos un teléfono para contactarte.";
-    else if (
-      !/^[\d+\-()\s]+$/.test(form.phone) ||
-      phoneDigits.length < 7 ||
-      phoneDigits.length > 15
+    const phoneDigits = data.phone.replace(/\D/g, "");
+    if (
+      data.phone &&
+      (!/^[\d+\-()\s]+$/.test(data.phone) || phoneDigits.length < 7 || phoneDigits.length > 15)
     )
-      next.phone = "Ese teléfono no parece válido.";
-    if (!form.message.trim()) next.message = "Cuéntanos brevemente qué necesitas.";
+      next.phone = "Ese número de WhatsApp no parece válido.";
+    if (!NEED_OPTIONS.some((option) => option.value === data.need))
+      next.need = "Elige la opción que más se parezca a lo que necesitas.";
     setErrors(next);
     return next;
   };
@@ -62,12 +87,26 @@ export function Contact() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitError(false);
-    const next = validate();
+    const data = {
+      name: form.name.trim(),
+      business: form.business.trim(),
+      phone: form.phone.trim(),
+      email: form.email.trim(),
+      need: form.need.trim(),
+      message: form.message.trim(),
+      _gotcha: form._gotcha.trim(),
+    };
+    if (data._gotcha) {
+      setSent(true);
+      return;
+    }
+    const next = validate(data);
     if (next.name) nameRef.current?.focus();
+    else if (next.contact || next.phone) phoneRef.current?.focus();
     else if (next.email) emailRef.current?.focus();
-    else if (next.phone) phoneRef.current?.focus();
-    else if (next.message) messageRef.current?.focus();
-    if (Object.keys(next).length > 0) return;
+    else if (next.need) needRef.current?.focus();
+    const needOption = NEED_OPTIONS.find((option) => option.value === data.need);
+    if (Object.keys(next).length > 0 || !needOption) return;
 
     setSubmitting(true);
     try {
@@ -75,16 +114,18 @@ export function Contact() {
         method: "POST",
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message,
-          _subject: `Nueva consulta de ${form.name} · Quimora Tech`,
+          name: data.name,
+          ...(data.business && { business: data.business }),
+          ...(data.phone && { phone: data.phone }),
+          ...(data.email && { email: data.email }),
+          need: needOption.label,
+          ...(data.message && { message: data.message }),
+          _subject: `Nueva consulta de ${data.name} · ${needOption.label} · Quimora Tech`,
         }),
       });
       if (!res.ok) throw new Error(`Formspree respondió ${res.status}`);
       setSent(true);
-      trackEvent("generate_lead", { method: "contact_form" });
+      trackEvent("generate_lead", { method: "contact_form", service: needOption.value });
     } catch {
       setSubmitError(true);
     } finally {
@@ -205,7 +246,9 @@ export function Contact() {
                   type="button"
                   onClick={() => {
                     setSent(false);
-                    setForm({ name: "", email: "", phone: "", message: "" });
+                    setForm(EMPTY_FORM);
+                    setErrors({});
+                    setSubmitError(false);
                     // El botón que se pulsó desaparece: el foco pasa al primer campo.
                     requestAnimationFrame(() => nameRef.current?.focus());
                   }}
@@ -216,6 +259,16 @@ export function Contact() {
               </div>
             ) : (
               <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+                <input
+                  type="text"
+                  name="_gotcha"
+                  value={form._gotcha}
+                  onChange={update("_gotcha")}
+                  className="sr-only"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
                 <div>
                   <label
                     htmlFor="cf-name"
@@ -228,9 +281,11 @@ export function Contact() {
                   </label>
                   <input
                     id="cf-name"
+                    name="name"
                     ref={nameRef}
                     type="text"
                     autoComplete="name"
+                    maxLength={80}
                     value={form.name}
                     onChange={update("name")}
                     aria-required="true"
@@ -246,65 +301,145 @@ export function Contact() {
                   )}
                 </div>
 
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="cf-email"
-                      className="font-display text-sm font-medium text-foreground"
-                    >
-                      Email{" "}
-                      <span aria-hidden="true" className="text-accent-strong">
-                        *
-                      </span>
-                    </label>
-                    <input
-                      id="cf-email"
-                      ref={emailRef}
-                      type="email"
-                      autoComplete="email"
-                      value={form.email}
-                      onChange={update("email")}
-                      aria-required="true"
-                      aria-invalid={!!errors.email}
-                      aria-describedby={errors.email ? "cf-email-err" : undefined}
-                      className={`mt-2 ${fieldBase} ${errors.email ? "border-destructive" : "border-input"}`}
-                      placeholder="tu@correo.com"
-                    />
-                    {errors.email && (
-                      <p id="cf-email-err" className="mt-1.5 text-xs text-destructive-strong">
-                        {errors.email}
-                      </p>
-                    )}
+                <div>
+                  <label
+                    htmlFor="cf-business"
+                    className="font-display text-sm font-medium text-foreground"
+                  >
+                    Nombre de tu negocio (opcional)
+                  </label>
+                  <input
+                    id="cf-business"
+                    name="business"
+                    type="text"
+                    autoComplete="organization"
+                    maxLength={80}
+                    value={form.business}
+                    onChange={update("business")}
+                    className={`mt-2 ${fieldBase} border-input`}
+                  />
+                </div>
+
+                <fieldset className="min-w-0">
+                  <legend className="font-display text-sm font-medium text-foreground">
+                    ¿Cómo te contactamos?{" "}
+                    <span aria-hidden="true" className="text-accent-strong">
+                      *
+                    </span>
+                  </legend>
+                  <p id="cf-contact-help" className="mt-2 text-sm text-muted-foreground">
+                    Déjanos tu WhatsApp, tu correo o ambos.
+                  </p>
+                  <div className="mt-3 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="cf-phone"
+                        className="font-display text-sm font-medium text-foreground"
+                      >
+                        WhatsApp
+                      </label>
+                      <input
+                        id="cf-phone"
+                        name="phone"
+                        ref={phoneRef}
+                        type="tel"
+                        autoComplete="tel"
+                        maxLength={20}
+                        value={form.phone}
+                        onChange={update("phone")}
+                        aria-invalid={!!(errors.contact || errors.phone)}
+                        aria-describedby={[
+                          "cf-contact-help",
+                          errors.contact && "cf-contact-err",
+                          errors.phone && "cf-phone-err",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        className={`mt-2 ${fieldBase} ${errors.contact || errors.phone ? "border-destructive" : "border-input"}`}
+                        placeholder="+57 300 000 0000"
+                      />
+                      {errors.phone && (
+                        <p id="cf-phone-err" className="mt-1.5 text-xs text-destructive-strong">
+                          {errors.phone}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="cf-email"
+                        className="font-display text-sm font-medium text-foreground"
+                      >
+                        Correo
+                      </label>
+                      <input
+                        id="cf-email"
+                        name="email"
+                        ref={emailRef}
+                        type="email"
+                        autoComplete="email"
+                        maxLength={120}
+                        value={form.email}
+                        onChange={update("email")}
+                        aria-invalid={!!(errors.contact || errors.email)}
+                        aria-describedby={[
+                          "cf-contact-help",
+                          errors.contact && "cf-contact-err",
+                          errors.email && "cf-email-err",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        className={`mt-2 ${fieldBase} ${errors.contact || errors.email ? "border-destructive" : "border-input"}`}
+                        placeholder="tu@correo.com"
+                      />
+                      {errors.email && (
+                        <p id="cf-email-err" className="mt-1.5 text-xs text-destructive-strong">
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <label
-                      htmlFor="cf-phone"
-                      className="font-display text-sm font-medium text-foreground"
-                    >
-                      Teléfono{" "}
-                      <span aria-hidden="true" className="text-accent-strong">
-                        *
-                      </span>
-                    </label>
-                    <input
-                      id="cf-phone"
-                      ref={phoneRef}
-                      type="tel"
-                      autoComplete="tel"
-                      value={form.phone}
-                      onChange={update("phone")}
-                      aria-required="true"
-                      aria-invalid={!!errors.phone}
-                      aria-describedby={errors.phone ? "cf-phone-err" : undefined}
-                      className={`mt-2 ${fieldBase} ${errors.phone ? "border-destructive" : "border-input"}`}
-                      placeholder="+57 300 000 0000"
-                    />
-                    {errors.phone && (
-                      <p id="cf-phone-err" className="mt-1.5 text-xs text-destructive-strong">
-                        {errors.phone}
-                      </p>
-                    )}
-                  </div>
+                  {errors.contact && (
+                    <p id="cf-contact-err" className="mt-1.5 text-xs text-destructive-strong">
+                      {errors.contact}
+                    </p>
+                  )}
+                </fieldset>
+
+                <div>
+                  <label
+                    htmlFor="cf-need"
+                    className="font-display text-sm font-medium text-foreground"
+                  >
+                    ¿Qué necesitas?{" "}
+                    <span aria-hidden="true" className="text-accent-strong">
+                      *
+                    </span>
+                  </label>
+                  <select
+                    id="cf-need"
+                    name="need"
+                    ref={needRef}
+                    value={form.need}
+                    onChange={update("need")}
+                    aria-required="true"
+                    aria-invalid={!!errors.need}
+                    aria-describedby={errors.need ? "cf-need-err" : undefined}
+                    className={`mt-2 min-w-0 ${fieldBase} ${errors.need ? "border-destructive" : "border-input"}`}
+                  >
+                    <option value="" disabled>
+                      Selecciona una opción
+                    </option>
+                    {NEED_OPTIONS.map(({ value, label }) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.need && (
+                    <p id="cf-need-err" className="mt-1.5 text-xs text-destructive-strong">
+                      {errors.need}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -312,28 +447,18 @@ export function Contact() {
                     htmlFor="cf-message"
                     className="font-display text-sm font-medium text-foreground"
                   >
-                    Mensaje{" "}
-                    <span aria-hidden="true" className="text-accent-strong">
-                      *
-                    </span>
+                    Cuéntanos más (opcional)
                   </label>
                   <textarea
                     id="cf-message"
-                    ref={messageRef}
+                    name="message"
                     rows={4}
+                    maxLength={1000}
                     value={form.message}
                     onChange={update("message")}
-                    aria-required="true"
-                    aria-invalid={!!errors.message}
-                    aria-describedby={errors.message ? "cf-message-err" : undefined}
-                    className={`mt-2 resize-y ${fieldBase} ${errors.message ? "border-destructive" : "border-input"}`}
+                    className={`mt-2 resize-y ${fieldBase} border-input`}
                     placeholder="Cuéntanos qué necesitas para tu negocio…"
                   />
-                  {errors.message && (
-                    <p id="cf-message-err" className="mt-1.5 text-xs text-destructive-strong">
-                      {errors.message}
-                    </p>
-                  )}
                 </div>
 
                 {submitError && (
